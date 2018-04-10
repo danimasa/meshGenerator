@@ -1,0 +1,422 @@
+﻿!######################################
+!#
+!# MACRO PROCGEOM
+!# JANEIRO DE 2009
+!# PROCESSAMENTO DA GEOMETRIA NO ANSYS PARA O GERADOR DE MALHAS
+!#
+!######################################
+
+!############################
+!# CONTROLE
+!############################
+
+FileName = 'GEOM'
+FileExt  = 'DAT'
+
+StartBlock =  9999
+EndBlock   = -9876
+
+*DIM, Array1, ARRAY, 1
+*DIM, Array2, ARRAY, 2
+*DIM, Array3, ARRAY, 3
+*DIM, Array4, ARRAY, 4
+
+!############################
+!# KEYPOINTS
+!############################
+
+ALLSEL, ALL
+*GET, Total, KP,, COUNT
+
+*IF, Total, GT, 0, THEN
+
+   *VFILL, Array1(1), DATA, StartBlock
+   /OUTPUT, %FileName%, %FileExt%   !# primeira vez que e usado - o arquivo e aberto vazio - depois precisa de APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   *VFILL, Array1(1), DATA, Total
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE
+   ('       10.')
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   atualEnt = KPNEXT(0)
+
+   *DOWHILE, atualEnt
+
+      !# *GET, Xcoord, KP, atualKP, LOC, X
+      Xcoord = KX(atualEnt)
+      Ycoord = KY(atualEnt)
+      Zcoord = KZ(atualEnt)
+
+      *VFILL, Array4(1), DATA, atualEnt, Xcoord, Ycoord, Zcoord
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array4(1), Array4(2), Array4(3), Array4(4)
+      (F10.0, 3E20.10)
+      /OUTPUT
+
+      atualEnt = KPNEXT(atualEnt)
+
+   *ENDDO
+
+   *VFILL, Array1(1), DATA, EndBlock
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   *VWRITE
+   ()
+   /OUTPUT
+
+*ENDIF
+
+!############################
+!# LINES
+!############################
+
+ALLSEL, ALL
+*GET, Total, LINE,, COUNT
+
+*IF, Total, GT, 0, THEN
+
+   *VFILL, Array1(1), DATA, StartBlock
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   *VFILL, Array1(1), DATA, Total
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE
+   ('       20.')
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   atualEnt = LSNEXT(0)
+
+   *DOWHILE, atualEnt
+
+      *GET, KP1, LINE, atualEnt, KP, 1
+      *GET, KP2, LINE, atualEnt, KP, 2
+      *GET, LNl, LINE, atualEnt, LENG
+
+      Xcoord = LX(atualEnt, 0.5)
+      Ycoord = LY(atualEnt, 0.5)
+      Zcoord = LZ(atualEnt, 0.5)
+
+      *VFILL, Array3(1), DATA, atualEnt, KP1, KP2
+      *VFILL, Array4(1), DATA, LNl, Xcoord, Ycoord, Zcoord
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array3(1), Array3(2), Array3(3)
+      (3F10.0)
+      *VWRITE, Array4(1), Array4(2), Array4(3), Array4(4)
+      (4E20.10)
+      /OUTPUT
+
+      Xcoord = LSX(atualEnt, 0)
+      Ycoord = LSY(atualEnt, 0)
+      Zcoord = LSZ(atualEnt, 0)
+
+      *VFILL, Array3(1), DATA, Xcoord, Ycoord, Zcoord
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array3(1), Array3(2), Array3(3)
+      (3E20.10)
+      /OUTPUT
+
+      Xcoord = LSX(atualEnt, 1)
+      Ycoord = LSY(atualEnt, 1)
+      Zcoord = LSZ(atualEnt, 1)
+
+      *VFILL, Array3(1), DATA, Xcoord, Ycoord, Zcoord
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array3(1), Array3(2), Array3(3)
+      (3E20.10)
+      /OUTPUT
+
+      atualEnt = LSNEXT(atualEnt)
+
+   *ENDDO
+
+   *VFILL, Array1(1), DATA, EndBlock
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   *VWRITE
+   ()
+   /OUTPUT
+
+*ENDIF
+
+
+!#   *GET, LNrad, LINE, 11, RADIUS  ----- nao sei como ler o raio
+!#  qual outra possibilidade de identificacao de arcos?
+
+
+!############################
+!# AREAS
+!############################
+
+ALLSEL, ALL
+*GET, Total, AREA,, COUNT
+
+*IF, Total, GT, 0, THEN
+
+   *VFILL, Array1(1), DATA, StartBlock
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   *VFILL, Array1(1), DATA, Total
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE
+   ('       30.')
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   atualEnt = ARNEXT(0)
+
+   *DOWHILE, atualEnt
+
+      ASEL, S, AREA,, atualEnt, atualEnt, 1
+      LSLA, S
+      *GET, Nlines, LINE,, COUNT
+
+      LSEL, R, LCCA
+      *GET, NCctLines, LINE,, COUNT
+
+      *VFILL, Array3(1), DATA, atualEnt, Nlines, NCctLines
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array3(1), Array3(2), Array3(3)
+      (3F10.0)
+      /OUTPUT
+
+!#      *DO, I, 1, Nlines, 1
+!#
+!#         *GET, LNlb, AREA, atualEnt, LOOP, 1, LINE, I
+!#
+!#         *VFILL, Array1(1), DATA, LNlb
+!#         /OUTPUT, %FileName%, %FileExt%,, APPEND
+!#         *VWRITE, Array1(1)
+!#         (F10.0)
+!#         /OUTPUT
+!#
+!#      *ENDDO
+
+      LSLA, S
+
+      atualSubEnt = LSNEXT(0)
+
+      *DOWHILE, atualSubEnt
+
+         *VFILL, Array1, DATA, atualSubEnt
+         /OUTPUT, %FileName%, %FileExt%,, APPEND
+         *VWRITE, Array1(1)
+         (F10.0)
+         /OUTPUT
+
+         atualSubEnt = LSNEXT(atualSubEnt)
+
+      *ENDDO
+
+      LSEL, R, LCCA
+
+      atualSubEnt = LSNEXT(0)
+
+      *IF, atualSubEnt, GT, 0, THEN
+
+         *DOWHILE, atualSubEnt
+
+            *VFILL, Array1, DATA, atualSubEnt
+            /OUTPUT, %FileName%, %FileExt%,, APPEND
+            *VWRITE, Array1(1)
+            (F10.0)
+            /OUTPUT
+
+            atualSubEnt = LSNEXT(atualSubEnt)
+
+         *ENDDO
+
+      *ENDIF
+
+      *GET, atualSubEnt, AREA, atualEnt, LOOP, 1, LINE, 1
+
+      *VFILL, Array1, DATA, atualSubEnt
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array1(1)
+      (F10.0)
+      /OUTPUT
+
+      *GET, atualSubEnt, AREA, atualEnt, LOOP, 1, LINE, 2
+
+      *VFILL, Array1, DATA, atualSubEnt
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array1(1)
+      (F10.0)
+      /OUTPUT
+
+      ALLSEL, ALL
+
+      atualEnt = ARNEXT(atualEnt)
+
+   *ENDDO
+
+   *VFILL, Array1(1), DATA, EndBlock
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   *VWRITE
+   ()
+   /OUTPUT
+
+*ENDIF
+
+!############################
+!# VOLUMES
+!############################
+
+ALLSEL, ALL
+*GET, Total, VOLU,, COUNT
+
+*IF, Total, GT, 0, THEN
+
+   *VFILL, Array1(1), DATA, StartBlock
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   *VFILL, Array1(1), DATA, Total
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE
+   ('       40.')
+   *VWRITE, Array1(1)
+   (F10.0)
+   /OUTPUT
+
+   atualEnt = VLNEXT(0)
+
+   *DOWHILE, atualEnt
+
+      VSEL, S, VOLU,, atualEnt, atualEnt, 1
+      ASLV, S
+      *GET, Nareas, AREA,, COUNT
+
+      ASEL, R, ACCA
+      *GET, NCctAreas, AREA,, COUNT
+
+      *VFILL, Array3(1), DATA, atualEnt, Nareas, NCctAreas
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array3(1), Array3(2), Array3(3)
+      (3F10.0)
+      /OUTPUT
+
+!#      *DO, I, 1, Nareas, 1
+!#
+!#         *GET, ARlb1, VOLU, atualEnt, SHELL, 1, AREA, I
+!#
+!#         *VFILL, Array1(1), DATA, ARlb1
+!#         /OUTPUT, %FileName%, %FileExt%,, APPEND
+!#         *VWRITE, Array1(1)
+!#         (F10.0)
+!#         /OUTPUT
+!#
+!#      *ENDDO
+
+!# alterar
+
+      ASLV, S
+
+      atualSubEnt = ARNEXT(0)
+
+      *DOWHILE, atualSubEnt
+
+         *VFILL, Array1, DATA, atualSubEnt
+         /OUTPUT, %FileName%, %FileExt%,, APPEND
+         *VWRITE, Array1(1)
+         (F10.0)
+         /OUTPUT
+
+         atualSubEnt = ARNEXT(atualSubEnt)
+
+      *ENDDO
+
+      ASEL, R, ACCA
+
+      atualSubEnt = ARNEXT(0)
+
+      *IF, atualSubEnt, GT, 0, THEN
+
+         *DOWHILE, atualSubEnt
+
+            *VFILL, Array1, DATA, atualSubEnt
+            /OUTPUT, %FileName%, %FileExt%,, APPEND
+            *VWRITE, Array1(1)
+            (F10.0)
+            /OUTPUT
+
+            atualSubEnt = ARNEXT(atualSubEnt)
+
+         *ENDDO
+
+      *ENDIF
+
+      *GET, atualSubEnt, VOLU, atualEnt, SHELL, 1, AREA, 1
+
+      *VFILL, Array1, DATA, atualSubEnt
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array1(1)
+      (F10.0)
+      /OUTPUT
+
+      *GET, atualSubEnt, VOLU, atualEnt, SHELL, 1, AREA, 2
+
+      *VFILL, Array1, DATA, atualSubEnt
+      /OUTPUT, %FileName%, %FileExt%,, APPEND
+      *VWRITE, Array1(1)
+      (F10.0)
+      /OUTPUT
+
+      ALLSEL, ALL
+
+      atualEnt = VLNEXT(atualEnt)
+
+   *ENDDO
+
+   *VFILL, Array1(1), DATA, EndBlock
+   /OUTPUT, %FileName%, %FileExt%,, APPEND
+   *VWRITE, Array1(1)
+   (F10.0)
+   *VWRITE
+   ()
+   /OUTPUT
+
+*ENDIF
+
+!############################
+
+ALLSEL, ALL
+
+!############################
+
+
+
+!# *VGET, ParR, Entity, ENTNUM, Item1, IT1NUM, Item2, IT2NUM, KLOOP
+
+!# *DIM, TesteVar, ARRAY, 4
+
+!# *VGET, TesteVar, VOLU, 4, SHELL, 1, AREA, 1
+
+!############################
+*if,i,eq,1,then
+
+VSEL, S, VOLU,, atualEnt, atualEnt, 1
+ASEL, S, EXT
+
+*endif
+!############################

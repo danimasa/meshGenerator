@@ -1,0 +1,44 @@
+todo Dataset tem o seguinte formato
+
+Linha A           F10.0     Dataset Start Delimiter (9999.)
+Linha B           F10.0     Dataset Type
+Linha 1 ... n     depende do Dataset Type - ver a seguir
+Linha C           F10.0     Dataset End Delimiter  (-9876.)
+Linha D                     Linha em branco
+
+!###########################################################################################
+
+Dataset Type = 10 - Keypoint
+
+Linha 1     F10.0              Quantidade de Keypoints
+Linha 2     F10.0, 3E20.10     Keypoint Label, Coordenada X, Y, Z do Keypoint
+
+repete-se a linha 2 para cada Keypoint
+
+!###########################################################################################
+
+Dataset Type = 20 - Line
+
+Linha 1     F10.0       Quantidade de Lines
+Linha 2     3F10.0      Line Label, Start Keypoint Label, End Keypoint Label
+Linha 3     4E20.10     Comrimento da Line, Coordenada X, Y, Z do ponto médio (lfrac = 0.5)
+Linha 4     3E20.10     Componente X, Y, Z do versor tangente no ponto inicial da linha
+Linha 5     3E20.10     Componente X, Y, Z do versor tangente no ponto final da linha
+
+repete-se as linhas 2 a 5 para cada Line
+
+!###########################################################################################
+
+Dataset Type = 30 - Area
+
+Linha 1     F10.0      Quantidade de Areas
+Linha 2     3F10.0     Area Label, Quantidade de Lines, Quantidade de Concateneted Lines
+
+
+
+
+!###########################################################################################
+
+Dataset Type = 40 - Volume
+
+Linha 1     F10.0      Quantidade de Volumes

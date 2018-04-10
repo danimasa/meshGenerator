@@ -1,0 +1,51 @@
+{
+  "variant": {
+    "label": "Debug",
+    "keywordSettings": {
+      "buildType": "debug"
+    },
+    "description": "Emit debug information without performing optimizations"
+  },
+  "activeEnvironments": [],
+  "codeModel": {
+    "configurations": [
+      {
+        "name": "Debug",
+        "projects": [
+          {
+            "buildDirectory": "/Users/masarin/Documents/Projects/meshGenerator/build",
+            "name": "mesh-generator",
+            "sourceDirectory": "/Users/masarin/Documents/Projects/meshGenerator",
+            "targets": [
+              {
+                "artifacts": [
+                  "/Users/masarin/Documents/Projects/meshGenerator/build/src/mesh-generator"
+                ],
+                "buildDirectory": "/Users/masarin/Documents/Projects/meshGenerator/build/src",
+                "fileGroups": [
+                  {
+                    "compileFlags": "-g  ",
+                    "isGenerated": false,
+                    "language": "CXX",
+                    "sources": [
+                      "main.cpp"
+                    ]
+                  }
+                ],
+                "fullName": "mesh-generator",
+                "linkLanguageFlags": "-g",
+                "linkerLanguage": "CXX",
+                "name": "mesh-generator",
+                "sourceDirectory": "/Users/masarin/Documents/Projects/meshGenerator/src",
+                "type": "EXECUTABLE"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "cookie": "0.9678727927410948",
+    "inReplyTo": "codemodel",
+    "type": "reply"
+  }
+}
