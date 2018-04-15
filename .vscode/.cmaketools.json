@@ -24,7 +24,14 @@
                 "buildDirectory": "/Users/masarin/Documents/Projects/meshGenerator/build/src",
                 "fileGroups": [
                   {
-                    "compileFlags": "-g  ",
+                    "isGenerated": false,
+                    "sources": [
+                      "KeyPoint.h",
+                      "Line.h"
+                    ]
+                  },
+                  {
+                    "compileFlags": "-g   -std=gnu++11",
                     "isGenerated": false,
                     "language": "CXX",
                     "sources": [
@@ -44,7 +51,7 @@
         ]
       }
     ],
-    "cookie": "0.9678727927410948",
+    "cookie": "0.20904808087551618",
     "inReplyTo": "codemodel",
     "type": "reply"
   }
