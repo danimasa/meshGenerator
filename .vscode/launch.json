@@ -8,12 +8,13 @@
             "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/src/mesh-generator",
-            "args": [],
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [ "data/GEOM.DAT" ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "MIMode": "lldb"
+            "MIMode": "lldb",
+            "preLaunchTask": "make"
         }
     ]
 }
