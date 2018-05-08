@@ -1,9 +1,9 @@
-#include "FileReader.h"
+#include "FileReader.hpp"
 
 #include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include "stringUtils.h"
+#include "stringUtils.hpp"
 
 KeyPoint readPoint(const string &line) {
     vector<string> strs;

@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include "KeyPoint.h"
+#include "KeyPoint.hpp"
 
 using namespace std;
 

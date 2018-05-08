@@ -2,8 +2,8 @@
 #include <memory>
 #include <fstream>
 #include <string>
-#include "Line.h"
-#include "FileReader.h"
+#include "Line.hpp"
+#include "FileReader.hpp"
 using namespace std;
 
 void help();
@@ -28,11 +28,6 @@ int main(int argc, char **argv) {
 
     string filepath = argv[1];
     leitura(filepath);
-
-    shared_ptr<KeyPoint> p1(new KeyPoint(0, 0, 0));
-    shared_ptr<KeyPoint> p2(new KeyPoint(500, 0, 0));
-    unique_ptr<Line> line(new Line(p1, p2));
-    print_Line(*line);
 
     return 0;
 }

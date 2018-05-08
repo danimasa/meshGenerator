@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "KeyPoint.h"
+#include "KeyPoint.hpp"
 
 using namespace std;
 

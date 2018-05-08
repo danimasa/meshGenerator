@@ -1,9 +1,10 @@
 set(SOURCE 
     main.cpp 
-    KeyPoint.h 
-    Line.h
-    FileReader.h FileReader.cpp
-    stringUtils.h)
+    KeyPoint.hpp 
+    Line.hpp
+    FileReader.hpp FileReader.cpp
+    stringUtils.hpp
+    GeomDatabase.hpp)
 
 set(Boost_INCLUDE_DIR /usr/local/src/boost_1_67_0)
 set(Boost_LIBRARY_DIR /usr/local/src/boost_1_67_0/stage/lib)
