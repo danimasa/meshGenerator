@@ -16,16 +16,19 @@ KeyPoint readPoint(const string &line) {
 }
 
 vector<KeyPoint> readKeyPoints(ifstream &file) {
-    vector<KeyPoint> points;
     string line;
-    // Descartando a quantidade de pontos
+    // obtendo a quantidade de pontos
     getline(file, line);
+    int length = stoi(line);
+    vector<KeyPoint> points(length);
     // Lendo os KeyPoints
+    int index = 0;
     while(getline(file, line)){
         trim(line);
         if(line == "-9876.") return points;
         KeyPoint p = readPoint(line);
-        points.push_back(p);
+        points.at(index) = p;
+        index++;
     }
     return points;
 }
