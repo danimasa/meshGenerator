@@ -3,4 +3,6 @@ set(CMAKE_CXX_STANDARD 11)
 
 project(mesh-generator)
 
-add_subdirectory(src)
+add_subdirectory(main)
+# add_subdirectory(test)
+add_subdirectory(meshlib)

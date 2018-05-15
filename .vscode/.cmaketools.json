@@ -14,14 +14,14 @@
         "projects": [
           {
             "buildDirectory": "/Users/masarin/Documents/Projects/meshGenerator/build",
-            "name": "mesh-generator",
+            "name": "meshGenerator",
             "sourceDirectory": "/Users/masarin/Documents/Projects/meshGenerator",
             "targets": [
               {
                 "artifacts": [
-                  "/Users/masarin/Documents/Projects/meshGenerator/build/src/mesh-generator"
+                  "/Users/masarin/Documents/Projects/meshGenerator/build/main/meshGenerator"
                 ],
-                "buildDirectory": "/Users/masarin/Documents/Projects/meshGenerator/build/src",
+                "buildDirectory": "/Users/masarin/Documents/Projects/meshGenerator/build/main",
                 "fileGroups": [
                   {
                     "isGenerated": false,
@@ -39,11 +39,11 @@
                     ]
                   }
                 ],
-                "fullName": "mesh-generator",
+                "fullName": "meshGenerator",
                 "linkLanguageFlags": "-g",
                 "linkerLanguage": "CXX",
-                "name": "mesh-generator",
-                "sourceDirectory": "/Users/masarin/Documents/Projects/meshGenerator/src",
+                "name": "meshGenerator",
+                "sourceDirectory": "/Users/masarin/Documents/Projects/meshGenerator/main",
                 "type": "EXECUTABLE"
               }
             ]

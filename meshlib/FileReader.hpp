@@ -2,8 +2,7 @@
 
 #include <fstream>
 #include <string>
-#include <vector>
-#include "KeyPoint.hpp"
+#include "GeomDatabase.hpp"
 
 using namespace std;
 
@@ -14,5 +13,5 @@ private:
 public:
     FileReader(const string &file) : pvr_file(file) { }
 
-    vector<KeyPoint> read();
+    GeomDatabase read();
 };

@@ -36,9 +36,9 @@ void leitura(const string &arquivo) {
     cout << "Lendo arquivo de Keypoints " << arquivo << " ..." << endl;
 
     FileReader reader (arquivo);
-    vector<KeyPoint> points = reader.read();
-    cout << "Size: " << points.size() << endl;
-    for(auto p : points) {
+    GeomDatabase database = reader.read();
+    cout << "Size: " << database.keyPoints.size() << endl;
+    for(auto p : database.keyPoints) {
         print_Keypoint(p);
     }
 }

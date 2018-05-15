@@ -44,7 +44,8 @@ vector<KeyPoint> readBlock(ifstream &file) {
     return points;
 }
 
-vector<KeyPoint> FileReader::read() {
+GeomDatabase FileReader::read() {
+    GeomDatabase database;
     vector<KeyPoint> keyPoints;
 
     string line;
@@ -61,5 +62,6 @@ vector<KeyPoint> FileReader::read() {
     }
     else cout << "Incapaz de encontrar o arquivo especificado!";
     
-    return keyPoints;
+    database.keyPoints = keyPoints;
+    return database;
 }
