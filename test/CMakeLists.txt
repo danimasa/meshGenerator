@@ -1,3 +1,5 @@
-set(TEST_SOURCE catch.hpp)
+set(SRCS catch.hpp)
 
-add_executable(unit_tests ${TEST_SOURCE})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_subdirectory(testmesh)
