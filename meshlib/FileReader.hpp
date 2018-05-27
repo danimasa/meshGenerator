@@ -1,17 +1,15 @@
 #pragma once
 
-#include <fstream>
 #include <string>
-#include "GeomDatabase.hpp"
+#include <Mesh.hpp>
 
 using namespace std;
 
 class FileReader {
-private:
-    string pvr_file;
-
 public:
-    FileReader(const string &file) : pvr_file(file) { }
+    FileReader(const string filePath) : filePath(filePath) {}
 
-    GeomDatabase read();
+    string filePath;
+
+    virtual Mesh* read() = 0;
 };

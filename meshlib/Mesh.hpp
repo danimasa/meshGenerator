@@ -6,8 +6,7 @@
 
 using namespace std;
 
-class GeomDatabase {
-public:
-    vector<KeyPoint> keyPoints;
-    vector<Line> lines;
+class Mesh {
+   vector<KeyPoint> points;
+   vector<Line> lines; 
 };

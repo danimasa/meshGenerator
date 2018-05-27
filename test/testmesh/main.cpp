@@ -1,14 +1,19 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-unsigned int Factorial( unsigned int number) {
-    return number > 1 ? Factorial(number-1)*number : 1;
-}
+#include "AnsysFileReaderFactory.hpp"
+#include "AnsysFileReader.hpp"
 
-TEST_CASE( "Factorials are computed", "[factorial]") {
-    REQUIRE( Factorial(0) == 1 );
-    REQUIRE( Factorial(1) == 1 );
-    REQUIRE( Factorial(2) == 2 );
-    REQUIRE( Factorial(3) == 6 );
-    REQUIRE( Factorial(10) == 3628800 );
+TEST_CASE("Generate ansys file reader from factory", "[factory]") {
+    auto factory = AnsysFileReaderFactory();
+    string filePath = "c:/teste";
+    auto reader = factory.createReader(filePath);
+
+    auto isFileReader = dynamic_cast<FileReader*>(reader);
+    REQUIRE( isFileReader != NULL );
+
+    auto isAnsysFileReader = dynamic_cast<AnsysFileReader*>(isFileReader);
+    REQUIRE( isAnsysFileReader != NULL );
+    
+    REQUIRE( isAnsysFileReader->filePath == filePath );
 }
