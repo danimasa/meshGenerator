@@ -2,10 +2,12 @@
 
 #include <memory>
 #include "KeyPoint.hpp"
+#include "Identifiable.hpp"
 
 using namespace std;
 
-struct Line {
+class Line : public Identifiable {
+public:
     shared_ptr<KeyPoint> init_point;
     shared_ptr<KeyPoint> final_point;
     
