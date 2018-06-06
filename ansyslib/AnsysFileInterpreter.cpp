@@ -6,7 +6,7 @@
 #include <boost/lexical_cast.hpp>
 #include "stringUtils.hpp"
 
-std::unique_ptr<KeyPoint> AnsysFileInterpreter::interpreteKeypoint (std::string line) {
+KeyPoint* AnsysFileInterpreter::interpreteKeypoint (std::string line) {
     if(line.empty())
         return nullptr;
 
@@ -24,13 +24,13 @@ std::unique_ptr<KeyPoint> AnsysFileInterpreter::interpreteKeypoint (std::string 
         double x = boost::lexical_cast<double>(strs[1]);
         double y = boost::lexical_cast<double>(strs[2]);
         double z = boost::lexical_cast<double>(strs[3]);
-        return unique_ptr<KeyPoint>(new KeyPoint(id, x, y, z));
+        return new KeyPoint(id, x, y, z);
     } catch( boost::bad_lexical_cast const& ) {
         std::cout << "Erro: Problema de sintaxe na linha: " << line << std::endl;
         return nullptr;
     }
 }
 
-std::unique_ptr<Line> AnsysFileInterpreter::interpreteLine(std::string line) {
-    return unique_ptr<Line> (nullptr);
+Line* AnsysFileInterpreter::interpreteLine(std::string line) {
+    return nullptr;
 }

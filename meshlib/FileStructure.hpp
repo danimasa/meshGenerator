@@ -1,20 +1,23 @@
 #pragma once
 
-#include <string>
-#include <memory>
 #include "Mesh.hpp"
-#include "FileIntepreter.hpp"
+#include "FileInterpreter.hpp"
+#include "MeshBuilder.hpp"
 
 class FileStructure {
-private:
-    std::string reading;
-    FileInterpreter interpreter;
-    // MeshBuilder builder;
+protected:
+    READING_TYPES reading = READING_TYPES::NOTHING;
+    bool readingArraySize = false;
+    FileInterpreter *interpreter;
+    MeshBuilder *builder;
+
+    FileStructure (FileInterpreter *interpreter, MeshBuilder *builder) :
+        interpreter(interpreter), builder(builder) {}
 
 public:
-    // FileStructure (const FileInterpreter &interpreter, const MeshBuilder &builder) :
-    //     interpreter(interperter), builder(builder) {}
-
     virtual void readFileLine(std::string line) = 0;
-    virtual std::unique_ptr<Mesh> getMesh() = 0;
+    virtual std::shared_ptr<Mesh> getMesh() = 0;
+
+    READING_TYPES getReading() { return reading; }
+    bool isReadingArraySize() { return readingArraySize; }
 };
