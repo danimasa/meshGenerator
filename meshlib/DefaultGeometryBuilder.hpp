@@ -1,8 +1,8 @@
 #pragma once
 
-#include "MeshBuilder.hpp"
+#include "GeometryBuilder.hpp"
 
-class DefaultMeshBuilder : public MeshBuilder {
+class DefaultGeometryBuilder : public GeometryBuilder {
 public:
     void setArraySize(READING_TYPES type, const int size);
 

@@ -1,5 +1,5 @@
 #include "AnsysFileReader.hpp"
 
-Mesh* AnsysFileReader::read() {
+Geometry* AnsysFileReader::read() {
     return nullptr;
 }

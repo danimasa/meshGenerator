@@ -7,7 +7,7 @@
 
 using namespace std;
 
-class Mesh {
+class Geometry {
 public:
    vector<shared_ptr<KeyPoint>> Points;
    vector<shared_ptr<Line>> Lines; 

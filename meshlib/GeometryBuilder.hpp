@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "Mesh.hpp"
+#include "Geometry.hpp"
 
 enum class READING_TYPES {
     NOTHING,
@@ -10,13 +10,13 @@ enum class READING_TYPES {
     LINES
 };
 
-class MeshBuilder {
+class GeometryBuilder {
 protected:
-    shared_ptr<Mesh> mesh;
+    shared_ptr<Geometry> geometry;
 
 public:
-    MeshBuilder() {
-        mesh = shared_ptr<Mesh>(new Mesh());
+    GeometryBuilder() {
+        geometry = shared_ptr<Geometry>(new Geometry());
     }
 
     virtual void setArraySize(READING_TYPES type, const int size) = 0;
@@ -24,5 +24,5 @@ public:
     virtual void AddLine(const shared_ptr<Line> &line) = 0;
     virtual void AddKeypoint(const shared_ptr<KeyPoint> &kp) = 0;
 
-    shared_ptr<Mesh> getMesh() { return mesh; }
+    shared_ptr<Geometry> getGeometry() { return geometry; }
 };

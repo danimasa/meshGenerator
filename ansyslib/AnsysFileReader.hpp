@@ -6,5 +6,5 @@ class AnsysFileReader : public FileReader {
 public:
     AnsysFileReader(string filePath) : FileReader(filePath) {}
 
-    Mesh* read();
+    Geometry* read();
 };

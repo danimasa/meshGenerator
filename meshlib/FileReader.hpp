@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <Mesh.hpp>
+#include <Geometry.hpp>
 
 using namespace std;
 
@@ -11,5 +11,5 @@ public:
 
     string filePath;
 
-    virtual Mesh* read() = 0;
+    virtual Geometry* read() = 0;
 };

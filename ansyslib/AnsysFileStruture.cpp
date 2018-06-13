@@ -41,6 +41,6 @@ void AnsysFileStructure::readFileLine(std::string line) {
     }
 }
 
-std::shared_ptr<Mesh> AnsysFileStructure::getMesh() {
-    return this->builder->getMesh();
+std::shared_ptr<Geometry> AnsysFileStructure::getGeometry() {
+    return this->builder->getGeometry();
 }

@@ -8,7 +8,7 @@ using namespace fakeit;
 
 TEST_CASE("AnsysFileStrucuture") {
     Mock<FileInterpreter> interpreter;
-    Mock<MeshBuilder> builder;
+    Mock<GeometryBuilder> builder;
 
     Fake(Method(interpreter, interpreteKeypoint));
     Fake(Method(interpreter, interpreteLine));
