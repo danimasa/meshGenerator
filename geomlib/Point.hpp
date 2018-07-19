@@ -1,11 +1,15 @@
 #pragma once
 
-class Point {
-public:
-    double x, y, z;
+namespace geomlib {
 
-    Point() : x(0), y(0), z(0) {}
+    class Point {
+    public:
+        double x, y, z;
 
-    Point(const double x, const double y, const double z) :
-        x(x), y(y), z(z) {}
-};
+        Point() : x(0), y(0), z(0) {}
+
+        Point(const double x, const double y, const double z) :
+            x(x), y(y), z(z) {}
+    };
+
+}

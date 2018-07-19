@@ -2,11 +2,14 @@
 
 #include "Point.hpp"
 
-class Vector : public Point {
-public:
-    // Null vector
-    Vector() : Point() {}
+namespace geomlib {
 
-    Vector(const double x, const double y, const double z) :
-        Point(x, y, z) {}
-};
+    class Vector : public Point {
+    public:
+        // Null vector
+        Vector() : Point() {}
+
+        Vector(const double x, const double y, const double z) :
+            Point(x, y, z) {}
+    };
+}
