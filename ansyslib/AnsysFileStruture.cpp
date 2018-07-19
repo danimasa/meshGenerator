@@ -23,6 +23,20 @@ void AnsysFileStructure::readFileLine(std::string line) {
             this->readingArraySize = true;
             return;
         }
+
+        // Line
+        if (line == "20.") {
+            this->reading = READING_TYPES::LINES;
+            this->readingArraySize = true;
+            return;
+        }
+
+        // Area
+        if (line == "30.") {
+            this->reading = READING_TYPES::AREAS;
+            this->readingArraySize = true;
+            return;
+        }
     }
 
     // Reading ArraySize
@@ -37,6 +51,13 @@ void AnsysFileStructure::readFileLine(std::string line) {
     if (this->reading == READING_TYPES::KEYPOINTS) {
         KeyPoint *point = this->interpreter->interpreteKeypoint(line);
         this->builder->AddKeypoint(shared_ptr<KeyPoint>(point));
+        return;
+    }
+
+    // Reading Line type
+    if (this->reading == READING_TYPES::LINES) {
+        Line *rdLine = this->interpreter->interpreteLine(line);
+        this->builder->AddLine(shared_ptr<Line>(rdLine));
         return;
     }
 }

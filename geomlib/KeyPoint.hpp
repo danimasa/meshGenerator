@@ -1,15 +1,15 @@
 #pragma once
 
 #include "Identifiable.hpp"
+#include "Point.hpp"
 
-struct KeyPoint : public Identifiable {
-    double x, y, z;
-
-    KeyPoint() : x(0), y(0), z(0) {}
+class KeyPoint : public Identifiable, public Point {
+public:
+    KeyPoint() : Point() {}
 
     KeyPoint(const double x, const double y, const double z) :
-        x(x), y(y), z(z) {}
+        Point(x, y, z) {}
 
     KeyPoint(const int id, const double x, const double y, const double z) :
-        Identifiable(id), x(x), y(y), z(z) {}
+        Identifiable(id), Point(x, y, z) {}
 };

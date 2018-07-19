@@ -56,4 +56,38 @@ TEST_CASE("AnsysFileStrucuture") {
         Verify(Method(interpreter, interpreteKeypoint).Using(line)).Once();
         Verify(Method(builder, AddKeypoint)).Once();
     }
+
+    SECTION("Should read Lines") {
+        structure.readFileLine("20.");
+
+        REQUIRE( structure.getReading() == READING_TYPES::LINES );
+        REQUIRE( structure.isReadingArraySize() == true );
+
+        std::string sizeLine = "10.";
+        structure.readFileLine(sizeLine);
+        Verify(Method(builder, setArraySize).Using(READING_TYPES::LINES, 10)).Once();
+        REQUIRE( structure.isReadingArraySize() == false );
+
+        std::string line = "line";
+        structure.readFileLine(line);
+        Verify(Method(interpreter, interpreteLine).Using(line)).Once();
+        Verify(Method(builder, AddLine)).Once();
+    }
+
+    SECTION("Should read Areas") {
+        structure.readFileLine("30.");
+
+        REQUIRE( structure.getReading() == READING_TYPES::AREAS );
+        REQUIRE( structure.isReadingArraySize() == true );
+
+        std::string sizeLine = "15.";
+        structure.readFileLine(sizeLine);
+        Verify(Method(builder, setArraySize).Using(READING_TYPES::AREAS, 15)).Once();
+        REQUIRE( structure.isReadingArraySize() == false );
+
+        // std::string line = "area";
+        // structure.readFileLine(line);
+        // Verify(Method(interpreter, interpreteArea).Using(line)).Once();
+        // Verify(Method(builder, AddArea)).Once();
+    }
 }

@@ -7,5 +7,5 @@ enable_testing()
 
 add_subdirectory(main)
 add_subdirectory(test)
-add_subdirectory(meshlib)
-add_subdirectory(ansyslib)
+add_subdirectory(geomlib)
+# add_subdirectory(ansyslib)

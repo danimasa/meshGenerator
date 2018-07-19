@@ -28,3 +28,28 @@ TEST_CASE("Should interprete KeyPoint", "[interpreter]") {
         delete validKp;
     }
 }
+
+TEST_CASE("Should interprete Lines", "[interpreter]") {
+    AnsysFileInterpreter interpreter;
+
+    SECTION("Should be null if empty line") {
+        auto nullLine = interpreter.interpreteLine("");
+        REQUIRE( nullLine == nullptr );
+        delete nullLine;
+    }
+
+    SECTION("Should be null if invalid line") {
+        auto invalidLine = interpreter.interpreteLine("idhfalksdjhfalksjdh");
+        REQUIRE( invalidLine == nullptr );
+        delete invalidLine;
+    }
+
+    SECTION("Should parse a line") {
+        std::string line =
+            "        1.        2.       15.\n"
+            "    0.1072081295E+00    0.3661238196E+00    0.5341674540E-01    0.2625000000E+01\n"
+            "   -0.4871291193E-16    0.1000000000E+01   -0.2598021970E-15\n"
+            "   -0.2857142857E+00    0.9583148475E+00    0.2598021970E-15\n";
+        
+    }
+}
