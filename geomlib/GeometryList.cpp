@@ -18,4 +18,4 @@ void GeometryList::add(Geometry* geometry) {
     objects.push_back(geometry);
 }
 
-}
+} // geomlib

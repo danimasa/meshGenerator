@@ -2,11 +2,18 @@
 
 #include "FileStructure.hpp"
 
-class AnsysFileStructure : public FileStructure {
-public:
-    AnsysFileStructure(FileInterpreter *interpreter, GeometryBuilder *builder) :
-        FileStructure(interpreter, builder) {}
+using namespace geomlib;
 
-    void readFileLine(std::string line);
-    std::shared_ptr<Geometry> getGeometry();
-};
+namespace ansyslib {
+
+    class AnsysFileStructure : public FileStructure {
+    public:
+        AnsysFileStructure(std::shared_ptr<GeometryList> geometryList) :
+            FileStructure(geometryList) {}
+
+        void readFileLine(std::string line);
+        std::list<GeometryBuilder*> getBuilders();
+    };
+
+}
+

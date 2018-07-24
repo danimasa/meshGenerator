@@ -1,6 +1,10 @@
 #include "AnsysFileReaderFactory.hpp"
-#include "AnsysFileReader.hpp"
+#include "FileReader.hpp"
 
-FileReader* AnsysFileReaderFactory::createReader(const string filePath) {
-    return new AnsysFileReader(filePath);
+namespace ansyslib {
+
+FileReader* AnsysFileReaderFactory::createReader() {
+    return new FileReader(nullptr);
+}
+
 }

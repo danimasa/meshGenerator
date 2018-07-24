@@ -20,7 +20,6 @@ namespace geomlib {
     class FileStructure {
     protected:
         READING_TYPES reading = READING_TYPES::NOTHING;
-        std::list<GeometryBuilder*> builders;
         std::shared_ptr<GeometryList> geometryList;
 
         FileStructure (std::shared_ptr<GeometryList> geometryList) :
@@ -31,6 +30,7 @@ namespace geomlib {
 
     public:
         virtual void readFileLine(std::string line) = 0;
+        virtual std::list<GeometryBuilder*> getBuilders() = 0;
 
         std::shared_ptr<GeometryList> getGeometryList() { return geometryList; }
         READING_TYPES getReading() { return reading; }

@@ -1,6 +1,7 @@
 #include "FileReader.hpp"
 
-// #include <iostream>
+#include <iostream>
+#include <fstream>
 // #include <boost/algorithm/string.hpp>
 // #include <boost/lexical_cast.hpp>
 // #include "stringUtils.hpp"
@@ -43,6 +44,21 @@
 //     }
 //     return points;
 // }
+
+namespace geomlib {
+
+shared_ptr<GeometryList> FileReader::read(const string filePath) {
+    string line;
+    ifstream file (filePath);
+    if(file.is_open()) {
+        while(getline(file, line)) {
+            this->structure->readFileLine(line);
+        }
+    }
+    return this->structure->getGeometryList();
+}
+
+}
 
 // GeomDatabase FileReader::read() {
 //     GeomDatabase database;

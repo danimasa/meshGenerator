@@ -6,6 +6,6 @@ namespace geomlib {
 
     class FileReaderFactory {
     public:
-        virtual FileReader *createReader(string filePath) = 0;
+        virtual FileReader *createReader() = 0;
     };
 }

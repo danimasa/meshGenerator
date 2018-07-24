@@ -4,6 +4,7 @@
 #include <string>
 #include "Line.hpp"
 #include "FileReader.hpp"
+#include "AnsysFileReaderFactory.hpp"
 using namespace std;
 
 void help();
@@ -26,22 +27,23 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    // string filepath = argv[1];
-    // leitura(filepath);
+    string filepath = argv[1];
+    leitura(filepath);
 
     return 0;
 }
 
-// void leitura(const string &arquivo) {
-//     cout << "Lendo arquivo de Keypoints " << arquivo << " ..." << endl;
+void leitura(const string &arquivo) {
+    cout << "Lendo arquivo de Keypoints " << arquivo << " ..." << endl;
 
-//     FileReader reader (arquivo);
-//     GeomDatabase database = reader.read();
-//     cout << "Size: " << database.keyPoints.size() << endl;
-//     for(auto p : database.keyPoints) {
-//         print_Keypoint(p);
-//     }
-// }
+    ansyslib::AnsysFileReaderFactory factory {};
+    geomlib::FileReader *reader = factory.createReader();
+    shared_ptr<GeometryList> geometry = reader->read(arquivo);
+    cout << "Size: " << geometry->size() << endl;
+    // for(auto p : database.keyPoints) {
+    //     print_Keypoint(p);
+    // }
+}
 
 void help() {
     cout << "******* PROTOTIPO - Leitor de Keypoints de um arquivo de texto ********" << endl;

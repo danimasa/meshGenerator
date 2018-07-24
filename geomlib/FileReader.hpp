@@ -2,6 +2,7 @@
 
 #include <string>
 #include "GeometryList.hpp"
+#include "FileStructure.hpp"
 
 using namespace std;
 
@@ -9,11 +10,11 @@ namespace geomlib {
 
     class FileReader {
     public:
-        FileReader(const string filePath) : filePath(filePath) {}
+        FileReader(FileStructure* structure) : structure(structure) {}
 
-        virtual shared_ptr<GeometryList> read() = 0;
+        shared_ptr<GeometryList> read(const string filePath);
 
-    private:
-        string filePath;
+    protected:
+        FileStructure* structure;
     };
 }

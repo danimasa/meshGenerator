@@ -2,7 +2,13 @@
 
 #include "FileReaderFactory.hpp"
 
-class AnsysFileReaderFactory : public FileReaderFactory {
-public:
-    FileReader *createReader(const string filePath);
-};
+using namespace geomlib;
+
+namespace ansyslib {
+
+    class AnsysFileReaderFactory : public FileReaderFactory {
+    public:
+        FileReader *createReader();
+    };
+
+}

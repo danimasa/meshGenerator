@@ -1,9 +1,15 @@
-#pragma once
+// #pragma once
 
-#include "FileInterpreter.hpp"
+// #include "FileInterpreter.hpp"
 
-class AnsysFileInterpreter : public FileInterpreter {
-public:
-    KeyPoint* interpreteKeypoint(std::string line);
-    Line* interpreteLine(std::string line);
-};
+// using namespace geomlib;
+
+// namespace ansyslib {
+
+//     class AnsysFileInterpreter : public FileInterpreter {
+//     public:
+//         KeyPoint* interpreteKeypoint(std::string line);
+//         Line* interpreteLine(std::string line);
+//     };
+
+// }
