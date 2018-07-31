@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <iostream>
 #include <fstream>
+#include <memory>
 
 #include "FileReader.hpp"
 

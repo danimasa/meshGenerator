@@ -8,4 +8,12 @@ const GeometryFactory* GeometryFactory::getDefaultInstance()
     return &instance;
 }
 
+KeyPoint* GeometryFactory::createKeypoint() const {
+    return new KeyPoint();
+}
+
+KeyPoint* GeometryFactory::createKeypoint(Point &point) const {
+    return new KeyPoint(point);
+}
+
 }

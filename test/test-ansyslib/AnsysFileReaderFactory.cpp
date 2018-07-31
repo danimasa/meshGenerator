@@ -1,19 +1,24 @@
 #include "catch.hpp"
 
 #include "AnsysFileReaderFactory.hpp"
+#include "AnsysFileStructure.hpp"
 
 using namespace ansyslib;
 
-// TEST_CASE("Generate ansys file reader from factory", "[factory]") {
-//     auto factory = AnsysFileReaderFactory();
-//     string filePath = "c:/teste";
-//     auto reader = factory.createReader(filePath);
+TEST_CASE("Generate ansys file reader from factory", "[factory]") {
+    auto factory = AnsysFileReaderFactory();
 
-//     auto isFileReader = dynamic_cast<FileReader*>(reader);
-//     REQUIRE( isFileReader != NULL );
+    SECTION("Should create FileStructure") {
+        auto structure = factory.createFileStructure();
 
-//     auto isAnsysFileReader = dynamic_cast<AnsysFileReader*>(isFileReader);
-//     REQUIRE( isAnsysFileReader != NULL );
+        auto isFileStructure = dynamic_cast<AnsysFileStructure*>(structure);
+        REQUIRE( isFileStructure != NULL );
+    }
     
-//     REQUIRE( isAnsysFileReader->getFilePath() == filePath );
-// }
+    SECTION("Should create FileReader") {
+        auto reader = factory.createReader();
+
+        auto isFileReader = dynamic_cast<FileReader*>(reader);
+        REQUIRE( isFileReader != NULL );
+    }
+}

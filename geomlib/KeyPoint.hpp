@@ -9,8 +9,8 @@ namespace geomlib {
     public:
         KeyPoint() : Point() {}
 
-        KeyPoint(const double x, const double y, const double z) :
-            Point(x, y, z) {}
+        KeyPoint(Point &point) :
+            Point(point.x, point.y, point.z) {}
 
         std::string getGeometryType() const { return "keypoint"; }
     };

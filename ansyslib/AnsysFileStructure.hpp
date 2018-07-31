@@ -11,6 +11,9 @@ namespace ansyslib {
         AnsysFileStructure(std::shared_ptr<GeometryList> geometryList) :
             FileStructure(geometryList) {}
 
+        AnsysFileStructure() :
+            FileStructure() {}
+
         void readFileLine(std::string line);
         std::list<GeometryBuilder*> getBuilders();
     };

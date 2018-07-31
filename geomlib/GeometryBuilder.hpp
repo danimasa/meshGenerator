@@ -7,16 +7,19 @@
 namespace geomlib {
 
     class GeometryBuilder {
-    protected:
+    private:
         Interpreter* interpreter;
         GeometryList* geometryList;
+        bool readedArrayLenght = false;
+        int accumulated_lines_count = 0;
+        std::string accumulated_lines;
 
     public:
-        GeometryBuilder(GeometryList* geomList)
-            : geometryList(geomList) {}
+        GeometryBuilder(GeometryList* geomList, Interpreter* interpreter)
+            : geometryList(geomList),
+              interpreter(interpreter) {}
 
-        virtual std::string getBlockCode() const = 0;
-        virtual void readFileLine(const std::string* line) = 0;
+        void readFileLine(const std::string &line);
     };
 
 }

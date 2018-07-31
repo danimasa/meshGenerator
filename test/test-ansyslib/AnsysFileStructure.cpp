@@ -1,10 +1,10 @@
-// #include <catch.hpp>
-// #include <fakeit.hpp>
-// #include <memory>
+#include <catch.hpp>
+#include <fakeit.hpp>
+#include <memory>
 
-// #include "AnsysFileStructure.hpp"
+#include "AnsysFileStructure.hpp"
 
-// using namespace fakeit;
+using namespace fakeit;
 
 // TEST_CASE("AnsysFileStrucuture") {
 //     Mock<FileInterpreter> interpreter;
