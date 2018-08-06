@@ -10,9 +10,9 @@ using namespace std;
 void help();
 void leitura(const string &filepath);
 
-// void print_Keypoint(const KeyPoint &point) {
-//     cout << "(" << point.x << ", " << point.y << ", " << point.z << ")" << endl;
-// };
+void print_Keypoint(const KeyPoint *point) {
+    cout << "(" << point->x << ", " << point->y << ", " << point->z << ")" << endl;
+};
 
 // void print_Line(const Line &line) {
 //    cout << "Initial Point: ";
@@ -38,11 +38,14 @@ void leitura(const string &arquivo) {
 
     ansyslib::AnsysFileReaderFactory factory {};
     geomlib::FileReader *reader = factory.createReader();
-    shared_ptr<GeometryList> geometry = reader->read(arquivo);
+    GeometryList* geometry = reader->read(arquivo);
     cout << "Size: " << geometry->size() << endl;
-    // for(auto p : database.keyPoints) {
-    //     print_Keypoint(p);
-    // }
+    auto kplist = geometry->getListOf("keypoint");
+    cout << "Keypoints: " << kplist.size() << endl;
+    for(auto p : kplist) {
+        auto keypoint = dynamic_cast<KeyPoint*>(p);
+        print_Keypoint(keypoint);
+    }
 }
 
 void help() {

@@ -1,16 +1,19 @@
+#include <vector>
+
 #include "AnsysFileReaderFactory.hpp"
-#include "AnsysFileStructure.hpp"
 #include "FileReader.hpp"
+#include "KeypointInterpreter.hpp"
+
+using namespace geomlib;
 
 namespace ansyslib {
 
 FileReader* AnsysFileReaderFactory::createReader() {
-    FileStructure *structure = createFileStructure();
-    return new FileReader(structure);
-}
-
-FileStructure* AnsysFileReaderFactory::createFileStructure() {
-    return new AnsysFileStructure();
+    std::vector<Interpreter*> interpreters {
+       new KeypointInterpreter()
+    };
+    auto builder = new GeometryBuilder(interpreters);
+    return new FileReader(builder);
 }
 
 }

@@ -6,6 +6,8 @@ namespace ansyslib {
 
 class KeypointInterpreter : public geomlib::Interpreter {
 public:
+    KeypointInterpreter() {}
+
     int getLinesPerObject() const { return 1; }
     std::string getBlockCode() const { return "10."; }
 

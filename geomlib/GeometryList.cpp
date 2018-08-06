@@ -18,4 +18,15 @@ void GeometryList::add(Geometry* geometry) {
     objects.push_back(geometry);
 }
 
+std::vector<Geometry*> GeometryList::getListOf(std::string geometryType) {
+    std::vector<Geometry*> result;
+    for(auto i = 0; i < objects.size(); i++) {
+        auto obj = objects.at(i);
+        if (obj->getGeometryType() == geometryType) {
+            result.push_back(obj);
+        }
+    }
+    return result;
+}
+
 } // geomlib

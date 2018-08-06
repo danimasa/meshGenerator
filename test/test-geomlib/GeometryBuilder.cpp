@@ -1,6 +1,8 @@
 #include "catch.hpp"
 #include "fakeit.hpp"
 
+#include <vector>
+
 #include "GeometryBuilder.hpp"
 
 using namespace geomlib;
@@ -17,22 +19,54 @@ TEST_CASE("GeometryBuilder", "[builder]") {
     When(Method(interpreter, interpret)).AlwaysReturn(&geometry.get());
     When(Method(interpreter, getBlockCode)).AlwaysReturn("10.");
 
-    GeometryBuilder builder(&list, &interpreter.get());
+    std::vector<Interpreter*> interpreters { &interpreter.get() };
 
-    std::string content = "content";
-    std::string mixedContent = "content\ncontent";
+    GeometryBuilder builder(&list, interpreters);
 
-    // Read array lenght
-    builder.readFileLine("       2.");
-    REQUIRE( list.capacity() == 2 );
+    SECTION("Setting the proper states") {
+        REQUIRE( builder.getReading() == READING_TYPES::NOTHING );
 
-    // Read content
-    builder.readFileLine(content);
-    Verify(Method(interpreter, getLinesPerObject));
+        builder.readFileLine("     9999.");
+        REQUIRE( builder.getReading() == READING_TYPES::BLOCK_TYPE );
 
-    builder.readFileLine(content);
-    Verify(Method(interpreter, getLinesPerObject)).Exactly(2);
-    Verify(Method(interpreter, interpret)).Exactly(1);
+        builder.readFileLine("       10.");
+        REQUIRE( builder.getReading() == READING_TYPES::ARRAY_LENGTH );
 
-    REQUIRE( list.size() == 1 );
+        builder.readFileLine("       54.");
+        REQUIRE( builder.getReading() == READING_TYPES::DATA );
+
+        builder.readFileLine("    -9876.");
+        REQUIRE( builder.getReading() == READING_TYPES::NOTHING );
+    }
+
+    SECTION("Interpreter not found") {
+        builder.readFileLine("     9999.");
+        builder.readFileLine("       20.");
+        REQUIRE( builder.getReading() == READING_TYPES:: NOTHING );
+    }
+
+    builder.readFileLine("     9999."); // Init Block
+    builder.readFileLine("       10."); // Block Type
+
+    SECTION("Setting proper Array Lenght") {
+        builder.readFileLine("       2."); // Array Lenght
+        REQUIRE( list.capacity() == 2 );
+    }
+
+    builder.readFileLine("       2."); // Array Lenght
+
+    SECTION("Interpreting Data") {
+        std::string content = "content";
+        std::string mixedContent = "content\ncontent";
+
+        // Read content
+        builder.readFileLine(content);
+        Verify(Method(interpreter, getLinesPerObject));
+
+        builder.readFileLine(content);
+        Verify(Method(interpreter, getLinesPerObject)).Exactly(2);
+        Verify(Method(interpreter, interpret)).Exactly(1);
+
+        REQUIRE( list.size() == 1 );
+    }
 }

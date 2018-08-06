@@ -1,9 +1,7 @@
 #pragma once
 
-#include <string>
-#include <memory>
 #include "GeometryList.hpp"
-#include "FileStructure.hpp"
+#include "GeometryBuilder.hpp"
 
 using namespace std;
 
@@ -11,11 +9,11 @@ namespace geomlib {
 
     class FileReader {
     public:
-        FileReader(FileStructure* structure) : structure(structure) {}
+        FileReader(GeometryBuilder* builder) : builder(builder) {}
 
-        shared_ptr<GeometryList> read(const string filePath);
+        GeometryList* read(const string filePath);
 
     protected:
-        FileStructure* structure;
+        GeometryBuilder* builder;
     };
 }

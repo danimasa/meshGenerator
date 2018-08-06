@@ -9,7 +9,6 @@ namespace ansyslib {
     class AnsysFileReaderFactory : public FileReaderFactory {
     public:
         FileReader *createReader();
-        FileStructure *createFileStructure();
     };
 
 }
