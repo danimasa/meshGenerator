@@ -2,6 +2,7 @@
 
 #include "Geometry.hpp"
 #include "KeyPoint.hpp"
+#include "Line.hpp"
 
 namespace geomlib {
     class GeometryFactory {
@@ -10,6 +11,8 @@ namespace geomlib {
 
         KeyPoint* createKeypoint() const;
         KeyPoint* createKeypoint(Point &point) const;
+
+        Line* createLine(int init_point_id, int final_point_id) const;
 
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;

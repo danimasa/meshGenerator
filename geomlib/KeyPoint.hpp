@@ -7,6 +7,7 @@ namespace geomlib {
 
     class KeyPoint : public Geometry, public Point {
     public:
+        // Contrutores somente para friend class
         KeyPoint() : Point() {}
 
         KeyPoint(Point &point) :
