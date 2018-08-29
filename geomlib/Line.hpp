@@ -11,18 +11,19 @@ namespace geomlib {
 
     class Line : public Geometry {
     public:
-        int init_point;
-        int final_point;
-        double lenght;
+        KeyPoint* init_point;
+        KeyPoint* final_point;
         Point* mid_point;
         Vector* tangent_init_vector;
         Vector* tangent_final_vector;
         
-        // Construtores somente para friend class
-        Line(int init_point, int final_point) :
-            init_point(init_point), final_point(final_point) {}
-        
         string getGeometryType() const { return "line"; }
+
+        virtual string getLineType() const = 0;
+
+    protected:
+        Line(KeyPoint* init_point, KeyPoint* final_point) :
+            init_point(init_point), final_point(final_point) {}
     };
 }
 

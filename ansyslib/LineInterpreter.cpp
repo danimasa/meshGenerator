@@ -40,7 +40,11 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         int init_point_id = boost::lexical_cast<int>(init_point_str);
         int final_point_id = boost::lexical_cast<int>(final_point_str);
 
-        return _factory->createLine(init_point_id, final_point_id);
+        auto init_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", init_point_id));
+        auto final_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", final_point_id));
+
+        // TODO: Algoritmo para diferenciar entre reta e curva
+        return _factory->createStraightLine(init_point, final_point);
     } catch( boost::bad_lexical_cast const& ) {
         cout << "Erro: Problema de sintaxe no bloco: " << block << endl;
         return nullptr;

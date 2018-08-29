@@ -29,4 +29,12 @@ std::vector<Geometry*> GeometryList::getListOf(std::string geometryType) {
     return result;
 }
 
+Geometry* GeometryList::getByID(std::string geometryType, int id) {
+    auto geomList = getListOf(geometryType);
+    auto it = std::find_if(geomList.begin(), geomList.end(), [&](const Geometry* o) -> bool {
+        return o->getID() == id;
+    });
+    return *it;
+}
+
 } // geomlib

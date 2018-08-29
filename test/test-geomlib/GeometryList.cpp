@@ -25,4 +25,15 @@ TEST_CASE("GeometryList.hpp") {
         
         REQUIRE(list.size() == 1);
     }
+
+    SECTION("Should get By Id") {
+        std::unique_ptr<Geometry> geom { new KeyPoint() };
+        geom->setID(2);
+        list.add(geom.get());
+
+        auto kp = list.getByID("keypoint", 2);
+        REQUIRE( kp != NULL );
+        REQUIRE( kp->getGeometryType() == "keypoint" );
+        REQUIRE( kp->getID() == 2 );
+    }
 }

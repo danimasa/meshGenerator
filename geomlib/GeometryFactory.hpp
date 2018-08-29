@@ -2,7 +2,8 @@
 
 #include "Geometry.hpp"
 #include "KeyPoint.hpp"
-#include "Line.hpp"
+#include "StraightLine.hpp"
+#include "ArcLine.hpp"
 
 namespace geomlib {
     class GeometryFactory {
@@ -12,7 +13,8 @@ namespace geomlib {
         KeyPoint* createKeypoint() const;
         KeyPoint* createKeypoint(Point &point) const;
 
-        Line* createLine(int init_point_id, int final_point_id) const;
+        // TODO: createStraightLine, createArcLine, createGeneralLine
+        StraightLine* createStraightLine(KeyPoint* init_point, KeyPoint* final_point) const;
 
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;
