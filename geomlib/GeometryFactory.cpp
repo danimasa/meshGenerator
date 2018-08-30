@@ -20,4 +20,14 @@ StraightLine* GeometryFactory::createStraightLine(KeyPoint* init_point, KeyPoint
     return new StraightLine(init_point, final_point);
 }
 
+UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
+    KeyPoint* init_point,
+    KeyPoint* final_point,
+    Point* mid_point,
+    Vector* tangent_init_vector,
+    Vector* tangent_final_vector) const {
+    
+    return new UnspecifiedLine(init_point, final_point, mid_point, tangent_init_vector, tangent_final_vector);
+}
+
 }

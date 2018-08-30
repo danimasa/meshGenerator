@@ -7,11 +7,19 @@
 #include "LineInterpreter.hpp"
 #include "Line.hpp"
 #include "stringUtils.hpp"
+#include "GeometryUtils.hpp"
 
 using namespace std;
 using namespace geomlib;
 
 namespace ansyslib {
+
+vector<string> splitLine(string &line) {
+    trim(line);
+    vector<string> lineData;
+    boost::split(lineData, line, boost::is_any_of("\t "), boost::token_compress_on);
+    return lineData;
+}
 
 geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
     if(block.empty())
@@ -21,11 +29,11 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
     vector<string> lines;
     boost::split(lines, block, boost::is_any_of("\n"), boost::token_compress_on);
 
-    string firstLine = lines.at(0);
-    vector<string> lineData;
-    boost::split(lineData, firstLine, boost::is_any_of("\t "), boost::token_compress_on);
-
     try {
+        // Leitura primeira linha
+        string line = lines.at(0);
+        auto lineData = splitLine(line);
+
         // Get id
         string idstr = lineData[0];
         idstr.pop_back(); // remove ponto extra
@@ -43,8 +51,45 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         auto init_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", init_point_id));
         auto final_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", final_point_id));
 
+        // Leitura segunda linha
+        line = lines.at(1);
+        lineData = splitLine(line);
+
+        double lineLength = boost::lexical_cast<double>(lineData[0]);
+        double distance = GeometryUtils::distanceBetweenPoints(init_point, final_point);
+        // Linha Reta
+        if (distance == lineLength) {
+            return _factory->createStraightLine(init_point, final_point);
+        }
+
+        // Criando ponto médio
+        double mid_point_x = boost::lexical_cast<double>(lineData[1]);
+        double mid_point_y = boost::lexical_cast<double>(lineData[2]);
+        double mid_point_z = boost::lexical_cast<double>(lineData[3]);
+        auto mid_point = new Point(mid_point_x, mid_point_y, mid_point_z);
+
+        // Leitura terceira linha
+        line = lines.at(2);
+        lineData = splitLine(line);
+
+        // Criando versor tangente do ponto inicial
+        double init_versor_x = boost::lexical_cast<double>(lineData[0]);
+        double init_versor_y = boost::lexical_cast<double>(lineData[1]);
+        double init_versor_z = boost::lexical_cast<double>(lineData[2]);
+        auto init_versor = new Vector(init_versor_x, init_versor_y, init_versor_z);
+        
+        // Leitura quarta linha
+        line = lines.at(3);
+        lineData = splitLine(line);
+
+        // Criando versor tangente do ponto final
+        double final_versor_x = boost::lexical_cast<double>(lineData[0]);
+        double final_versor_y = boost::lexical_cast<double>(lineData[1]);
+        double final_versor_z = boost::lexical_cast<double>(lineData[2]);
+        auto final_versor = new Vector(final_versor_x, final_versor_y, final_versor_z);
+
         // TODO: Algoritmo para diferenciar entre reta e curva
-        return _factory->createStraightLine(init_point, final_point);
+        return _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor);
     } catch( boost::bad_lexical_cast const& ) {
         cout << "Erro: Problema de sintaxe no bloco: " << block << endl;
         return nullptr;

@@ -13,9 +13,6 @@ namespace geomlib {
     public:
         KeyPoint* init_point;
         KeyPoint* final_point;
-        Point* mid_point;
-        Vector* tangent_init_vector;
-        Vector* tangent_final_vector;
         
         string getGeometryType() const { return "line"; }
 

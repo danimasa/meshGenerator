@@ -3,6 +3,7 @@
 #include "Geometry.hpp"
 #include "KeyPoint.hpp"
 #include "StraightLine.hpp"
+#include "UnspecifiedLine.hpp"
 #include "ArcLine.hpp"
 
 namespace geomlib {
@@ -15,6 +16,12 @@ namespace geomlib {
 
         // TODO: createStraightLine, createArcLine, createGeneralLine
         StraightLine* createStraightLine(KeyPoint* init_point, KeyPoint* final_point) const;
+        UnspecifiedLine* createUnspecifiedLine(
+            KeyPoint* init_point,
+            KeyPoint* final_point,
+            Point* mid_point,
+            Vector* tangent_init_vector,
+            Vector* tangent_final_vector) const;
 
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;

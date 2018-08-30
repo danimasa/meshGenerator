@@ -7,15 +7,13 @@
 using namespace ansyslib;
 using namespace geomlib;
 
-TEST_CASE("LineInterpreter Basic Props", "[interpreter]") {
-    LineInterpreter interpreter(nullptr);
+TEST_CASE("LineInterpreter", "[interpreter]") {
+    GeometryList list;
+    LineInterpreter interpreter(&list);
 
     REQUIRE( interpreter.getBlockCode() == "20." );
     REQUIRE( interpreter.getLinesPerObject() == 4 );
-}
 
-TEST_CASE("LineInterpreter StraightLine", "[interpreter]") {
-    GeometryList list;
     auto *factory = GeometryFactory::getDefaultInstance();
 
     auto p2 = Point(); // x = 0, y = 0, z = 0
@@ -28,19 +26,35 @@ TEST_CASE("LineInterpreter StraightLine", "[interpreter]") {
     kp15->setID(15);
     list.add(kp15);
 
-    LineInterpreter interpreter(&list);
+    SECTION("StraightLine") {
+        std::string content = "        1.        2.       15.\n"
+            "        0.1072081295E+00    0.3661238196E+00    0.5341674540E-01    0.2625000000E+01\n"
+            "        -0.4871291193E-16    0.1000000000E+01   -0.2598021970E-15\n"
+            "        -0.2857142857E+00    0.9583148475E+00    0.2598021970E-15\n";
 
-    std::string content = "        1.        2.       15.\n"
-        "        0.1072081295E+00    0.3661238196E+00    0.5341674540E-01    0.2625000000E+01\n"
-        "        -0.4871291193E-16    0.1000000000E+01   -0.2598021970E-15\n"
-        "        -0.2857142857E+00    0.9583148475E+00    0.2598021970E-15\n";
+        auto geom = interpreter.interpret(content);
 
-    auto geom = interpreter.interpret(content);
+        auto isLine = dynamic_cast<Line*>(geom);
+        REQUIRE( isLine != NULL );
+        REQUIRE( isLine->getGeometryType() == "line");
+        REQUIRE( isLine->getLineType() == "straight-line" );
+        REQUIRE( isLine->init_point->getID() == 2 );
+        REQUIRE( isLine->final_point->getID() == 15 );
+    }
 
-    auto isLine = dynamic_cast<Line*>(geom);
-    REQUIRE( isLine != NULL );
-    REQUIRE( isLine->getGeometryType() == "line");
-    REQUIRE( isLine->getLineType() == "straight-line" );
-    REQUIRE( isLine->init_point->getID() == 2 );
-    REQUIRE( isLine->final_point->getID() == 15 );
+    SECTION("UnspecifiedLine") {
+        std::string content = "        1.        2.       15.\n"
+            "        0.2072081295E+00    0.3661238196E+00    0.5341674540E-01    0.2625000000E+01\n"
+            "        -0.4871291193E-16    0.1000000000E+01   -0.2598021970E-15\n"
+            "        -0.2857142857E+00    0.9583148475E+00    0.2598021970E-15\n";
+
+        auto geom = interpreter.interpret(content);
+
+        auto isLine = dynamic_cast<Line*>(geom);
+        REQUIRE( isLine != NULL );
+        REQUIRE( isLine->getGeometryType() == "line");
+        REQUIRE( isLine->getLineType() == "unspecified-line" );
+        REQUIRE( isLine->init_point->getID() == 2 );
+        REQUIRE( isLine->final_point->getID() == 15 );
+    }
 }
