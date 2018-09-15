@@ -5,6 +5,7 @@
 #include "StraightLine.hpp"
 #include "UnspecifiedLine.hpp"
 #include "ArcLine.hpp"
+#include "Plane.hpp"
 
 namespace geomlib {
     class GeometryFactory {
@@ -22,6 +23,9 @@ namespace geomlib {
             Point* mid_point,
             Vector* tangent_init_vector,
             Vector* tangent_final_vector) const;
+
+        Plane* createPlane(Point* p1, Point* p2, Point* p3) const;
+        Plane* createPlane(Point* p1, Vector* v1, Vector* v2) const;
 
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;

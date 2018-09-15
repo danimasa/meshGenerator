@@ -30,4 +30,12 @@ UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
     return new UnspecifiedLine(init_point, final_point, mid_point, tangent_init_vector, tangent_final_vector);
 }
 
+Plane* GeometryFactory::createPlane(Point* p1, Vector* v1, Vector* v2) const {
+    return new Plane(p1, v1, v2);
+}
+
+Plane* GeometryFactory::createPlane(Point* p1, Point* p2, Point* p3) const {
+    
+}
+
 }

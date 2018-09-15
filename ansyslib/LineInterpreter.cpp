@@ -88,7 +88,7 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         double final_versor_z = boost::lexical_cast<double>(lineData[2]);
         auto final_versor = new Vector(final_versor_x, final_versor_y, final_versor_z);
 
-        // TODO: Algoritmo para diferenciar entre reta e curva
+        // TODO: Algoritmo para diferenciar entre reta e arco
         return _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor);
     } catch( boost::bad_lexical_cast const& ) {
         cout << "Erro: Problema de sintaxe no bloco: " << block << endl;
