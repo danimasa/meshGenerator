@@ -35,7 +35,9 @@ Plane* GeometryFactory::createPlane(Point* p1, Vector* v1, Vector* v2) const {
 }
 
 Plane* GeometryFactory::createPlane(Point* p1, Point* p2, Point* p3) const {
-    
+    auto vector1 = new Vector(p1, p2);
+    auto vector2 = new Vector(p1, p3);
+    return new Plane(p1, vector1, vector2);
 }
 
 }
