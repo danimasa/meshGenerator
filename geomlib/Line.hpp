@@ -17,6 +17,7 @@ namespace geomlib {
         string getGeometryType() const { return "line"; }
 
         virtual string getLineType() const = 0;
+        virtual double length() const = 0;
 
     protected:
         Line(KeyPoint* init_point, KeyPoint* final_point) :

@@ -9,6 +9,7 @@ class GeometryFactory;
 class StraightLine : public Line {
 public:
     string getLineType() const { return "straight-line"; }
+    double length() const;
 
 private:
     StraightLine(KeyPoint* init_point, KeyPoint* final_point) :

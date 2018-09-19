@@ -20,6 +20,11 @@ StraightLine* GeometryFactory::createStraightLine(KeyPoint* init_point, KeyPoint
     return new StraightLine(init_point, final_point);
 }
 
+ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, KeyPoint* mid_point) const {
+    Plane* plane = createPlane(init_point, final_point, mid_point);
+    // TODO: Descobrir o centro e o raio do Arco
+}
+
 UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
     KeyPoint* init_point,
     KeyPoint* final_point,

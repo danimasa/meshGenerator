@@ -13,6 +13,7 @@ public:
     Vector* tangent_final_vector;
 
     string getLineType() const { return "unspecified-line"; }
+    double length() const { return 0; }
 
 private:
     UnspecifiedLine(
