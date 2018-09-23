@@ -13,4 +13,9 @@ TEST_CASE("Vector") {
     Vector v1(0, 1, 0);
     double angle = v.angleWith(v1);
     REQUIRE( angle == M_PI / 2 );
+
+    // Produto Vetorial
+    Vector v3 = v.vectorProduct(v1);
+    REQUIRE( v3.angleWith(v) == M_PI / 2 );
+    REQUIRE( v3.angleWith(v1) == M_PI / 2 );
 }

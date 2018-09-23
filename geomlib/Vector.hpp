@@ -20,5 +20,8 @@ namespace geomlib {
 
         // Retorna a norma do vetor
         double norm() const;
+
+        // Produto Vetorial
+        Vector vectorProduct(const Vector &v);
     };
 }

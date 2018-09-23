@@ -13,4 +13,11 @@ double Vector::norm() const {
     return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
 }
 
+Vector Vector::vectorProduct(const Vector &v) {
+    auto a = y * v.z - z * v.y;
+    auto b = z * v.x - x * v.z;
+    auto c = x * v.y - y * v.x;
+    return Vector(a, b, c);
+}
+
 }
