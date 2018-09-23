@@ -12,7 +12,7 @@ public:
     bool contains(const Point* p);
     bool contains(const Vector* v);
 
-    Vector* normalVector() const;
+    Vector normalVector() const;
 
 private:
     Point* point;

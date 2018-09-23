@@ -7,6 +7,9 @@ find_package(Boost 1.67 REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 
+find_package(Armadillo REQUIRED)
+include_directories(${ARMADILLO_INCLUDE_DIRS})
+
 add_library(geomlib STATIC ${GEOMLIB_SRCS})
-target_link_libraries(geomlib ${Boost_LIBRARIES})
+target_link_libraries(geomlib ${Boost_LIBRARIES} ${ARMADILLO_LIBRARIES})
 target_include_directories(geomlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

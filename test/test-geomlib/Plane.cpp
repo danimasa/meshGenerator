@@ -29,4 +29,10 @@ TEST_CASE("Plane") {
         Vector vector2(1, 1, 1);
         REQUIRE( plane->contains(&vector2) == false );
     }
+
+    SECTION("Normal Vector") {
+        auto normalVector = plane->normalVector();
+        REQUIRE( xVector.angleWith(normalVector) == M_PI / 2 );
+        REQUIRE( yVector.angleWith(normalVector) == M_PI / 2 );
+    }
 }

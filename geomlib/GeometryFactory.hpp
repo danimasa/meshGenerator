@@ -17,7 +17,8 @@ namespace geomlib {
 
         // TODO: createStraightLine, createArcLine, createGeneralLine
         StraightLine* createStraightLine(KeyPoint* init_point, KeyPoint* final_point) const;
-        ArcLine* createArcLine(KeyPoint* init_point, KeyPoint* final_point, KeyPoint* mid_point) const;
+        ArcLine* createArcLine(KeyPoint* init_point, KeyPoint* final_point, Point* mid_point,
+            Vector* init_tangent_vector, Vector* final_tangent_vector) const;
 
         UnspecifiedLine* createUnspecifiedLine(
             KeyPoint* init_point,

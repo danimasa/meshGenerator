@@ -7,10 +7,11 @@
 #include "LineInterpreter.hpp"
 #include "Line.hpp"
 #include "stringUtils.hpp"
-#include "GeometryUtils.hpp"
 
 using namespace std;
 using namespace geomlib;
+
+#define ERRO_ACEITAVEL 0.00000000000000001
 
 namespace ansyslib {
 
@@ -56,7 +57,7 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         lineData = splitLine(line);
 
         double lineLength = boost::lexical_cast<double>(lineData[0]);
-        double distance = GeometryUtils::distanceBetweenPoints(init_point, final_point);
+        double distance = init_point->distance(*final_point);
         // Linha Reta
         if (distance == lineLength) {
             return _factory->createStraightLine(init_point, final_point);
@@ -91,6 +92,13 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         auto plane = _factory->createPlane(init_point, final_point, mid_point);
         if(plane->contains(init_versor) && plane->contains(final_versor)) {
             // Medir comprimento do arco correspondente e comparar com o comprimento do arquivo
+            auto arco = _factory->createArcLine(init_point, final_point, mid_point, init_versor, final_versor);
+            cout.precision(15);
+            double length = arco->length();
+            cout << "Depois do plano ! ----------------------" << fixed << length << " --------- " << fixed << lineLength << endl;
+            if ((arco->length() - lineLength) < ERRO_ACEITAVEL) {
+                return arco;
+            }
         }
 
         // TODO: Algoritmo para diferenciar entre reta e arco

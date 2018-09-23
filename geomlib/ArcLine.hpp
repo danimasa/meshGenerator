@@ -12,6 +12,9 @@ public:
     string getLineType() const { return "arc-line"; }
     double length() const;
 
+    double get_radius() { return radius; }
+    Point* get_center() { return center; }
+
 private:
     ArcLine(
         Plane* plane,
