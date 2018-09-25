@@ -12,6 +12,10 @@ bool Plane::contains(const Point* p) {
 }
 
 bool Plane::contains(const Vector* v) {
+    double alfa = v->x / vector1->x;
+    double teste1 = v->y / vector1->y;
+    double teste2 = v->z / vector1->z;
+
     double mat[3][3] = {
         {v->x, v->y, v->z},
         {vector1->x, vector1->y, vector1->z},

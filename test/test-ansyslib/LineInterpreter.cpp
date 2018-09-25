@@ -45,18 +45,18 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
     SECTION("ArcLine") {
         auto p23 = Point(0.3421000238, 0.1409523810, 0.2625000000);
         auto kp23 = factory->createKeypoint(p23);
-        kp2->setID(23); // TODO: Deve ser gerado na construção do objeto
+        kp23->setID(23); // TODO: Deve ser gerado na construção do objeto
         list.add(kp23);
 
         auto p31 = Point(0, 0.37, 0.2625);
         auto kp31 = factory->createKeypoint(p31);
-        kp15->setID(31);
+        kp31->setID(31);
         list.add(kp31);
 
-        std::string content = "       3.       23.       31.\n"
-            "    0.4365889727E+00    0.2058489969E+00    0.3074511188E+00    0.2625000000E+01\n"
-            "   -0.3809523810E+00    0.9245946590E+00    0.2696692822E-15\n"
-            "   -0.1000000000E+01   -0.4719212438E-15   -0.2696692822E-15\n";
+        std::string content = "        3.       23.       31.\n"
+            "        0.4365889727E+00    0.2058489969E+00    0.3074511188E+00    0.2625000000E+01\n"
+            "        -0.3809523810E+00    0.9245946590E+00    0.2696692822E-15\n"
+            "        -0.1000000000E+01   -0.4719212438E-15   -0.2696692822E-15\n";
         
         auto geom = interpreter.interpret(content);
 

@@ -93,9 +93,6 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         if(plane->contains(init_versor) && plane->contains(final_versor)) {
             // Medir comprimento do arco correspondente e comparar com o comprimento do arquivo
             auto arco = _factory->createArcLine(init_point, final_point, mid_point, init_versor, final_versor);
-            cout.precision(15);
-            double length = arco->length();
-            cout << "Depois do plano ! ----------------------" << fixed << length << " --------- " << fixed << lineLength << endl;
             if ((arco->length() - lineLength) < ERRO_ACEITAVEL) {
                 return arco;
             }
