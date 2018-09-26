@@ -31,7 +31,9 @@ geomlib::Geometry* KeypointInterpreter::interpret(string &block) {
         double y = boost::lexical_cast<double>(strs[2]);
         double z = boost::lexical_cast<double>(strs[3]);
         Point p (x, y, z);
-        return _factory->createKeypoint(p);
+        auto kp = _factory->createKeypoint(p);
+        kp->setID(id);
+        return kp;
     } catch( boost::bad_lexical_cast const& ) {
         std::cout << "Erro: Problema de sintaxe na linha: " << block << std::endl;
         return nullptr;
