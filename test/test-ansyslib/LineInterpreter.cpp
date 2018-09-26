@@ -43,12 +43,12 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
     }
     
     SECTION("ArcLine") {
-        auto p23 = Point(0.3421000238, 0.1409523810, 0.2625000000);
+        auto p23 = Point(0.3421000238, 0.1409523810, 2.625);
         auto kp23 = factory->createKeypoint(p23);
         kp23->setID(23); // TODO: Deve ser gerado na construção do objeto
         list.add(kp23);
 
-        auto p31 = Point(0, 0.37, 0.2625);
+        auto p31 = Point(0, 0.37, 2.625);
         auto kp31 = factory->createKeypoint(p31);
         kp31->setID(31);
         list.add(kp31);

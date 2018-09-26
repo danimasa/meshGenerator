@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <stdexcept>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -11,7 +12,7 @@
 using namespace std;
 using namespace geomlib;
 
-#define ERRO_ACEITAVEL 0.00000000000000001
+#define ERRO_ACEITAVEL 0.000000001 // Erro aceitavel consideravel
 
 namespace ansyslib {
 
@@ -52,12 +53,16 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         auto init_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", init_point_id));
         auto final_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", final_point_id));
 
+        if (init_point == nullptr || final_point == nullptr) {
+            throw std::invalid_argument("init_point and final_point must be defined: " + init_point_str + " - " + final_point_str);
+        }
+
         // Leitura segunda linha
         line = lines.at(1);
         lineData = splitLine(line);
 
         double lineLength = boost::lexical_cast<double>(lineData[0]);
-        double distance = init_point->distance(*final_point);
+        double distance = init_point->distance(final_point);
         // Linha Reta
         if (distance == lineLength) {
             return _factory->createStraightLine(init_point, final_point);
@@ -93,7 +98,7 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         if(plane->contains(init_versor) && plane->contains(final_versor)) {
             // Medir comprimento do arco correspondente e comparar com o comprimento do arquivo
             auto arco = _factory->createArcLine(init_point, final_point, mid_point, init_versor, final_versor);
-            if ((arco->length() - lineLength) < ERRO_ACEITAVEL) {
+            if (abs(arco->length() - lineLength) < ERRO_ACEITAVEL) {
                 return arco;
             }
         }

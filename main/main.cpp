@@ -14,12 +14,9 @@ void print_Keypoint(const KeyPoint *point) {
     cout << "(" << point->x << ", " << point->y << ", " << point->z << ")" << endl;
 };
 
-// void print_Line(const Line &line) {
-//    cout << "Initial Point: ";
-//    print_Keypoint(*line.init_point);
-//    cout << "Final Point: ";
-//    print_Keypoint(*line.final_point);
-// };
+void print_Line(const Line *line) {
+   cout << "type: " << line->getLineType() << endl;
+};
 
 int main(int argc, char **argv) {
     if(argc < 2) {
@@ -45,6 +42,13 @@ void leitura(const string &arquivo) {
     for(auto p : kplist) {
         auto keypoint = dynamic_cast<KeyPoint*>(p);
         print_Keypoint(keypoint);
+    }
+
+    auto lineList = geometry->getListOf("line");
+    cout << "Linhas: " << lineList.size() << endl;
+    for(auto l : lineList) {
+        auto linha = dynamic_cast<Line*>(l);
+        print_Line(linha);
     }
 }
 

@@ -49,7 +49,7 @@ ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_po
     double zc = init_point->z + alfa * toCenter1.z;
     auto center = new Point(xc, yc, zc);
 
-    double radius = init_point->distance(*center);
+    double radius = init_point->distance(center);
 
     return new ArcLine(plane, init_point, final_point, radius, center);
 }

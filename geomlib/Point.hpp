@@ -11,7 +11,7 @@ namespace geomlib {
         Point(const double x, const double y, const double z) :
             x(x), y(y), z(z) {}
 
-        double distance(const Point &p);
+        double distance(const Point *p);
     };
 
 }

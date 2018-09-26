@@ -10,5 +10,5 @@ TEST_CASE("Point") {
     Point p1(0, 0, 0);
     Point p2(0, 1, 0);
 
-    REQUIRE( p1.distance(p2) == 1 );
+    REQUIRE( p1.distance(&p2) == 1 );
 }
