@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cmath>
+#include <algorithm>
+
 namespace geomlib {
 
     class Point {
@@ -15,7 +18,10 @@ namespace geomlib {
 
         bool operator==(const Point &that) const {
             bool isEqual = false;
-            if(that.x == x && that.y == y && that.z == z) {
+            
+            if((that.x == x || std::abs(that.x-x)<std::abs(std::min(that.x,x))*0.00000001) && 
+               (that.y == y || std::abs(that.y-y)<std::abs(std::min(that.y,y))*0.00000001) && 
+               (that.z == z || std::abs(that.z-z)<std::abs(std::min(that.z,z))*0.00000001)) {
                 isEqual = true;
             }
             return isEqual;

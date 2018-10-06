@@ -18,4 +18,8 @@ TEST_CASE("Vector") {
     Vector v3 = v.vectorProduct(v1);
     REQUIRE( v3.angleWith(v) == M_PI / 2 );
     REQUIRE( v3.angleWith(v1) == M_PI / 2 );
+
+    // Normalizacao
+    Vector v4(2, 0, 0);
+    REQUIRE( v4.normalise() == v );
 }

@@ -1,6 +1,8 @@
 #include <cmath>
 #include "Vector.hpp"
 
+#include "armadillo"
+
 namespace geomlib {
 
 double Vector::angleWith(Vector &v) const {
@@ -18,6 +20,16 @@ Vector Vector::vectorProduct(const Vector &v) {
     auto b = z * v.x - x * v.z;
     auto c = x * v.y - y * v.x;
     return Vector(a, b, c);
+}
+
+Vector Vector::normalise() {
+    arma::vec vec(3);
+    vec(0) = x;
+    vec(1) = y;
+    vec(2) = z;
+
+    arma::vec normalized = arma::normalise(vec);
+    return Vector(normalized(0), normalized(1), normalized(2));
 }
 
 }

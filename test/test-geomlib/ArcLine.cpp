@@ -3,6 +3,8 @@
 #include "ArcLine.hpp"
 #include "GeometryFactory.hpp"
 
+#include <iostream>
+
 using namespace geomlib;
 
 TEST_CASE("ArcLine") {

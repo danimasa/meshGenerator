@@ -23,5 +23,8 @@ namespace geomlib {
 
         // Produto Vetorial
         Vector vectorProduct(const Vector &v);
+
+        // Normalizar
+        Vector normalise();
     };
 }
