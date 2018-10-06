@@ -31,4 +31,13 @@ TEST_CASE("ArcLine") {
     // Calculo do comprimento
     double length = arco->length();
     REQUIRE( (length - M_PI) < epsilon );
+
+    SECTION("Point in line") {
+        REQUIRE_THROWS( arco->pointInLine(-0.9) );
+        REQUIRE_THROWS( arco->pointInLine(1.1) );
+
+        REQUIRE( arco->pointInLine(0) == initPoint );
+        REQUIRE( arco->pointInLine(1) == finalPoint );
+        REQUIRE( arco->pointInLine(0.5) == midPoint );
+    }
 }

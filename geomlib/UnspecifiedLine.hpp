@@ -14,6 +14,7 @@ public:
 
     string getLineType() const { return "unspecified-line"; }
     double length() const { return 0; }
+    Point pointInLine(const double position) { return Point(); }
 
 private:
     UnspecifiedLine(

@@ -17,4 +17,16 @@ TEST_CASE("Straight Line") {
     StraightLine* line = factory->createStraightLine(initKp, finalKp);
 
     REQUIRE( line->length() == 1.0 );
+
+    SECTION("Point in line") {
+        // Somente valores entre 0 e 1
+        REQUIRE_THROWS( line->pointInLine(-0.5) );
+        REQUIRE_THROWS( line->pointInLine(1.1) );
+
+        REQUIRE( line->pointInLine(0) == initPoint );
+        REQUIRE( line->pointInLine(1) == finalPoint );
+
+        Point midPoint(0, 0, 0.5);
+        REQUIRE( line->pointInLine(0.5) == midPoint );
+    }
 }

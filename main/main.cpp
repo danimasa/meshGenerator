@@ -15,7 +15,7 @@ void print_Keypoint(const KeyPoint *point) {
 };
 
 void print_Line(const Line *line) {
-   cout << "type: " << line->getLineType() << endl;
+   cout << "(" << line->getID() << ") type: " << line->getLineType() << endl;
 };
 
 int main(int argc, char **argv) {

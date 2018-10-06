@@ -12,7 +12,8 @@
 using namespace std;
 using namespace geomlib;
 
-#define ERRO_ACEITAVEL 0.000000001 // Erro aceitavel consideravel
+#define ERRO_ACEITAVEL 0.00000001
+// #define ERRO_ACEITAVEL 0.000000000000001
 
 namespace ansyslib {
 
@@ -21,6 +22,13 @@ vector<string> splitLine(string &line) {
     vector<string> lineData;
     boost::split(lineData, line, boost::is_any_of("\t "), boost::token_compress_on);
     return lineData;
+}
+
+bool equal(double x, double y) {
+    if (abs((x - y) / x) < ERRO_ACEITAVEL) {
+        return true;
+    }
+    return false;
 }
 
 geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
@@ -64,8 +72,10 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         double lineLength = boost::lexical_cast<double>(lineData[0]);
         double distance = init_point->distance(final_point);
         // Linha Reta
-        if (distance == lineLength) {
-            return _factory->createStraightLine(init_point, final_point);
+        if (equal(distance, lineLength)) {
+            auto straightLine = _factory->createStraightLine(init_point, final_point);
+            straightLine->setID(id);
+            return straightLine;
         }
 
         // Criando ponto médio
@@ -98,13 +108,17 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         if(plane->contains(init_versor) && plane->contains(final_versor)) {
             // Medir comprimento do arco correspondente e comparar com o comprimento do arquivo
             auto arco = _factory->createArcLine(init_point, final_point, mid_point, init_versor, final_versor);
-            if (abs(arco->length() - lineLength) < ERRO_ACEITAVEL) {
+            auto arcoLength = arco->length();
+            if (equal(arco->length(), lineLength)) {
+                arco->setID(id);
                 return arco;
             }
         }
 
         // TODO: Algoritmo para diferenciar entre reta e arco
-        return _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor);
+        auto undefinedLine = _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor);
+        undefinedLine->setID(id);
+        return undefinedLine;
     } catch( boost::bad_lexical_cast const& ) {
         cout << "Erro: Problema de sintaxe no bloco: " << block << endl;
         return nullptr;

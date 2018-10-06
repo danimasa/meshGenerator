@@ -3,7 +3,7 @@
 #include "armadillo"
 #include <math.h>
 
-#define ERRO_ACEITAVEL 0.0000000000000001
+#define ERRO_ACEITAVEL 0.000000001
 
 namespace geomlib {
 

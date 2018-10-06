@@ -11,6 +11,7 @@ class ArcLine : public Line {
 public:
     string getLineType() const { return "arc-line"; }
     double length() const;
+    Point pointInLine(const double position);
 
     double get_radius() { return radius; }
     Point* get_center() { return center; }

@@ -12,6 +12,14 @@ namespace geomlib {
             x(x), y(y), z(z) {}
 
         double distance(const Point *p);
+
+        bool operator==(const Point &that) const {
+            bool isEqual = false;
+            if(that.x == x && that.y == y && that.z == z) {
+                isEqual = true;
+            }
+            return isEqual;
+        }
     };
 
 }
