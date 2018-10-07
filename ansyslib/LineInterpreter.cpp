@@ -8,12 +8,10 @@
 #include "LineInterpreter.hpp"
 #include "Line.hpp"
 #include "stringUtils.hpp"
+#include "mathUtils.hpp"
 
 using namespace std;
 using namespace geomlib;
-
-#define ERRO_ACEITAVEL 0.00000001
-// #define ERRO_ACEITAVEL 0.000000000000001
 
 namespace ansyslib {
 
@@ -25,7 +23,7 @@ vector<string> splitLine(string &line) {
 }
 
 bool equal(double x, double y) {
-    if (abs((x - y) / x) < ERRO_ACEITAVEL) {
+    if (double_equals(x, y)) {
         return true;
     }
     return false;

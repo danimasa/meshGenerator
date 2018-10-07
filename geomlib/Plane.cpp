@@ -1,9 +1,7 @@
 #include "Plane.hpp"
+#include "mathUtils.hpp"
 
 #include "armadillo"
-#include <math.h>
-
-#define ERRO_ACEITAVEL 0.000000001
 
 namespace geomlib {
 
@@ -26,9 +24,9 @@ bool Plane::contains(const Vector* v) {
     arma::mat L, U, P;
     arma::lu(L, U, P, A);
 
-    if ( ( abs(U(0, 0)) < ERRO_ACEITAVEL && abs(U(0, 1)) < ERRO_ACEITAVEL && abs(U(0, 2)) < ERRO_ACEITAVEL ) ||
-         ( abs(U(1, 0)) < ERRO_ACEITAVEL && abs(U(1, 1)) < ERRO_ACEITAVEL && abs(U(1, 2)) < ERRO_ACEITAVEL ) ||
-         ( abs(U(2, 0)) < ERRO_ACEITAVEL && abs(U(2, 1)) < ERRO_ACEITAVEL && abs(U(2, 2)) < ERRO_ACEITAVEL ) ) {
+    if ( ( double_equals(0, U(0, 0)) && double_equals(0, U(0, 1)) && double_equals(0, U(0, 2))) ||
+         ( double_equals(0, U(1, 0)) && double_equals(0, U(1, 1)) && double_equals(0, U(1, 2))) ||
+         ( double_equals(0, U(2, 0)) && double_equals(0, U(2, 1)) && double_equals(0, U(2, 2))) ) {
     
         return true;
     }
