@@ -10,7 +10,7 @@ public:
     LineInterpreter(geomlib::GeometryList *geomList) :
         geomList(geomList) {}
 
-    int getLinesPerObject() const { return 4; }
+    int getLinesPerObject(const std::string &firstLine = "") const { return 4; }
     std::string getBlockCode() const { return "20."; }
 
     geomlib::Geometry* interpret(std::string &block);

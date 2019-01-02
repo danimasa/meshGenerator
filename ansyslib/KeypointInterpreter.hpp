@@ -8,7 +8,7 @@ class KeypointInterpreter : public geomlib::Interpreter {
 public:
     KeypointInterpreter() {}
 
-    int getLinesPerObject() const { return 1; }
+    int getLinesPerObject(const std::string &firstline = "") const { return 1; }
     std::string getBlockCode() const { return "10."; }
 
     geomlib::Geometry* interpret(std::string &block);

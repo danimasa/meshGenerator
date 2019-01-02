@@ -8,7 +8,7 @@ namespace geomlib {
     public:
         Interpreter() : _factory(GeometryFactory::getDefaultInstance()) {}
 
-        virtual int getLinesPerObject() const = 0;
+        virtual int getLinesPerObject(const std::string &firstLine) const = 0;
         virtual Geometry* interpret(std::string &block) = 0;
         virtual std::string getBlockCode() const = 0;
 

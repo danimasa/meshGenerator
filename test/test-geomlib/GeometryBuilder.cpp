@@ -64,7 +64,7 @@ TEST_CASE("GeometryBuilder", "[builder]") {
         Verify(Method(interpreter, getLinesPerObject));
 
         builder.readFileLine(content);
-        Verify(Method(interpreter, getLinesPerObject)).Exactly(2);
+        Verify(Method(interpreter, getLinesPerObject)).Exactly(1);
         Verify(Method(interpreter, interpret)).Exactly(1);
 
         REQUIRE( list.size() == 1 );

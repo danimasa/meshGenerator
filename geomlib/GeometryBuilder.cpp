@@ -43,12 +43,16 @@ void GeometryBuilder::readFileLine(const std::string &line) {
         accumulated_lines = accumulated_lines + l_line + "\n";
         accumulated_lines_count++;
 
-        int linesPerObject = currentInterpreter->getLinesPerObject();
+        if (linesPerObject == 0) {
+            linesPerObject = currentInterpreter->getLinesPerObject(l_line);
+        }
+
         if (accumulated_lines_count == linesPerObject) {
             auto geometry = currentInterpreter->interpret(accumulated_lines);
             geometryList->add(geometry);
             accumulated_lines_count = 0;
             accumulated_lines = "";
+            linesPerObject = 0;
         }
     }
 } 
