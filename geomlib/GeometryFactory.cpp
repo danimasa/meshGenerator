@@ -1,5 +1,7 @@
 #include "GeometryFactory.hpp"
 #include <assert.h>
+#include <algorithm>
+#include <stdexcept>
 #include "armadillo"
 
 namespace geomlib {
@@ -72,6 +74,24 @@ Plane* GeometryFactory::createPlane(Point* p1, Point* p2, Point* p3) const {
     auto vector1 = new Vector(p1, p2);
     auto vector2 = new Vector(p1, p3);
     return new Plane(p1, vector1, vector2);
+}
+
+Area* GeometryFactory::createArea(vector<Line*> lines, Line* first_line, Line* last_line) const {
+    if(std::find(lines.begin(), lines.end(), first_line) == lines.end() || 
+        std::find(lines.begin(), lines.end(), last_line) == lines.end()) {
+        throw std::invalid_argument("first_line and last_line must contain in lines list");
+    }
+
+    for(int i=1; i<lines.size(); i++) {
+        if(lines[i - 1]->init_point != lines[i]->init_point &&
+           lines[i - 1]->init_point != lines[i]->final_point &&
+           lines[i - 1]->final_point != lines[i]->init_point &&
+           lines[i - 1]->final_point != lines[i]->final_point) {
+            throw std::invalid_argument("Not permited non touching lines");
+        }
+    }
+
+    return new Area(lines, first_line, last_line);
 }
 
 }

@@ -6,6 +6,7 @@
 #include "UnspecifiedLine.hpp"
 #include "ArcLine.hpp"
 #include "Plane.hpp"
+#include "Area.hpp"
 
 namespace geomlib {
     class GeometryFactory {
@@ -29,6 +30,8 @@ namespace geomlib {
 
         Plane* createPlane(Point* p1, Point* p2, Point* p3) const;
         Plane* createPlane(Point* p1, Vector* v1, Vector* v2) const;
+
+        Area* createArea(vector<Line*> lines, Line* first_line, Line* last_line) const;
 
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;
