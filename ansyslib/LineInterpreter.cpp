@@ -15,13 +15,6 @@ using namespace geomlib;
 
 namespace ansyslib {
 
-vector<string> splitLine(string &line) {
-    trim(line);
-    vector<string> lineData;
-    boost::split(lineData, line, boost::is_any_of("\t "), boost::token_compress_on);
-    return lineData;
-}
-
 bool equal(double x, double y) {
     if (double_equals(x, y)) {
         return true;
@@ -113,7 +106,6 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
             }
         }
 
-        // TODO: Algoritmo para diferenciar entre reta e arco
         auto undefinedLine = _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor);
         undefinedLine->setID(id);
         return undefinedLine;

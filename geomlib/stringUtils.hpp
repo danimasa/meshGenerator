@@ -3,6 +3,7 @@
 #include <algorithm> 
 #include <cctype>
 #include <locale>
+#include <boost/algorithm/string.hpp>
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
@@ -40,4 +41,12 @@ static inline std::string rtrim_copy(std::string s) {
 static inline std::string trim_copy(std::string s) {
     trim(s);
     return s;
+}
+
+// split line from spaces
+static inline std::vector<std::string> splitLine(std::string &line) {
+    trim(line);
+    std::vector<std::string> lineData;
+    boost::split(lineData, line, boost::is_any_of("\t "), boost::token_compress_on);
+    return lineData;
 }
