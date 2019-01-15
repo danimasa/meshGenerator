@@ -35,6 +35,7 @@ Geometry* GeometryList::getByID(std::string geometryType, int id) {
     auto it = std::find_if(geomList.begin(), geomList.end(), [&](const Geometry* o) -> bool {
         return o->getID() == id;
     });
+    if (it == geomList.end()) return NULL;
     return *it;
 }
 
