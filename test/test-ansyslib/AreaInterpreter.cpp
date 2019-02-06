@@ -3,6 +3,7 @@
 #include "AreaInterpreter.hpp"
 #include "GeometryList.hpp"
 #include "GeometryFactory.hpp"
+#include "LineInterpreter.hpp"
 
 using namespace ansyslib;
 using namespace geomlib;
@@ -106,5 +107,87 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
       "46.\n";
 
     REQUIRE_THROWS_WITH( interpreter.interpret(content), Contains("not in the list of lines") );
+  }
+  
+  SECTION("Discover concatenated lines") {
+    auto p5 = Point(0, 0, 0);
+    auto kp5 = factory->createKeypoint(p5);
+    kp5->setID(5);
+    list.add(kp5);
+
+    auto p6 = Point(1, 0, 0);
+    auto kp6 = factory->createKeypoint(p6);
+    kp6->setID(6);
+    list.add(kp6);
+
+    auto p7 = Point(1, 1, 0);
+    auto kp7 = factory->createKeypoint(p7);
+    kp7->setID(7);
+    list.add(kp7);
+
+    auto p8 = Point(0.5, 1.3, 0);
+    auto kp8 = factory->createKeypoint(p8);
+    kp8->setID(8);
+    list.add(kp8);
+
+    auto p9 = Point(0, 1, 0);
+    auto kp9 = factory->createKeypoint(p9);
+    kp9->setID(9);
+    list.add(kp9);
+
+    LineInterpreter lineInterpreter(&list);
+    std::string line2Content = "        2.        5.       6.\n"
+        "        1.0000000000E+00    0.5000000000E+00    0.0000000000E+00    0.0000000000E+00\n"
+        "        1.0000000000E+00    0.0000000000E+00    0.0000000000E+00\n"
+        "        1.0000000000E+00    0.0000000000E+00    0.0000000000E+00\n";
+    auto line2 = lineInterpreter.interpret(line2Content);
+    list.add(line2);
+
+    std::string line3Content = "        3.        6.       7.\n"
+        "        1.0000000000E+00    1.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
+        "        0.0000000000E+00    1.0000000000E+00    0.0000000000E+00\n"
+        "        0.0000000000E+00    1.0000000000E+00    0.0000000000E+00\n";
+    auto line3 = lineInterpreter.interpret(line3Content);
+    list.add(line3);
+
+    std::string line5Content = "        5.        7.       9.\n"
+        "        1.1661903790E+00    0.5000000000E+00    1.3000000000E+00    0.0000000000E+00\n"
+        "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n"
+        "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n";
+    auto line5 = lineInterpreter.interpret(line5Content);
+    list.add(line5);
+
+    std::string line8Content = "        8.        9.       5.\n"
+        "        1.0000000000E+00    0.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
+        "        0.0000000000E+00    -1.0000000000E+00    0.0000000000E+00\n"
+        "        0.0000000000E+00    -1.0000000000E+00    0.0000000000E+00\n";
+    auto line8 = lineInterpreter.interpret(line8Content);
+    list.add(line8);
+
+    auto undefinedLine5 = dynamic_cast<Line*>(line5);
+    REQUIRE( undefinedLine5->getLineType() == "unspecified-line" );
+
+    std::string content = "        2.       4.       1.\n"
+      "2.\n"
+      "3.\n"
+      "5.\n"
+      "8.\n"
+      "5.\n"
+      "2.\n"
+      "3.\n";
+
+    auto geom = interpreter.interpret(content);
+    auto isArea = dynamic_cast<Area*>(geom);
+
+    REQUIRE( isArea != NULL );
+    REQUIRE( isArea->getGeometryType() == "area" );
+    REQUIRE( isArea->lines.size() == 4);
+    REQUIRE( isArea->first_line->getID() == 2);
+    REQUIRE( isArea->last_line->getID() == 3); // second_line not last_line
+
+    auto concatenatedLine5 = dynamic_cast<Line*>(list.getByID("line", 5));
+    // create polyline type
+    REQUIRE( concatenatedLine5->getLineType() == "polyline" ); // create enum for that
+    // validate lines inner polyline
   }
 }
