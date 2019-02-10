@@ -165,7 +165,7 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     list.add(line8);
 
     auto undefinedLine5 = dynamic_cast<Line*>(line5);
-    REQUIRE( undefinedLine5->getLineType() == "unspecified-line" );
+    REQUIRE( undefinedLine5->getLineType() == LineType::UnspecifiedLine );
 
     std::string content = "        2.       4.       1.\n"
       "2.\n"
@@ -187,7 +187,7 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
 
     auto concatenatedLine5 = dynamic_cast<Line*>(list.getByID("line", 5));
     // create polyline type
-    REQUIRE( concatenatedLine5->getLineType() == "polyline" ); // create enum for that
+    REQUIRE( concatenatedLine5->getLineType() == LineType::Polyline );
     // validate lines inner polyline
   }
 }

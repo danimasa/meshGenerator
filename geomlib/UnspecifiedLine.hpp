@@ -12,7 +12,7 @@ public:
     Vector* tangent_init_vector;
     Vector* tangent_final_vector;
 
-    string getLineType() const { return "unspecified-line"; }
+    LineType getLineType() const { return LineType::UnspecifiedLine; }
     double length() const { return 0; }
     Point pointInLine(const double position) { return Point(); }
 

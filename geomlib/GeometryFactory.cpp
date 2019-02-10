@@ -66,6 +66,14 @@ UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
     return new UnspecifiedLine(init_point, final_point, mid_point, tangent_init_vector, tangent_final_vector);
 }
 
+Polyline* GeometryFactory::createPolyline(
+    KeyPoint* init_point,
+    KeyPoint* final_point,
+    std::vector<Line*> lines) const {
+    
+    return new Polyline(init_point, final_point, lines);
+}
+
 Plane* GeometryFactory::createPlane(Point* p1, Vector* v1, Vector* v2) const {
     return new Plane(p1, v1, v2);
 }

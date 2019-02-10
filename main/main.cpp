@@ -14,8 +14,24 @@ void print_Keypoint(const KeyPoint *point) {
     cout << "(" << point->x << ", " << point->y << ", " << point->z << ")" << endl;
 };
 
+string lineName(LineType type) {
+    switch (type)
+    {
+        case LineType::StraightLine:
+            return "Straight Line";
+        case LineType::ArcLine:
+            return "Arc Line";
+        case LineType::Polyline:
+            return "Polyline";
+        case LineType::UnspecifiedLine:
+            return "Unspecified Line";
+        default:
+            return "";
+    }
+}
+
 void print_Line(const Line *line) {
-   cout << "(" << line->getID() << ") type: " << line->getLineType() << endl;
+   cout << "(" << line->getID() << ") type: " << lineName(line->getLineType()) << endl;
 };
 
 int main(int argc, char **argv) {

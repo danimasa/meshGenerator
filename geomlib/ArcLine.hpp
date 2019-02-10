@@ -9,7 +9,7 @@ class GeometryFactory;
 
 class ArcLine : public Line {
 public:
-    string getLineType() const { return "arc-line"; }
+    LineType getLineType() const { return LineType::ArcLine; }
     double length() const;
     Point pointInLine(const double position);
 

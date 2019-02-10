@@ -62,18 +62,24 @@ geomlib::Geometry* AreaInterpreter::interpret(string &block) {
 
   int totalLines = normal_lines_qtd + concatenated_lines_qtd;
 
-  if (totalLines <= 2) {
+  if (normal_lines_qtd <= 2) {
     throw std::invalid_argument("minimal of 3 lines to define an area is necessary.");
   }
 
   vector<Line*> lineList;
-  lineList.reserve(totalLines);
+  lineList.reserve(normal_lines_qtd);
 
   // Leitura das Linhas
-  for (int i=0; i < totalLines; i++) {
+  for (int i=0; i < normal_lines_qtd; i++) {
     line = lines.at(i + 1);
     auto corresp_line = findLineWithId(line, geomList);
     lineList.push_back(corresp_line);
+  }
+
+  // Processar linhas concatenadas
+  for(int i=normal_lines_qtd; i < concatenated_lines_qtd; i++) {
+    line = lines.at(i + 1);
+    auto corresp_line = findLineWithId(line, geomList);
   }
 
   line = lines.at(totalLines + 1);

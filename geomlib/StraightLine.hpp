@@ -8,7 +8,7 @@ class GeometryFactory;
 
 class StraightLine : public Line {
 public:
-    string getLineType() const { return "straight-line"; }
+    LineType getLineType() const { return LineType::StraightLine; }
     double length() const;
     Point pointInLine(const double position);
 
