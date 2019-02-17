@@ -11,19 +11,27 @@ class Polyline : public Line {
 public:
     LineType getLineType() const { return LineType::Polyline; }
 
-    std::vector<Line*> get_lines() const { return lines; }
-    double length() const { return 0.0; }
-    Point pointInLine(const double position) { return Point(0, 0, 0); }
+    std::vector<Line*> get_lines() const;
+    double length() const;
+    Point pointInLine(const double position);
+
+    enum class LINE_DIRECTION {
+        DIRECT,
+        INVERSE
+    };
+
+    struct Line_in_Polyline {
+        Line* line;
+        LINE_DIRECTION direction;
+    };
 
 private:
     Polyline(
         KeyPoint* init_point,
         KeyPoint* final_point,
-        std::vector<Line*> lines) :
-        Line(init_point, final_point),
-        lines(lines) {}
+        std::vector<Line*> lineList);
 
-    std::vector<Line*> lines;
+    std::vector<Line_in_Polyline> lines;
 
     friend class GeometryFactory;
 };
