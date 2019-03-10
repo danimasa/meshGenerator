@@ -106,7 +106,7 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
             }
         }
 
-        auto undefinedLine = _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor);
+        auto undefinedLine = _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor, lineLength);
         undefinedLine->setID(id);
         return undefinedLine;
     } catch( boost::bad_lexical_cast const& ) {

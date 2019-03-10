@@ -3,9 +3,14 @@
 
 namespace geomlib {
 
+int Geometry::next_id = -1;
+int Geometry::getNextId() {
+    return next_id++;
+}
+
 Geometry::Geometry()
-    : ID(0)
 {
+    ID = getNextId();
 }
 
 Geometry::Geometry(const Geometry &geometry)

@@ -4,7 +4,21 @@ using namespace std;
 
 namespace geomlib {
 
-Polyline::Line_in_Polyline nextTouchingLine(const Point& point, vector<Line*>& remainingLines) {
+bool pointInOnlyOneLine(const KeyPoint& point, vector<Line*>& lines) {
+  bool firstLineFound = false;
+  for(int i = 0; i < lines.size(); i++) {
+    auto l = lines[i];
+    if(*l->init_point == point || *l->final_point == point) {
+      if (!firstLineFound) {
+        firstLineFound = true;
+      }
+      else return false;
+    }
+  }
+  return true;
+}
+
+Polyline::Line_in_Polyline nextTouchingLine(const KeyPoint& point, vector<Line*>& remainingLines) {
   int index = -1;
   Line* searchedLine = NULL;
   for(int i = 0; i < remainingLines.size(); i++) {
@@ -41,8 +55,14 @@ Polyline::Polyline(
     throw std::invalid_argument("A polyline must have at least two lines");
 
   vector<Line*> remainingLines = lineList;
-  Point searchedPoint = *init_point;
-  Point finalPoint = *final_point;
+  KeyPoint searchedPoint = *init_point;
+  KeyPoint finalPoint = *final_point;
+
+  if(!pointInOnlyOneLine(searchedPoint, remainingLines)) {
+    searchedPoint = *final_point;
+    finalPoint = *init_point;
+  }
+
   do {
     Line_in_Polyline searchedLine = nextTouchingLine(searchedPoint, remainingLines);
     lines.push_back(searchedLine);
@@ -50,6 +70,15 @@ Polyline::Polyline(
     if(searchedLine.direction == LINE_DIRECTION::DIRECT) searchedPoint = *searchedLine.line->final_point;
     else searchedPoint = *searchedLine.line->init_point;
   } while(searchedPoint != finalPoint);
+
+  int linesSize = lines.size(); // if 1 the init and final point is in the same line
+  Line* init_line = lines[0].line;
+  Line* final_line = lines[lines.size() - 1].line;
+
+  if(linesSize == 1 || !(init_line->init_point == init_point || init_line->final_point == init_point) ||
+     !(final_line->init_point == final_point || final_line->final_point == final_point)) {
+       throw std::invalid_argument("Polyline continuity problem, could not possible to start and finish in the provided points");
+  }
 }
 
 double Polyline::length() const {
@@ -69,22 +98,31 @@ Point Polyline::pointInLine(const double position) {
     double totalLength = length();
     double maxLinePosition = 0;
     double sumPassedPosition = 0;
+    double initialLinePosition = 0;
+    double finalLinePosition = 0;
     auto litr = lines.begin();
     maxLinePosition = litr->line->length() / totalLength;
+    finalLinePosition = maxLinePosition;
     while(maxLinePosition < position) {
       sumPassedPosition += maxLinePosition;
+      initialLinePosition = maxLinePosition;
       litr++;
       maxLinePosition = sumPassedPosition + ( litr->line->length() / totalLength );
+      finalLinePosition = maxLinePosition;
     } 
 
     Line_in_Polyline lineWIthPoint = *litr;
-    double linePosition = position - sumPassedPosition;
-    return lineWIthPoint.line->pointInLine(linePosition);
+    double linePosition = (position - initialLinePosition) / (finalLinePosition - initialLinePosition);
+    if (lineWIthPoint.direction == LINE_DIRECTION::INVERSE) {
+      linePosition = 1 - linePosition;
+    }
+    auto point = lineWIthPoint.line->pointInLine(linePosition); 
+    return point;
 }
 
 vector<Line*> Polyline::get_lines() const {
-  vector<Line*> lineList(lines.size());
-  for(auto& l : lines)
+  vector<Line*> lineList;
+  for(auto l : lines)
     lineList.push_back(l.line);
   return lineList;
 }

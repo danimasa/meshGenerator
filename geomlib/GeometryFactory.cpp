@@ -61,9 +61,10 @@ UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
     KeyPoint* final_point,
     Point* mid_point,
     Vector* tangent_init_vector,
-    Vector* tangent_final_vector) const {
+    Vector* tangent_final_vector,
+    double length) const {
     
-    return new UnspecifiedLine(init_point, final_point, mid_point, tangent_init_vector, tangent_final_vector);
+    return new UnspecifiedLine(init_point, final_point, mid_point, tangent_init_vector, tangent_final_vector, length);
 }
 
 Polyline* GeometryFactory::createPolyline(

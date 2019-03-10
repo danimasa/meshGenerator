@@ -27,7 +27,8 @@ namespace geomlib {
             KeyPoint* final_point,
             Point* mid_point,
             Vector* tangent_init_vector,
-            Vector* tangent_final_vector) const;
+            Vector* tangent_final_vector,
+            double length) const;
 
         Polyline* createPolyline(
             KeyPoint* init_point,

@@ -19,11 +19,15 @@ namespace geomlib {
 
         virtual std::string getGeometryType() const = 0;
 
+        static int getNextId();
+
     protected:
         int ID;
 
         Geometry();
         Geometry(const Geometry &geometry);
-    };
 
+    private:
+        static int next_id;
+    };
 }

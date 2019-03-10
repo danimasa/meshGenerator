@@ -23,90 +23,92 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
 
   auto *factory = GeometryFactory::getDefaultInstance();
 
-  auto p1 = Point();
-  auto kp1 = factory->createKeypoint(p1);
-  kp1->setID(1);
-  list.add(kp1);
+  SECTION("Common List") {
+    auto p1 = Point();
+    auto kp1 = factory->createKeypoint(p1);
+    kp1->setID(1);
+    list.add(kp1);
 
-  auto p2 = Point(0, 1, 0);
-  auto kp2 = factory->createKeypoint(p2);
-  kp2->setID(2);
-  list.add(kp2);
+    auto p2 = Point(0, 1, 0);
+    auto kp2 = factory->createKeypoint(p2);
+    kp2->setID(2);
+    list.add(kp2);
 
-  auto p3 = Point(1, 1, 0);
-  auto kp3 = factory->createKeypoint(p3);
-  kp3->setID(3);
-  list.add(kp3);
+    auto p3 = Point(1, 1, 0);
+    auto kp3 = factory->createKeypoint(p3);
+    kp3->setID(3);
+    list.add(kp3);
 
-  auto p4 = Point(1, 0, 0);
-  auto kp4 = factory->createKeypoint(p4);
-  kp4->setID(4);
-  list.add(kp4);
+    auto p4 = Point(1, 0, 0);
+    auto kp4 = factory->createKeypoint(p4);
+    kp4->setID(4);
+    list.add(kp4);
 
-  auto line1 = factory->createStraightLine(kp1, kp2);
-  line1->setID(1);
-  list.add(line1);
+    auto line1 = factory->createStraightLine(kp1, kp2);
+    line1->setID(1);
+    list.add(line1);
 
-  auto line4 = factory->createStraightLine(kp2, kp3);
-  line4->setID(4);
-  list.add(line4);
+    auto line4 = factory->createStraightLine(kp2, kp3);
+    line4->setID(4);
+    list.add(line4);
 
-  auto line16 = factory->createStraightLine(kp3, kp4);
-  line16->setID(16);
-  list.add(line16);
+    auto line16 = factory->createStraightLine(kp3, kp4);
+    line16->setID(16);
+    list.add(line16);
 
-  auto line46 = factory->createStraightLine(kp4, kp1);
-  line46->setID(46);
-  list.add(line46);
+    auto line46 = factory->createStraightLine(kp4, kp1);
+    line46->setID(46);
+    list.add(line46);
 
-  SECTION("Valid Area") {
-    std::string content = "        1.        4.        0.\n"
+    SECTION("Valid Area") {
+      std::string content = "        1.        4.        0.\n"
+          "1.\n"
+          "4.\n"
+          "16.\n"
+          "46.\n"
+          "1.\n"
+          "46.\n";
+      
+      auto geom = interpreter.interpret(content);
+
+      auto isArea = dynamic_cast<Area*>(geom);
+      REQUIRE( isArea != NULL );
+      REQUIRE( isArea->getGeometryType() == "area" );
+      REQUIRE( isArea->lines.size() == 4);
+      REQUIRE( isArea->first_line->getID() == 1);
+      REQUIRE( isArea->last_line->getID() == 46);
+    }
+
+    SECTION("Empty block returns null") {
+      std::string content = "";
+      
+      auto geom = interpreter.interpret(content);
+
+      auto area = dynamic_cast<Area*>(geom);
+      REQUIRE( area == NULL );
+    }
+
+    SECTION("Minimal of 3 lines to define an area") {
+      std::string content = "        1.        2.        0.\n"
+          "1.\n"
+          "4.\n"
+          "1.\n"
+          "4.\n";
+
+      REQUIRE_THROWS_WITH( interpreter.interpret(content), Contains("minimal of 3 lines") );
+    }
+
+    SECTION("Line not in list of lines") {
+      std::string content = "        1.        4.        0.\n"
         "1.\n"
         "4.\n"
-        "16.\n"
+        "10.\n"
         "46.\n"
         "1.\n"
         "46.\n";
-    
-    auto geom = interpreter.interpret(content);
 
-    auto isArea = dynamic_cast<Area*>(geom);
-    REQUIRE( isArea != NULL );
-    REQUIRE( isArea->getGeometryType() == "area" );
-    REQUIRE( isArea->lines.size() == 4);
-    REQUIRE( isArea->first_line->getID() == 1);
-    REQUIRE( isArea->last_line->getID() == 46);
-  }
-
-  SECTION("Empty block returns null") {
-    std::string content = "";
-    
-    auto geom = interpreter.interpret(content);
-
-    auto area = dynamic_cast<Area*>(geom);
-    REQUIRE( area == NULL );
-  }
-
-  SECTION("Minimal of 3 lines to define an area") {
-    std::string content = "        1.        2.        0.\n"
-        "1.\n"
-        "4.\n"
-        "1.\n"
-        "4.\n";
-
-    REQUIRE_THROWS_WITH( interpreter.interpret(content), Contains("minimal of 3 lines") );
-  }
-
-  SECTION("Line not in list of lines") {
-    std::string content = "        1.        4.        0.\n"
-      "1.\n"
-      "4.\n"
-      "10.\n"
-      "46.\n"
-      "1.\n"
-      "46.\n";
-
-    REQUIRE_THROWS_WITH( interpreter.interpret(content), Contains("not in the list of lines") );
+      REQUIRE_THROWS_WITH( interpreter.interpret(content), Contains("not in the list of lines") );
+    }
   }
   
   SECTION("Discover concatenated lines") {
@@ -164,6 +166,21 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     auto line8 = lineInterpreter.interpret(line8Content);
     list.add(line8);
 
+    // Lines of concatenated
+    std::string line9Content = "        9.        7.       8.\n"
+        "        0.5830951895E+00    0.7500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
+        "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n"
+        "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n";
+    auto line9 = lineInterpreter.interpret(line9Content);
+    list.add(line9);
+
+    std::string line10Content = "        10.        8.       9.\n"
+        "        0.5830951895E+00    0.2500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
+        "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n"
+        "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n";
+    auto line10 = lineInterpreter.interpret(line10Content);
+    list.add(line10);
+
     auto undefinedLine5 = dynamic_cast<Line*>(line5);
     REQUIRE( undefinedLine5->getLineType() == LineType::UnspecifiedLine );
 
@@ -179,7 +196,6 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     auto geom = interpreter.interpret(content);
     auto isArea = dynamic_cast<Area*>(geom);
 
-    REQUIRE( isArea != NULL );
     REQUIRE( isArea->getGeometryType() == "area" );
     REQUIRE( isArea->lines.size() == 4);
     REQUIRE( isArea->first_line->getID() == 2);
@@ -189,5 +205,11 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     // create polyline type
     REQUIRE( concatenatedLine5->getLineType() == LineType::Polyline );
     // validate lines inner polyline
+    Polyline* polyline = dynamic_cast<Polyline*>(concatenatedLine5);
+    auto lines = polyline->get_lines();
+    int size = lines.size();
+    Line* l1 = lines[0];
+    REQUIRE( lines[0]->getID() == 9 );
+    REQUIRE( lines[1]->getID() == 10 );
   }
 }

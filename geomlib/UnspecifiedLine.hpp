@@ -13,7 +13,7 @@ public:
     Vector* tangent_final_vector;
 
     LineType getLineType() const { return LineType::UnspecifiedLine; }
-    double length() const { return 0; }
+    double length() const { return p_length; }
     Point pointInLine(const double position) { return Point(); }
 
 private:
@@ -22,11 +22,15 @@ private:
         KeyPoint* final_point,
         Point* mid_point,
         Vector* tangent_init_vector,
-        Vector* tangent_final_vector) :
+        Vector* tangent_final_vector,
+        double length) :
             Line(init_point, final_point),
             mid_point(mid_point),
             tangent_init_vector(tangent_init_vector),
-            tangent_final_vector(tangent_final_vector) {}
+            tangent_final_vector(tangent_final_vector),
+            p_length(length) {}
+
+    double p_length;
 
     friend class GeometryFactory;
 };

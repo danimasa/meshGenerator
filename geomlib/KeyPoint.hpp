@@ -14,5 +14,13 @@ namespace geomlib {
             Point(point.x, point.y, point.z) {}
 
         std::string getGeometryType() const { return "keypoint"; }
+
+        bool operator==(const KeyPoint &that) const {
+            return that.getID() == getID();
+        }
+
+        bool operator!=(const KeyPoint &that) const {
+            return that.getID() != getID();
+        }
     };
 }

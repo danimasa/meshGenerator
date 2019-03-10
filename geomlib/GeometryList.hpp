@@ -8,7 +8,7 @@ namespace geomlib {
 
     class GeometryList {
     public:
-        GeometryList() : objects(std::vector<Geometry*>()) {}
+        GeometryList() {}
 
         void add(Geometry* geometry);
 
@@ -21,6 +21,7 @@ namespace geomlib {
 
     private:
         std::vector<Geometry*> objects;
+        std::vector<int> ids;
     };
 
 }

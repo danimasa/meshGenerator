@@ -21,6 +21,7 @@ TEST_CASE("GeometryList.hpp") {
 
     SECTION("Should add a Geometry") {
         std::unique_ptr<Geometry> geom { new KeyPoint() };
+        geom->setID(1);
         list.add(geom.get());
         
         REQUIRE(list.size() == 1);
@@ -35,5 +36,20 @@ TEST_CASE("GeometryList.hpp") {
         REQUIRE( kp != NULL );
         REQUIRE( kp->getGeometryType() == "keypoint" );
         REQUIRE( kp->getID() == 2 );
+    }
+
+    SECTION("Should substite if added the same ID") {
+        std::unique_ptr<Geometry> geom { new KeyPoint() };
+        geom->setID(2);
+        list.add(geom.get());
+
+        Point p(1, 1, 1);
+        std::unique_ptr<Geometry> geom2 { new KeyPoint(p) };
+        geom2->setID(2);
+        list.add(geom2.get());
+
+        auto kp = list.getByID("keypoint", 2);
+        Point* point = dynamic_cast<Point*>(kp);
+        REQUIRE( *point == p );
     }
 }
