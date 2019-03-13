@@ -79,6 +79,25 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
       REQUIRE( isArea->last_line->getID() == 46);
     }
 
+    SECTION("Not in order Valid Area") {
+      std::string content = "        1.        4.        0.\n"
+          "1.\n"
+          "16.\n"
+          "4.\n"
+          "46.\n"
+          "1.\n"
+          "46.\n";
+      
+      auto geom = interpreter.interpret(content);
+
+      auto isArea = dynamic_cast<Area*>(geom);
+      REQUIRE( isArea != NULL );
+      REQUIRE( isArea->getGeometryType() == "area" );
+      REQUIRE( isArea->lines.size() == 4);
+      REQUIRE( isArea->first_line->getID() == 1);
+      REQUIRE( isArea->last_line->getID() == 46);
+    }
+
     SECTION("Empty block returns null") {
       std::string content = "";
       

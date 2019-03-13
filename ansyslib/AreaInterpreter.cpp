@@ -1,5 +1,6 @@
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -162,9 +163,15 @@ geomlib::Geometry* AreaInterpreter::interpret(string &block) {
   
   line = lines.at(totalLines + 2);
   auto last_line = findLineWithId(line, geomList);
+  Area* area;
 
-  auto area = _factory->createArea(lineList, first_line, last_line);
-  area->setID(id);
+  try {
+    area = _factory->createArea(lineList, first_line, last_line);
+    area->setID(id);
+  } catch(const std::exception& e) {
+    std::cout << "Area: " << id << std::endl;
+    throw std::invalid_argument("Not permited non touching lines");
+  }
 
   return area;
 }

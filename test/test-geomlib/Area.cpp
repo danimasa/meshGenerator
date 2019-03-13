@@ -33,8 +33,8 @@ TEST_CASE("Area") {
   }
 
   SECTION("Not permited non touching lines") {
-    vector<Line*> lines { line1, line3, line2, line4 };
-    REQUIRE_THROWS( factory->createArea(lines, line1, line4) );
+    vector<Line*> lines { line1, line3, line4 };
+    REQUIRE_THROWS( factory->createArea(lines, line1, line3) );
   }
 
   SECTION("Not permited initial or final lines not in the list") {

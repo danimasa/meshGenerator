@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <stdexcept>
+#include <list>
 #include "armadillo"
 
 namespace geomlib {
@@ -91,14 +92,34 @@ Area* GeometryFactory::createArea(vector<Line*> lines, Line* first_line, Line* l
         throw std::invalid_argument("first_line and last_line must contain in lines list");
     }
 
-    for(int i=1; i<lines.size(); i++) {
-        if(lines[i - 1]->init_point != lines[i]->init_point &&
-           lines[i - 1]->init_point != lines[i]->final_point &&
-           lines[i - 1]->final_point != lines[i]->init_point &&
-           lines[i - 1]->final_point != lines[i]->final_point) {
+    KeyPoint *initPoint = first_line->init_point;
+    KeyPoint *searchedPoint = first_line->final_point;
+
+    // Verify all touching lines
+    std::list<Line*> remainingLines(lines.begin(), lines.end());
+    // Remove first_line
+    std::list<Line*>::iterator firstIt = std::find(remainingLines.begin(), remainingLines.end(), first_line);
+    remainingLines.erase(firstIt);
+
+    do {
+        bool findOne = false;
+        for(auto it = remainingLines.begin(); it != remainingLines.end(); ++it) {
+            auto line = *it;
+            if(line->init_point == searchedPoint || line->final_point == searchedPoint) {
+                if(line->init_point == searchedPoint)
+                    searchedPoint = line->final_point;
+                else
+                    searchedPoint = line->init_point;
+                remainingLines.erase(it);
+                findOne = true;
+                break;
+            }
+        }
+        if(!findOne) {
+            std::cout << "searchedPoint: " << searchedPoint->getID() << std::endl;
             throw std::invalid_argument("Not permited non touching lines");
         }
-    }
+    } while(searchedPoint != initPoint && remainingLines.size() != 0);
 
     return new Area(lines, first_line, last_line);
 }
