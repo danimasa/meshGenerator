@@ -203,11 +203,13 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     auto undefinedLine5 = dynamic_cast<Line*>(line5);
     REQUIRE( undefinedLine5->getLineType() == LineType::UnspecifiedLine );
 
-    std::string content = "        2.       4.       1.\n"
-      "2.\n"
+    std::string content = "        2.       6.       1.\n"
       "3.\n"
+      "2.\n"
       "5.\n"
       "8.\n"
+      "9.\n"
+      "10.\n"
       "5.\n"
       "2.\n"
       "3.\n";

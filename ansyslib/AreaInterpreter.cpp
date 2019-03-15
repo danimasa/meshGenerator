@@ -78,13 +78,12 @@ Polyline* findPath(Line* startLine,
     return factory->createPolyline(init_point, final_point, lines);
 }
 
-Polyline* findPolyline(UnspecifiedLine* line, GeometryList *geomList) {
-  auto allLines = geomList->getListOf("line");
+Polyline* findPolyline(UnspecifiedLine* line, vector<Line*> lineList) {
   KeyPoint* startPoint = line->init_point;
 
   vector<Line*> linesStartingKp;
   vector<Line*> allLinesList;
-  for(auto l : allLines) {
+  for(auto l : lineList) {
     Line* sLine = dynamic_cast<Line*>(l);
     allLinesList.push_back(sLine);
     if (sLine != line && (sLine->init_point == startPoint || sLine->final_point == startPoint))
@@ -152,17 +151,35 @@ geomlib::Geometry* AreaInterpreter::interpret(string &block) {
   for(int i=normal_lines_qtd; i < totalLines; i++) {
     line = lines.at(i + 1);
     auto corresp_line = findLineWithId(line, geomList);
-    UnspecifiedLine* uLine = dynamic_cast<UnspecifiedLine*>(corresp_line);
-    auto polyline = findPolyline(uLine, geomList);
-    polyline->setID(uLine->getID());
-    geomList->add(polyline);
+    Polyline* polyline;
+
+    if (corresp_line->getLineType() == LineType::UnspecifiedLine) {
+      UnspecifiedLine* uLine = dynamic_cast<UnspecifiedLine*>(corresp_line);
+      polyline = findPolyline(uLine, lineList);
+      polyline->setID(uLine->getID());
+      geomList->add(polyline);
+      
+      auto uLinePos = std::find(lineList.begin(), lineList.end(), corresp_line);
+      auto pos = std::distance(lineList.begin(), uLinePos);
+      lineList[pos] = polyline;
+    } else {
+      polyline = dynamic_cast<Polyline*>(corresp_line);
+    }
+
+    // Remove lines from polyline
+    for(auto l : polyline->get_lines()) {
+      auto firstIt = std::find(lineList.begin(), lineList.end(), l);
+      lineList.erase(firstIt);
+    }
   }
 
   line = lines.at(totalLines + 1);
   auto first_line = findLineWithId(line, geomList);
+  auto type = first_line->getLineType();
   
   line = lines.at(totalLines + 2);
   auto last_line = findLineWithId(line, geomList);
+  auto type2 = last_line->getLineType();
   Area* area;
 
   try {
