@@ -9,25 +9,32 @@ namespace geomlib {
 }
 
 namespace geomlib {
+  
+  enum class GeometryType { Keypoint, Line, Area, Volume };
 
-    class Geometry {
-    public:
-        friend class GeometryFactory;
+  class Geometry {
+  public:
+    friend class GeometryFactory;
 
-        virtual int getID() const { return ID; }
-        virtual void setID(int newID) { ID = newID; }
+    virtual int getID() const { return ID; }
+    virtual void setID(int newID) { ID = newID; }
 
-        virtual std::string getGeometryType() const = 0;
+    GeometryType getGeometryType() { return pvt_type; }
 
-        static int getNextId();
+    static int getNextId(GeometryType type);
 
-    protected:
-        int ID;
+  protected:
+    int ID;
 
-        Geometry();
-        Geometry(const Geometry &geometry);
+    Geometry(GeometryType type);
+    Geometry(const Geometry &geometry);
 
-    private:
-        static int next_id;
-    };
+  private:
+    static int next_kp_id;
+    static int next_line_id;
+    static int next_area_id;
+    static int next_volume_id;
+
+    GeometryType pvt_type;
+  };
 }

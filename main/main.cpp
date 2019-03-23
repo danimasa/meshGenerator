@@ -53,14 +53,14 @@ void leitura(const string &arquivo) {
     geomlib::FileReader *reader = factory.createReader();
     GeometryList* geometry = reader->read(arquivo);
     cout << "Size: " << geometry->size() << endl;
-    auto kplist = geometry->getListOf("keypoint");
+    auto kplist = geometry->getListOf(GeometryType::Keypoint);
     cout << "Keypoints: " << kplist.size() << endl;
     for(auto p : kplist) {
         auto keypoint = dynamic_cast<KeyPoint*>(p);
         print_Keypoint(keypoint);
     }
 
-    auto lineList = geometry->getListOf("line");
+    auto lineList = geometry->getListOf(GeometryType::Line);
     cout << "Linhas: " << lineList.size() << endl;
     for(auto l : lineList) {
         auto linha = dynamic_cast<Line*>(l);

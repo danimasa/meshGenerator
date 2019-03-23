@@ -16,14 +16,13 @@ namespace geomlib {
         KeyPoint* init_point;
         KeyPoint* final_point;
         
-        string getGeometryType() const { return "line"; }
-
         virtual LineType getLineType() const = 0;
         virtual double length() const = 0;
         virtual Point pointInLine(const double position) = 0;
 
     protected:
         Line(KeyPoint* init_point, KeyPoint* final_point) :
+            Geometry(GeometryType::Line),
             init_point(init_point), final_point(final_point) {}
     };
 }

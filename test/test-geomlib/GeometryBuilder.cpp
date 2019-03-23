@@ -13,7 +13,6 @@ TEST_CASE("GeometryBuilder", "[builder]") {
     Mock<Interpreter> interpreter;
     Mock<Geometry> geometry;
 
-    Fake(Method(geometry, getGeometryType));
     When(Method(geometry, getID)).AlwaysReturn(1);
 
     When(Method(interpreter, getLinesPerObject)).AlwaysReturn(2);

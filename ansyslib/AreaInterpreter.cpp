@@ -20,7 +20,7 @@ Line* findLineWithId(string id_str, GeometryList *geomList) {
   id_str.pop_back();
   
   int lineId = boost::lexical_cast<int>(id_str);
-  auto corresp_geom = geomList->getByID("line", lineId);
+  auto corresp_geom = geomList->getByID(GeometryType::Line, lineId);
 
   if (corresp_geom == NULL) {
     stringstream message;

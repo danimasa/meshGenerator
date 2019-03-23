@@ -49,8 +49,8 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         int init_point_id = boost::lexical_cast<int>(init_point_str);
         int final_point_id = boost::lexical_cast<int>(final_point_str);
 
-        auto init_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", init_point_id));
-        auto final_point = dynamic_cast<KeyPoint*>(geomList->getByID("keypoint", final_point_id));
+        auto init_point = dynamic_cast<KeyPoint*>(geomList->getByID(GeometryType::Keypoint, init_point_id));
+        auto final_point = dynamic_cast<KeyPoint*>(geomList->getByID(GeometryType::Keypoint, final_point_id));
 
         if (init_point == nullptr || final_point == nullptr) {
             throw std::invalid_argument("init_point and final_point must be defined: " + init_point_str + " - " + final_point_str);

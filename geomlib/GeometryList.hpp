@@ -16,8 +16,8 @@ namespace geomlib {
         int capacity() const;
         int size() const;
 
-        std::vector<Geometry*> getListOf(std::string geometryType);
-        Geometry* getByID(std::string geometryType, int id);
+        std::vector<Geometry*> getListOf(GeometryType geometryType);
+        Geometry* getByID(GeometryType geometryType, int id);
 
     private:
         std::vector<Geometry*> objects;

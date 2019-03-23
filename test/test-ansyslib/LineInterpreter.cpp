@@ -36,7 +36,7 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
 
         auto isLine = dynamic_cast<Line*>(geom);
         REQUIRE( isLine != NULL );
-        REQUIRE( isLine->getGeometryType() == "line");
+        REQUIRE( isLine->getGeometryType() == GeometryType::Line);
         REQUIRE( isLine->getLineType() == LineType::StraightLine );
         REQUIRE( isLine->init_point->getID() == 2 );
         REQUIRE( isLine->final_point->getID() == 15 );
@@ -62,7 +62,7 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
 
         auto isLine = dynamic_cast<Line*>(geom);
         REQUIRE( isLine != NULL );
-        REQUIRE( isLine->getGeometryType() == "line");
+        REQUIRE( isLine->getGeometryType() == GeometryType::Line );
         REQUIRE( isLine->getLineType() == LineType::ArcLine );
         REQUIRE( isLine->init_point->getID() == 23 );
         REQUIRE( isLine->final_point->getID() == 31 );
@@ -78,7 +78,7 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
 
         auto isLine = dynamic_cast<Line*>(geom);
         REQUIRE( isLine != NULL );
-        REQUIRE( isLine->getGeometryType() == "line");
+        REQUIRE( isLine->getGeometryType() == GeometryType::Line );
         REQUIRE( isLine->getLineType() == LineType::UnspecifiedLine );
         REQUIRE( isLine->init_point->getID() == 2 );
         REQUIRE( isLine->final_point->getID() == 15 );

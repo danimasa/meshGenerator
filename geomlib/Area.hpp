@@ -16,10 +16,11 @@ public:
   Line* first_line;
   Line* last_line;
 
-  string getGeometryType() const { return "area"; }
+  GeometryType getGeometryType() const { return GeometryType::Area; }
 
 private:
   Area(vector<Line*> lines, Line* first_line, Line* last_line) :
+    Geometry(GeometryType::Area),
     lines(lines), first_line(first_line), last_line(last_line) {}
 
   friend class GeometryFactory;

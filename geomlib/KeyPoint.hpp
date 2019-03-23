@@ -8,12 +8,13 @@ namespace geomlib {
     class KeyPoint : public Geometry, public Point {
     public:
         // Contrutores somente para friend class
-        KeyPoint() : Point() {}
+        KeyPoint() : Geometry(GeometryType::Keypoint), Point() {}
 
         KeyPoint(Point &point) :
+            Geometry(GeometryType::Keypoint),
             Point(point.x, point.y, point.z) {}
 
-        std::string getGeometryType() const { return "keypoint"; }
+        GeometryType getGeometryType() const { return GeometryType::Keypoint; }
 
         bool operator==(const KeyPoint &that) const {
             return that.getID() == getID();

@@ -73,7 +73,7 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
 
       auto isArea = dynamic_cast<Area*>(geom);
       REQUIRE( isArea != NULL );
-      REQUIRE( isArea->getGeometryType() == "area" );
+      REQUIRE( isArea->getGeometryType() == GeometryType::Area );
       REQUIRE( isArea->lines.size() == 4);
       REQUIRE( isArea->first_line->getID() == 1);
       REQUIRE( isArea->last_line->getID() == 46);
@@ -92,7 +92,7 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
 
       auto isArea = dynamic_cast<Area*>(geom);
       REQUIRE( isArea != NULL );
-      REQUIRE( isArea->getGeometryType() == "area" );
+      REQUIRE( isArea->getGeometryType() == GeometryType::Area );
       REQUIRE( isArea->lines.size() == 4);
       REQUIRE( isArea->first_line->getID() == 1);
       REQUIRE( isArea->last_line->getID() == 46);
@@ -217,12 +217,12 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     auto geom = interpreter.interpret(content);
     auto isArea = dynamic_cast<Area*>(geom);
 
-    REQUIRE( isArea->getGeometryType() == "area" );
+    REQUIRE( isArea->getGeometryType() == GeometryType::Area );
     REQUIRE( isArea->lines.size() == 4);
     REQUIRE( isArea->first_line->getID() == 2);
     REQUIRE( isArea->last_line->getID() == 3); // second_line not last_line
 
-    auto concatenatedLine5 = dynamic_cast<Line*>(list.getByID("line", 5));
+    auto concatenatedLine5 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, 5));
     // create polyline type
     REQUIRE( concatenatedLine5->getLineType() == LineType::Polyline );
     // validate lines inner polyline

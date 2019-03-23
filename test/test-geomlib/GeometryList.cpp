@@ -32,9 +32,9 @@ TEST_CASE("GeometryList.hpp") {
         geom->setID(2);
         list.add(geom.get());
 
-        auto kp = list.getByID("keypoint", 2);
+        auto kp = list.getByID(GeometryType::Keypoint, 2);
         REQUIRE( kp != NULL );
-        REQUIRE( kp->getGeometryType() == "keypoint" );
+        REQUIRE( kp->getGeometryType() == GeometryType::Keypoint );
         REQUIRE( kp->getID() == 2 );
     }
 
@@ -48,7 +48,7 @@ TEST_CASE("GeometryList.hpp") {
         geom2->setID(2);
         list.add(geom2.get());
 
-        auto kp = list.getByID("keypoint", 2);
+        auto kp = list.getByID(GeometryType::Keypoint, 2);
         Point* point = dynamic_cast<Point*>(kp);
         REQUIRE( *point == p );
     }

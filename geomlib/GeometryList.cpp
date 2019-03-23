@@ -38,7 +38,7 @@ void GeometryList::add(Geometry* geometry) {
     objects.push_back(geometry);
 }
 
-std::vector<Geometry*> GeometryList::getListOf(std::string geometryType) {
+std::vector<Geometry*> GeometryList::getListOf(GeometryType geometryType) {
     std::vector<Geometry*> result;
     for(auto i = 0; i < objects.size(); i++) {
         auto obj = objects.at(i);
@@ -49,7 +49,7 @@ std::vector<Geometry*> GeometryList::getListOf(std::string geometryType) {
     return result;
 }
 
-Geometry* GeometryList::getByID(std::string geometryType, int id) {
+Geometry* GeometryList::getByID(GeometryType geometryType, int id) {
     auto findId = std::find(ids.begin(), ids.end(), id);
     while (findId != ids.end()) {
       int pos = std::distance(ids.begin(), findId);
