@@ -29,4 +29,24 @@ TEST_CASE("Straight Line") {
         Point midPoint(0, 0, 0.5);
         REQUIRE( line->pointInLine(0.5) == midPoint );
     }
+
+    SECTION("is Point in Line") {
+        Point inLinePoint(0, 0, 0.75);
+        REQUIRE( line->isPointInLine(inLinePoint) == true );
+
+        Point outLineLowerPoint(0, 0, -1);
+        REQUIRE(line->isPointInLine(outLineLowerPoint) == false );
+
+        Point outLineUpperPoint(0, 0, 1.5);
+        REQUIRE(line->isPointInLine(outLineUpperPoint) == false );
+
+        Point final3dPoint(1, 1, 1);
+        KeyPoint* final3dKp = factory->createKeypoint(final3dPoint);
+        StraightLine* line3d = factory->createStraightLine(initKp, final3dKp);
+        Point in3dLinePoint(0.5, 0.5, 0.5);
+        REQUIRE( line3d->isPointInLine(in3dLinePoint) == true );
+
+        Point notInLinePoint(2, 0, 1.5);
+        REQUIRE( line3d->isPointInLine(notInLinePoint) == false );
+    }
 }

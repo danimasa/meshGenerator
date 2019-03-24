@@ -16,6 +16,10 @@ double ArcLine::length() const
     return radius * angle;
 }
 
+bool ArcLine::isPointInLine(const Point &point) {
+    return false;
+}
+
 Point ArcLine::pointInLine(const double position)
 {
     if (position < 0 || position > 1)

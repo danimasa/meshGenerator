@@ -19,6 +19,7 @@ namespace geomlib {
         virtual LineType getLineType() const = 0;
         virtual double length() const = 0;
         virtual Point pointInLine(const double position) = 0;
+        virtual bool isPointInLine(const Point &point) = 0;
 
     protected:
         Line(KeyPoint* init_point, KeyPoint* final_point) :

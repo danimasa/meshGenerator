@@ -14,6 +14,7 @@ public:
     std::vector<Line*> get_lines() const;
     double length() const;
     Point pointInLine(const double position);
+    bool isPointInLine(const Point &point);
 
     enum class LINE_DIRECTION {
         DIRECT,

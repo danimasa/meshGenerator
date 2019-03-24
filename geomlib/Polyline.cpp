@@ -88,6 +88,10 @@ double Polyline::length() const {
   return sum_of_lenghts;
 }
 
+bool Polyline::isPointInLine(const Point &point) {
+  return false;
+}
+
 Point Polyline::pointInLine(const double position) {
     if (position < 0 || position > 1)
         throw std::invalid_argument("pointInLine so aceita valores entre 0 e 1");
