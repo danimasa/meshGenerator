@@ -34,6 +34,14 @@ void print_Line(const Line *line) {
    cout << "(" << line->getID() << ") type: " << lineName(line->getLineType()) << endl;
 };
 
+void print_area(const Area *area) {
+    cout << "(" << area->getID() << ") - ";
+    for(auto line : area->lines) {
+        cout << line->getID() << ", ";
+    }
+    cout << endl;
+}
+
 int main(int argc, char **argv) {
     if(argc < 2) {
         help();
@@ -65,6 +73,13 @@ void leitura(const string &arquivo) {
     for(auto l : lineList) {
         auto linha = dynamic_cast<Line*>(l);
         print_Line(linha);
+    }
+
+    auto areaList = geometry->getListOf(GeometryType::Area);
+    cout << "Areas: " << areaList.size() << endl;
+    for(auto a : areaList) {
+        auto area = dynamic_cast<Area*>(a);
+        print_area(area);
     }
 }
 
