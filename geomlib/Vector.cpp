@@ -1,5 +1,6 @@
 #include <cmath>
 #include "Vector.hpp"
+#include "mathUtils.hpp"
 
 #include "armadillo"
 
@@ -8,7 +9,10 @@ namespace geomlib {
 double Vector::angleWith(Vector &v) const {
     double uTimesV = x*v.x + y*v.y + z*v.z;
     double timesNorm = norm() * v.norm();
-    return acos(uTimesV / timesNorm);
+    double division = uTimesV / timesNorm;
+    // tratar problema de valor maior que 1
+    if(double_equals(division, 1)) division = 1;
+    return acos(division);
 }
 
 double Vector::norm() const {

@@ -42,4 +42,15 @@ TEST_CASE("ArcLine") {
         REQUIRE( arco->pointInLine(1) == finalPoint );
         REQUIRE( arco->pointInLine(0.5) == midPoint );
     }
+
+    SECTION("is Point in Line") {
+        REQUIRE( arco->isPointInLine(midPoint) == true );
+        Point otherPoint(0.766757673, 0.3580633435, 0);
+        REQUIRE( arco->isPointInLine(otherPoint) == true );
+        Point notInLine(0.5, 0.5, 0);
+        REQUIRE( arco->isPointInLine(notInLine) == false );
+
+        // TODO: Simular arco 3D
+        REQUIRE( true == false );
+    }
 }

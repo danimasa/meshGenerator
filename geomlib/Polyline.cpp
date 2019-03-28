@@ -89,6 +89,11 @@ double Polyline::length() const {
 }
 
 bool Polyline::isPointInLine(const Point &point) {
+  for(auto &n : lines) {
+    if(n.line->isPointInLine(point))
+      return true;
+  }
+
   return false;
 }
 

@@ -1,5 +1,6 @@
 #include "ArcLine.hpp"
 #include "Vector.hpp"
+#include "mathUtils.hpp"
 
 #include <cmath>
 #include "armadillo"
@@ -17,7 +18,14 @@ double ArcLine::length() const
 }
 
 bool ArcLine::isPointInLine(const Point &point) {
-    return false;
+    if (!plane->contains(&point))
+        return false;
+
+    double radical = pow(point.x - center->x, 2) 
+                   + pow(point.y - center->y, 2)
+                   + pow(point.z - center->z, 2);
+    
+    return double_equals(radical, pow(radius, 2));
 }
 
 Point ArcLine::pointInLine(const double position)
