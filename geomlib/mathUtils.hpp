@@ -2,6 +2,6 @@
 
 #include <math.h>
 
-static inline bool double_equals(double a, double b, double epsilon = 0.000000001) {
+static inline bool double_equals(double a, double b, double epsilon = 0.00000001) {
     return std::abs(a - b) < epsilon;
 }

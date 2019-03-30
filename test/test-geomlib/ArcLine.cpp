@@ -2,6 +2,7 @@
 
 #include "ArcLine.hpp"
 #include "GeometryFactory.hpp"
+#include "mathUtils.hpp"
 
 #include <iostream>
 
@@ -50,7 +51,20 @@ TEST_CASE("ArcLine") {
         Point notInLine(0.5, 0.5, 0);
         REQUIRE( arco->isPointInLine(notInLine) == false );
 
-        // TODO: Simular arco 3D
-        REQUIRE( true == false );
+        Point pinit (0, 0, 0);
+        Point pfinal (-2, 3, 2.5);
+        Point pmid (0.648873897, 1.8891278602, 2.5717897355);
+        Point pinline (1, 1.25, 2);
+
+        Vector init_vec (0.8208931472, 0.1109315064, 0.5602041072);
+        Vector final_vec (-0.8399099769, -0.0824062619, -0.5364330701);
+
+        auto kp1 = factory->createKeypoint(pinit);
+        auto kp2 = factory->createKeypoint(pfinal);
+
+        auto arc3d = factory->createArcLine(kp1, kp2, &pmid, &init_vec, &final_vec);
+        double length = arc3d->length();
+        REQUIRE( double_equals(length, 6.8017956676) == true );
+        REQUIRE( arc3d->isPointInLine(pinline) == true );
     }
 }
