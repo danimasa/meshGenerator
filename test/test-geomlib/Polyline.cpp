@@ -34,14 +34,14 @@ TEST_CASE("Polyline") {
         Polyline* polyline = factory->createPolyline(initKp, finalKp, lines);
 
         REQUIRE( polyline->length() == 4.0 );
-        REQUIRE_THROWS( polyline->pointInLine(-0.1) );
-        REQUIRE_THROWS( polyline->pointInLine(1.1) );
+        REQUIRE_THROWS( polyline->pointAtPosition(-0.1) );
+        REQUIRE_THROWS( polyline->pointAtPosition(1.1) );
 
-        REQUIRE( polyline->pointInLine(0) == initPoint );
-        REQUIRE( polyline->pointInLine(0.5) == midPolylinePoint);
-        REQUIRE( polyline->pointInLine(0.25) == midPoint1);
-        REQUIRE( polyline->pointInLine(0.75) == midPoint2);
-        REQUIRE( polyline->pointInLine(1) == finalPoint );
+        REQUIRE( polyline->pointAtPosition(0) == initPoint );
+        REQUIRE( polyline->pointAtPosition(0.5) == midPolylinePoint);
+        REQUIRE( polyline->pointAtPosition(0.25) == midPoint1);
+        REQUIRE( polyline->pointAtPosition(0.75) == midPoint2);
+        REQUIRE( polyline->pointAtPosition(1) == finalPoint );
     }
 
     SECTION("Inverted directions") {
@@ -68,14 +68,14 @@ TEST_CASE("Polyline") {
         Polyline* polyline = factory->createPolyline(initKp, finalKp, lines);
 
         REQUIRE( polyline->length() == 4.0 );
-        REQUIRE_THROWS( polyline->pointInLine(-0.1) );
-        REQUIRE_THROWS( polyline->pointInLine(1.1) );
+        REQUIRE_THROWS( polyline->pointAtPosition(-0.1) );
+        REQUIRE_THROWS( polyline->pointAtPosition(1.1) );
 
-        REQUIRE( polyline->pointInLine(0) == initPoint );
-        REQUIRE( polyline->pointInLine(0.5) == midPolylinePoint);
-        REQUIRE( polyline->pointInLine(0.25) == midPoint1);
-        REQUIRE( polyline->pointInLine(0.75) == midPoint2);
-        REQUIRE( polyline->pointInLine(1) == finalPoint );
+        REQUIRE( polyline->pointAtPosition(0) == initPoint );
+        REQUIRE( polyline->pointAtPosition(0.5) == midPolylinePoint);
+        REQUIRE( polyline->pointAtPosition(0.25) == midPoint1);
+        REQUIRE( polyline->pointAtPosition(0.75) == midPoint2);
+        REQUIRE( polyline->pointAtPosition(1) == finalPoint );
     }
 
     // Invalid Polylines
@@ -195,12 +195,12 @@ TEST_CASE("Polyline") {
 
         auto polyline = factory->createPolyline(initKp, finalKp, lines);
         Point innerPoint(0, 0.5, 0);
-        REQUIRE( polyline->isPointInLine(innerPoint) == true );
+        REQUIRE( polyline->isPointInLine(innerPoint) == 0.25 );
 
         Point innerPoint2(0.5, 1, 0);
-        REQUIRE( polyline->isPointInLine(innerPoint2) == true );
+        REQUIRE( polyline->isPointInLine(innerPoint2) == 0.75 );
 
         Point outerPoint(0, 2, 0);
-        REQUIRE(polyline->isPointInLine(outerPoint) == false );
+        REQUIRE(polyline->isPointInLine(outerPoint) == -1 );
     }
 }

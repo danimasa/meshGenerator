@@ -1,6 +1,7 @@
 #include "ArcLine.hpp"
 #include "Vector.hpp"
 #include "mathUtils.hpp"
+#include "GeometryFactory.hpp"
 
 #include <cmath>
 #include "armadillo"
@@ -17,18 +18,42 @@ double ArcLine::length() const
     return radius * angle;
 }
 
-bool ArcLine::isPointInLine(const Point &point) {
+double ArcLine::isPointInLine(const Point &point) {
+    if( point == *init_point ) return 0;
+    if( point == *final_point ) return 1;
+
     if (!plane->contains(&point))
-        return false;
+        return -1;
 
     double radical = pow(point.x - center->x, 2) 
                    + pow(point.y - center->y, 2)
                    + pow(point.z - center->z, 2);
     
-    return double_equals(radical, pow(radius, 2));
+    Vector v1(center, init_point);
+    Vector v2(center, final_point);
+    Vector v3(center, &point);
+    auto v4 = v1.vectorProduct(plane->normalVector());
+
+    double a_v1_v2 = v1.angleWith(v2);
+    double a_v1_v3 = v1.angleWith(v3);
+    double a_v2_v3 = v2.angleWith(v3);
+
+    if(v4.angleWith(v3) > M_PI / 2)
+        a_v1_v3 += M_PI;
+
+    if(v4.angleWith(v2) > M_PI / 2)
+        a_v1_v2 += M_PI;
+
+    if( double_equals(radical, pow(radius, 2)) &&
+        a_v1_v3 < a_v1_v2 &&
+        a_v2_v3 < a_v1_v2) {
+        return a_v1_v3 / a_v1_v2;
+    }
+
+    return -1;
 }
 
-Point ArcLine::pointInLine(const double position)
+Point ArcLine::pointAtPosition(const double position)
 {
     if (position < 0 || position > 1)
     {

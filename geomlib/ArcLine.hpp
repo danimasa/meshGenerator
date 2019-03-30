@@ -11,8 +11,8 @@ class ArcLine : public Line {
 public:
     LineType getLineType() const { return LineType::ArcLine; }
     double length() const;
-    Point pointInLine(const double position);
-    bool isPointInLine(const Point &point);
+    Point pointAtPosition(const double position);
+    double isPointInLine(const Point &point);
 
     double get_radius() { return radius; }
     Point* get_center() { return center; }

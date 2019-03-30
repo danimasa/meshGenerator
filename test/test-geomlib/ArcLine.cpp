@@ -18,8 +18,8 @@ TEST_CASE("ArcLine") {
     auto initKp = factory->createKeypoint(initPoint);
     auto finalKp = factory->createKeypoint(finalPoint);
 
-    Vector init_tangent_vector(-1, 0, 0);
-    Vector final_tangent_vector(init_tangent_vector);
+    Vector init_tangent_vector(1, 0, 0);
+    Vector final_tangent_vector(-1, 0, 0);
 
     ArcLine* arco = factory->createArcLine(initKp, finalKp, &midPoint, &init_tangent_vector, &final_tangent_vector);
 
@@ -35,21 +35,33 @@ TEST_CASE("ArcLine") {
     double length = arco->length();
     REQUIRE( (length - M_PI) < epsilon );
 
-    SECTION("Point in line") {
-        REQUIRE_THROWS( arco->pointInLine(-0.9) );
-        REQUIRE_THROWS( arco->pointInLine(1.1) );
+    SECTION("Inverted arc line") {
+        auto invertedArco = factory->createArcLine(finalKp, initKp, &midPoint, &final_tangent_vector, &init_tangent_vector);
+        Point arcInit = *invertedArco->init_point;
+        Point arcFinal = *invertedArco->final_point;
+        REQUIRE( arcInit == initPoint );
+        REQUIRE( arcFinal == finalPoint );
+    }
 
-        REQUIRE( arco->pointInLine(0) == initPoint );
-        REQUIRE( arco->pointInLine(1) == finalPoint );
-        REQUIRE( arco->pointInLine(0.5) == midPoint );
+    SECTION("Point in line") {
+        REQUIRE_THROWS( arco->pointAtPosition(-0.9) );
+        REQUIRE_THROWS( arco->pointAtPosition(1.1) );
+
+        REQUIRE( arco->pointAtPosition(0) == initPoint );
+        REQUIRE( arco->pointAtPosition(1) == finalPoint );
+        REQUIRE( arco->pointAtPosition(0.5) == midPoint );
     }
 
     SECTION("is Point in Line") {
-        REQUIRE( arco->isPointInLine(midPoint) == true );
+        REQUIRE( double_equals(arco->isPointInLine(midPoint), 0.5) == true );
         Point otherPoint(0.766757673, 0.3580633435, 0);
-        REQUIRE( arco->isPointInLine(otherPoint) == true );
+        REQUIRE( double_equals(arco->isPointInLine(otherPoint), 0.278131204725) == true );
         Point notInLine(0.5, 0.5, 0);
-        REQUIRE( arco->isPointInLine(notInLine) == false );
+        REQUIRE( arco->isPointInLine(notInLine) == -1 );
+
+        Point inCircleNotInArc(-1, 1, 0);
+        arco->isPointInLine(inCircleNotInArc);
+        REQUIRE( arco->isPointInLine(inCircleNotInArc) == -1 );
 
         Point pinit (0, 0, 0);
         Point pfinal (-2, 3, 2.5);
@@ -65,6 +77,6 @@ TEST_CASE("ArcLine") {
         auto arc3d = factory->createArcLine(kp1, kp2, &pmid, &init_vec, &final_vec);
         double length = arc3d->length();
         REQUIRE( double_equals(length, 6.8017956676) == true );
-        REQUIRE( arc3d->isPointInLine(pinline) == true );
+        REQUIRE( double_equals(arc3d->isPointInLine(pinline), 0.402169033073) == true );
     }
 }

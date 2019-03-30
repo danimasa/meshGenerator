@@ -14,8 +14,8 @@ public:
 
     LineType getLineType() const { return LineType::UnspecifiedLine; }
     double length() const { return p_length; }
-    Point pointInLine(const double position) { return Point(); }
-    bool isPointInLine(const Point &point) { return false; }
+    Point pointAtPosition(const double position) { return Point(); }
+    double isPointInLine(const Point &point) { return -1; }
 
 private:
     UnspecifiedLine(

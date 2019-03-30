@@ -14,16 +14,25 @@ double StraightLine::length() const {
         + pow(final_point->z - init_point->z, 2));
 }
 
-bool StraightLine::isPointInLine(const Point &point) {
+double StraightLine::isPointInLine(const Point &point) {
+    if(point == *init_point) return 0;
+    if(point == *final_point) return 1;
+
     Vector v1 (init_point, final_point);
     Vector v2 (init_point, &point);
+
+    double initDistance = init_point->distance(&point);
+    double l = length();
     double angle = v1.angleWith(v2);
-    return double_equals(v1.angleWith(v2), 0)
-        && init_point->distance(&point) <= length()
-        && final_point->distance(&point) <= length();
+    if( double_equals(v1.angleWith(v2), 0)
+        && initDistance <= l
+        && final_point->distance(&point) <= l )
+        return initDistance / l;
+    
+    return -1;
 }
 
-Point StraightLine::pointInLine(const double position) {
+Point StraightLine::pointAtPosition(const double position) {
     if (position < 0 || position > 1) {
         throw std::invalid_argument("pointInLine so aceita valores entre 0 e 1");
     }

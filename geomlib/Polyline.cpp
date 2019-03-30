@@ -88,16 +88,23 @@ double Polyline::length() const {
   return sum_of_lenghts;
 }
 
-bool Polyline::isPointInLine(const Point &point) {
+double Polyline::isPointInLine(const Point &point) {
+  if( point == *init_point ) return 0;
+  if( point == *final_point ) return 1;
+
+  double globalPosition = 0;
+  double l = length();
   for(auto &n : lines) {
-    if(n.line->isPointInLine(point))
-      return true;
+    double position = n.line->isPointInLine(point);
+    if(position != -1)
+      return globalPosition + (position * n.line->length() / l);
+    globalPosition += n.line->length() / l;
   }
 
-  return false;
+  return -1;
 }
 
-Point Polyline::pointInLine(const double position) {
+Point Polyline::pointAtPosition(const double position) {
     if (position < 0 || position > 1)
         throw std::invalid_argument("pointInLine so aceita valores entre 0 e 1");
 
@@ -125,7 +132,7 @@ Point Polyline::pointInLine(const double position) {
     if (lineWIthPoint.direction == LINE_DIRECTION::INVERSE) {
       linePosition = 1 - linePosition;
     }
-    auto point = lineWIthPoint.line->pointInLine(linePosition); 
+    auto point = lineWIthPoint.line->pointAtPosition(linePosition); 
     return point;
 }
 

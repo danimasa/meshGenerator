@@ -54,7 +54,20 @@ ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_po
 
     double radius = init_point->distance(center);
 
-    return new ArcLine(plane, init_point, final_point, radius, center);
+    // Inverted Direction (Only anticlockwise is permited)
+    Vector v1(center, init_point);
+    auto v3 = v1.vectorProduct(plane->normalVector());
+
+    auto arcInitPoint = init_point;
+    auto arcFinalPoint = final_point;
+
+    double angle = v3.angleWith(*init_tangent_vector);
+    if(v3.angleWith(*init_tangent_vector) > M_PI / 2) {
+        arcInitPoint = final_point;
+        arcFinalPoint = init_point;
+    }
+
+    return new ArcLine(plane, arcInitPoint, arcFinalPoint, radius, center);
 }
 
 UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
