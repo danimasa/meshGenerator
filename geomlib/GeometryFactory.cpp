@@ -25,6 +25,11 @@ StraightLine* GeometryFactory::createStraightLine(KeyPoint* init_point, KeyPoint
     return new StraightLine(init_point, final_point);
 }
 
+ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Plane* plane,
+        double radius, Point* center) const {
+    return new ArcLine(plane, init_point, final_point, radius, center);
+}
+
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Point* mid_point,
         Vector* init_tangent_vector, Vector* final_tangent_vector) const {
     Plane* plane = createPlane(init_point, final_point, mid_point);

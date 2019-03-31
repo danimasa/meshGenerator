@@ -57,8 +57,9 @@ TEST_CASE("LineAnalysis.hpp") {
         auto rawArea = list.getByID(GeometryType::Area, a1->getID());
         Area* afterArea = dynamic_cast<Area*>(rawArea);
 
-        auto lafter1 = afterArea->lines[0];
-        auto lafter2 = afterArea->lines[2];
+        // TODO Trocar linhas nas áreas
+        auto lafter1 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, afterArea->lines[0]->getID()));
+        auto lafter2 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, afterArea->lines[2]->getID()));
         REQUIRE( lafter1->getLineType() == LineType::Polyline );
         REQUIRE( lafter2->getLineType() == LineType::Polyline );
 

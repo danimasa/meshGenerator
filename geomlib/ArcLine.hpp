@@ -16,6 +16,7 @@ public:
 
     double get_radius() { return radius; }
     Point* get_center() { return center; }
+    Plane* get_plane() { return plane; }
 
 private:
     ArcLine(
