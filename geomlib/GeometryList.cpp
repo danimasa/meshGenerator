@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <iterator>
 #include "GeometryList.hpp"
+#include "Area.hpp"
 
 namespace geomlib {
 
@@ -18,6 +19,18 @@ void GeometryList::reserveSize(int length) {
     ids.reserve(length);
 }
 
+void GeometryList::substituteInAreas(Line *line) {
+  auto areas = getListOf(GeometryType::Area);
+  for(auto rawArea : areas) {
+    auto area = dynamic_cast<Area*>(rawArea);
+    for(int i=0; i < area->lines.size(); i++) {
+      auto aLine = area->lines[i];
+      if (aLine->getID() == line->getID())
+        area->lines[i] = line;
+    }
+  }
+}
+
 void GeometryList::add(Geometry* geometry) {
     if (geometry->getID() == -1)
       throw std::invalid_argument("Somente são permitidos geometrias com ID no GeometryList");
@@ -27,8 +40,9 @@ void GeometryList::add(Geometry* geometry) {
       int pos = std::distance(ids.begin(), findId);
       if (objects[pos]->getGeometryType() == geometry->getGeometryType()) {
         ids[pos] = geometry->getID();
-        // Posível problema de memória
         objects[pos] = geometry;
+        if (geometry->getGeometryType() == GeometryType::Line)
+          substituteInAreas(dynamic_cast<Line*>(geometry));
         return;
       }
       findId = std::find(std::next(findId), ids.end(), geometry->getID());

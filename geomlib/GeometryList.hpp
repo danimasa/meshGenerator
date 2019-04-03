@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "Geometry.hpp"
+#include "Line.hpp"
 
 namespace geomlib {
 
@@ -22,6 +23,8 @@ namespace geomlib {
     private:
         std::vector<Geometry*> objects;
         std::vector<int> ids;
+
+        void substituteInAreas(Line *line);
     };
 
 }
