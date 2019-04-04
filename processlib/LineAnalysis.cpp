@@ -2,6 +2,7 @@
 
 #include "LineAnalysis.hpp"
 #include "GeometryFactory.hpp"
+#include "mathUtils.hpp"
 
 namespace processlib
 {
@@ -51,6 +52,32 @@ Polyline* LineAnalysis::brokeInPolyline(Line *line, KeyPoint *pointInLine) {
   }
 }
 
+void LineAnalysis::brokeAndSubstitute(Line *line, Line *innerLine, KeyPoint *brokePoint) {
+  auto polyline = brokeInPolyline(innerLine, brokePoint);
+  polyline->setID(innerLine->getID());
+  geomList->add(polyline);
+
+  Vector vLine1 (line->init_point, line->final_point);
+  Vector vLine2 (innerLine->init_point, innerLine->final_point);
+  double angle = vLine1.angleWith(vLine2);
+  if (double_equals(angle, 0) || double_equals(angle, M_PI)) {
+    // Caso 2 
+    auto factory = GeometryFactory::getDefaultInstance();
+
+    KeyPoint *secBrokePoint = brokePoint == line->init_point
+      ? innerLine->final_point
+      : innerLine->init_point;
+
+    auto refPolyline = brokeInPolyline(line, secBrokePoint);
+    auto newLines = refPolyline->get_lines();
+    newLines[1] = polyline->get_lines()[0];
+    auto secPolyline = factory->createPolyline(line->init_point, line->final_point, newLines);
+    secPolyline->setID(line->getID());
+    geomList->add(secPolyline);
+    processedLinePoint[line->getID()] = secBrokePoint->getID();
+  }
+}
+
 void LineAnalysis::findSingularities()
 {
   auto lines = geomList->getListOf(GeometryType::Line);
@@ -65,19 +92,13 @@ void LineAnalysis::findSingularities()
         // Caso 1
         double initPosition = innerLine->isPointInLine(*line->init_point);
         double finalPosition = innerLine->isPointInLine(*line->final_point);
-        if (initPosition > 0 && initPosition < 1)
-        {
-          auto polyline = brokeInPolyline(innerLine, line->init_point);
-          polyline->setID(innerLine->getID());
-          geomList->add(polyline);
-        }
-        if (finalPosition > 0 && finalPosition < 1)
-        {
-          auto polyline = brokeInPolyline(innerLine, line->final_point);
-          polyline->setID(innerLine->getID());
-          geomList->add(polyline);
-        }
-      }
+        if (initPosition > 0 && initPosition < 1
+          && processedLinePoint[innerLine->getID()] != line->init_point->getID())
+          brokeAndSubstitute(line, innerLine, line->init_point);
+        if (finalPosition > 0 && finalPosition < 1
+          && processedLinePoint[innerLine->getID()] != line->final_point->getID())
+          brokeAndSubstitute(line, innerLine, line->final_point);
+     }
     }
   }
 }
