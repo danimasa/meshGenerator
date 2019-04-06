@@ -356,4 +356,172 @@ TEST_CASE("LineAnalysis.hpp") {
         REQUIRE( straightLine->init_point == kp2 );
         REQUIRE( straightLine->final_point == kp3 );
     }
+
+    SECTION("Caso 9") {
+        GeometryList list;
+
+        auto p1 = Point(0, 0, 0);
+        auto p2 = Point(1.5, 0, 0);
+        auto p3 = Point(2.5, 0, 0);
+
+        auto kp1 = factory->createKeypoint(p1);
+        auto kp2 = factory->createKeypoint(p2);
+        auto kp3 = factory->createKeypoint(p3);
+
+        list.add(kp1);
+        list.add(kp2);
+        list.add(kp3);
+
+        auto l1 = factory->createStraightLine(kp1, kp3);
+        auto l2 = factory->createStraightLine(kp1, kp2);
+
+        list.add(l1);
+        list.add(l2);
+
+        LineAnalysis analyser(&list);
+        analyser.findSingularities();
+
+        auto finLine1 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l1->getID()));
+        auto finLine2 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l2->getID()));
+
+        REQUIRE( finLine1->getLineType() == LineType::Polyline );
+        REQUIRE( finLine2->getLineType() == LineType::StraightLine );
+
+        auto polyline1 = dynamic_cast<Polyline*>(finLine1);
+        auto straightLine = dynamic_cast<StraightLine*>(finLine2);
+
+        REQUIRE( polyline1->get_lines().size() == 2 );
+        REQUIRE( polyline1->get_lines()[0]->getID() == straightLine->getID() );
+        REQUIRE( polyline1->get_lines()[1]->init_point == kp2 );
+        REQUIRE( polyline1->get_lines()[1]->final_point == kp3 );
+
+        REQUIRE( straightLine->init_point == kp1 );
+        REQUIRE( straightLine->final_point == kp2 );
+    }
+
+    SECTION("Caso 10.1") {
+        GeometryList list;
+
+        auto p1 = Point(0, 0, 0);
+        auto p2 = Point(1.5, 0, 0);
+        auto p3 = Point(2.5, 0, 0);
+
+        auto kp1 = factory->createKeypoint(p1);
+        auto kp2 = factory->createKeypoint(p2);
+        auto kp3 = factory->createKeypoint(p3);
+
+        list.add(kp1);
+        list.add(kp2);
+        list.add(kp3);
+
+        auto l1 = factory->createStraightLine(kp1, kp3);
+        auto l2 = factory->createStraightLine(kp2, kp3);
+
+        list.add(l1);
+        list.add(l2);
+
+        LineAnalysis analyser(&list);
+        analyser.findSingularities();
+
+        auto finLine1 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l1->getID()));
+        auto finLine2 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l2->getID()));
+
+        REQUIRE( finLine1->getLineType() == LineType::Polyline );
+        REQUIRE( finLine2->getLineType() == LineType::StraightLine );
+
+        auto polyline1 = dynamic_cast<Polyline*>(finLine1);
+        auto straightLine = dynamic_cast<StraightLine*>(finLine2);
+
+        REQUIRE( polyline1->get_lines().size() == 2 );
+        REQUIRE( polyline1->get_lines()[1]->getID() == straightLine->getID() );
+        REQUIRE( polyline1->get_lines()[0]->init_point == kp1 );
+        REQUIRE( polyline1->get_lines()[0]->final_point == kp2 );
+
+        REQUIRE( straightLine->init_point == kp2 );
+        REQUIRE( straightLine->final_point == kp3 );
+    }
+
+    SECTION("Caso 10.2") {
+        GeometryList list;
+
+        auto p1 = Point(0, 0, 0);
+        auto p2 = Point(1.5, 0, 0);
+        auto p3 = Point(2.5, 0, 0);
+
+        auto kp1 = factory->createKeypoint(p1);
+        auto kp2 = factory->createKeypoint(p2);
+        auto kp3 = factory->createKeypoint(p3);
+
+        list.add(kp1);
+        list.add(kp2);
+        list.add(kp3);
+
+        auto l1 = factory->createStraightLine(kp1, kp3);
+        auto l2 = factory->createStraightLine(kp2, kp1);
+
+        list.add(l1);
+        list.add(l2);
+
+        LineAnalysis analyser(&list);
+        analyser.findSingularities();
+
+        auto finLine1 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l1->getID()));
+        auto finLine2 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l2->getID()));
+
+        REQUIRE( finLine1->getLineType() == LineType::Polyline );
+        REQUIRE( finLine2->getLineType() == LineType::StraightLine );
+
+        auto polyline1 = dynamic_cast<Polyline*>(finLine1);
+        auto straightLine = dynamic_cast<StraightLine*>(finLine2);
+
+        REQUIRE( polyline1->get_lines().size() == 2 );
+        REQUIRE( polyline1->get_lines()[0]->getID() == straightLine->getID() );
+        REQUIRE( polyline1->get_lines()[1]->init_point == kp2 );
+        REQUIRE( polyline1->get_lines()[1]->final_point == kp3 );
+
+        REQUIRE( straightLine->init_point == kp2 );
+        REQUIRE( straightLine->final_point == kp1 );
+    }
+
+    SECTION("Caso 10.3") {
+        GeometryList list;
+
+        auto p1 = Point(0, 0, 0);
+        auto p2 = Point(1.5, 0, 0);
+        auto p3 = Point(2.5, 0, 0);
+
+        auto kp1 = factory->createKeypoint(p1);
+        auto kp2 = factory->createKeypoint(p2);
+        auto kp3 = factory->createKeypoint(p3);
+
+        list.add(kp1);
+        list.add(kp2);
+        list.add(kp3);
+
+        auto l1 = factory->createStraightLine(kp1, kp3);
+        auto l2 = factory->createStraightLine(kp3, kp2);
+
+        list.add(l1);
+        list.add(l2);
+
+        LineAnalysis analyser(&list);
+        analyser.findSingularities();
+
+        auto finLine1 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l1->getID()));
+        auto finLine2 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l2->getID()));
+
+        REQUIRE( finLine1->getLineType() == LineType::Polyline );
+        REQUIRE( finLine2->getLineType() == LineType::StraightLine );
+
+        auto polyline1 = dynamic_cast<Polyline*>(finLine1);
+        auto straightLine = dynamic_cast<StraightLine*>(finLine2);
+
+        REQUIRE( polyline1->get_lines().size() == 2 );
+        REQUIRE( polyline1->get_lines()[1]->getID() == straightLine->getID() );
+        REQUIRE( polyline1->get_lines()[0]->init_point == kp1 );
+        REQUIRE( polyline1->get_lines()[0]->final_point == kp2 );
+
+        REQUIRE( straightLine->init_point == kp3 );
+        REQUIRE( straightLine->final_point == kp2 );
+    }
 }

@@ -127,6 +127,32 @@ void LineAnalysis::findSingularities()
           polyline->setID(innerLine->getID());
           geomList->add(polyline);
         }
+        else if ((initInLine || finalInLine)
+          && (line->final_point == innerLine->init_point
+          || line->final_point == innerLine->final_point
+          || line->init_point == innerLine->init_point
+          || line->init_point == innerLine->final_point)) { // Casos 9 e 10
+            KeyPoint *innerInitPoint = nullptr;
+            KeyPoint *innerFinalPoint = nullptr;
+            if (initInLine) {
+              innerInitPoint = line->final_point == innerLine->init_point
+                ? line->init_point : innerLine->init_point;
+              innerFinalPoint = line->final_point == innerLine->init_point
+                ? innerLine->final_point : line->init_point;
+            } else {
+              innerInitPoint = line->init_point == innerLine->final_point
+                ? innerLine->init_point : line->final_point;
+              innerFinalPoint = line->init_point == innerLine->final_point
+                ? line->final_point : innerLine->final_point;
+            }
+
+            auto factory = GeometryFactory::getDefaultInstance();
+            auto l1 = factory->createStraightLine(innerInitPoint, innerFinalPoint);
+            vector<Line*> lines { line, l1 };
+            auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
+            polyline->setID(innerLine->getID());
+            geomList->add(polyline);
+        }
         else if (initInLine && processedLinePoint[innerLine->getID()] != line->init_point->getID())
           brokeAndSubstitute(line, innerLine, line->init_point);
         else if (finalInLine && processedLinePoint[innerLine->getID()] != line->final_point->getID())
