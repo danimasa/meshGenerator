@@ -52,6 +52,22 @@ Polyline* LineAnalysis::brokeInPolyline(Line *line, KeyPoint *pointInLine) {
   }
 }
 
+vector<Line*> substituteCommomLine(vector<Line*> newLines, Polyline* polyline) {
+  for(int i=0; i < newLines.size(); i++) {
+    auto l = newLines[i];
+    for(auto pl : polyline->get_lines()) {
+      if((l->init_point == pl->init_point || l->init_point == pl->final_point)
+         && (l->final_point == pl->final_point || l->final_point == pl->init_point)
+         && l->getLineType() == pl->getLineType()
+      ) {
+        newLines[i] = pl;
+        return newLines;
+      }
+    }
+  }
+  return newLines;
+}
+
 void LineAnalysis::brokeAndSubstitute(Line *line, Line *innerLine, KeyPoint *brokePoint) {
   auto polyline = brokeInPolyline(innerLine, brokePoint);
   polyline->setID(innerLine->getID());
@@ -64,13 +80,13 @@ void LineAnalysis::brokeAndSubstitute(Line *line, Line *innerLine, KeyPoint *bro
     // Caso 2 
     auto factory = GeometryFactory::getDefaultInstance();
 
-    KeyPoint *secBrokePoint = brokePoint == line->init_point
-      ? innerLine->final_point
-      : innerLine->init_point;
+    double pointInLine = line->isPointInLine(*innerLine->init_point);
+    KeyPoint *secBrokePoint = pointInLine > 0 && pointInLine < 1
+      ? innerLine->init_point
+      : innerLine->final_point;
 
     auto refPolyline = brokeInPolyline(line, secBrokePoint);
-    auto newLines = refPolyline->get_lines();
-    newLines[1] = polyline->get_lines()[0];
+    auto newLines = substituteCommomLine(refPolyline->get_lines(), polyline);
     auto secPolyline = factory->createPolyline(line->init_point, line->final_point, newLines);
     secPolyline->setID(line->getID());
     geomList->add(secPolyline);
