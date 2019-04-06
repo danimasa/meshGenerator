@@ -100,19 +100,36 @@ void LineAnalysis::findSingularities()
   for (auto l : lines)
   {
     auto line = dynamic_cast<Line *>(l);
+    if (line->getLineType() != LineType::StraightLine) continue;
     for (auto i : lines)
     {
       auto innerLine = dynamic_cast<Line *>(i);
-      if (innerLine->getID() != line->getID() && innerLine->getLineType() != LineType::UnspecifiedLine)
+      if (innerLine->getID() != line->getID() && innerLine->getLineType() == LineType::StraightLine)
       {
         // Caso 1
         double initPosition = innerLine->isPointInLine(*line->init_point);
         double finalPosition = innerLine->isPointInLine(*line->final_point);
-        if (initPosition > 0 && initPosition < 1
-          && processedLinePoint[innerLine->getID()] != line->init_point->getID())
+
+        bool initInLine = initPosition > 0 && initPosition < 1;
+        bool finalInLine = finalPosition > 0 && finalPosition < 1;
+
+        if (initInLine && finalInLine) { // Casos 7 e 8
+          auto innerInitPoint = initPosition < finalPosition
+            ? line->init_point : line->final_point;
+          auto innerFinalPoint = initPosition < finalPosition
+            ? line->final_point : line->init_point;
+
+          auto factory = GeometryFactory::getDefaultInstance();
+          auto l1 = factory->createStraightLine(innerLine->init_point, innerInitPoint);
+          auto l2 = factory->createStraightLine(innerFinalPoint, innerLine->final_point);
+          vector<Line*> lines { l1, line, l2 };
+          auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
+          polyline->setID(innerLine->getID());
+          geomList->add(polyline);
+        }
+        else if (initInLine && processedLinePoint[innerLine->getID()] != line->init_point->getID())
           brokeAndSubstitute(line, innerLine, line->init_point);
-        if (finalPosition > 0 && finalPosition < 1
-          && processedLinePoint[innerLine->getID()] != line->final_point->getID())
+        else if (finalInLine && processedLinePoint[innerLine->getID()] != line->final_point->getID())
           brokeAndSubstitute(line, innerLine, line->final_point);
      }
     }
