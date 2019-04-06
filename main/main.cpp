@@ -5,6 +5,9 @@
 #include "Line.hpp"
 #include "FileReader.hpp"
 #include "AnsysFileReaderFactory.hpp"
+#include "AnsysMacroWriter.hpp"
+#include "LineAnalysis.hpp"
+
 using namespace std;
 
 void help();
@@ -81,6 +84,17 @@ void leitura(const string &arquivo) {
         auto area = dynamic_cast<Area*>(a);
         print_area(area);
     }
+
+    processlib::LineAnalysis analyser(geometry);
+    analyser.findSingularities();
+
+    cout << "------------------------------" << endl;
+    cout << "Ansys Macro" << endl;
+    cout << "------------------------------" << endl;
+
+    ansyslib::AnsysMacroWriter writer(geometry);
+    string macro = writer.getMacro();
+    cout << macro << endl;
 }
 
 void help() {
