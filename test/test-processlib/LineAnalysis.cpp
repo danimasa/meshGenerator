@@ -73,6 +73,10 @@ TEST_CASE("LineAnalysis.hpp") {
         REQUIRE( poly2->get_lines()[0]->final_point == kp6 );
         REQUIRE( poly2->get_lines()[1]->init_point == kp6 );
         REQUIRE( poly2->get_lines()[1]->final_point == kp4 );
+
+		auto line5 = dynamic_cast<Line*>(list.getByID(GeometryType::Line, l5->getID()));
+		REQUIRE( line5->init_point == kp5 );
+		REQUIRE( line5->final_point == kp6 );
     }
 
     SECTION("Caso 2 e 3") {

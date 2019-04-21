@@ -12,6 +12,7 @@ namespace geomlib {
         GeometryList() {}
 
         void add(Geometry* geometry);
+		void remove(Geometry* geometry);
 
         void reserveSize(int legth);
         int capacity() const;

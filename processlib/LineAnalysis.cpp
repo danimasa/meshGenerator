@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <vector>
 
 #include "LineAnalysis.hpp"
@@ -52,7 +53,7 @@ Polyline* LineAnalysis::brokeInPolyline(Line *line, KeyPoint *pointInLine) {
   }
 }
 
-vector<Line*> substituteCommomLine(vector<Line*> newLines, Polyline* polyline) {
+vector<Line*> LineAnalysis::substituteCommomLine(vector<Line*> newLines, Polyline* polyline) {
   for(int i=0; i < newLines.size(); i++) {
     auto l = newLines[i];
     for(auto pl : polyline->get_lines()) {
@@ -60,6 +61,7 @@ vector<Line*> substituteCommomLine(vector<Line*> newLines, Polyline* polyline) {
          && (l->final_point == pl->final_point || l->final_point == pl->init_point)
          && l->getLineType() == pl->getLineType()
       ) {
+		geomList->remove(l);
         newLines[i] = pl;
         return newLines;
       }
@@ -121,7 +123,9 @@ void LineAnalysis::findSingularities()
 
           auto factory = GeometryFactory::getDefaultInstance();
           auto l1 = factory->createStraightLine(innerLine->init_point, innerInitPoint);
+		  geomList->add(l1);
           auto l2 = factory->createStraightLine(innerFinalPoint, innerLine->final_point);
+		  geomList->add(l2);
           vector<Line*> lines { l1, line, l2 };
           auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
           polyline->setID(innerLine->getID());
@@ -148,6 +152,7 @@ void LineAnalysis::findSingularities()
 
             auto factory = GeometryFactory::getDefaultInstance();
             auto l1 = factory->createStraightLine(innerInitPoint, innerFinalPoint);
+			geomList->add(l1);
             vector<Line*> lines { line, l1 };
             auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
             polyline->setID(innerLine->getID());

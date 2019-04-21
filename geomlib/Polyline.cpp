@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "Polyline.hpp"
 
 using namespace std;

@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include "GeometryFactory.hpp"
 #include <assert.h>
 #include <algorithm>

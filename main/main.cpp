@@ -63,7 +63,7 @@ void leitura(const string &arquivo) {
     ansyslib::AnsysFileReaderFactory factory {};
     geomlib::FileReader *reader = factory.createReader();
     GeometryList* geometry = reader->read(arquivo);
-    cout << "Size: " << geometry->size() << endl;
+    /*cout << "Size: " << geometry->size() << endl;
     auto kplist = geometry->getListOf(GeometryType::Keypoint);
     cout << "Keypoints: " << kplist.size() << endl;
     for(auto p : kplist) {
@@ -83,7 +83,14 @@ void leitura(const string &arquivo) {
     for(auto a : areaList) {
         auto area = dynamic_cast<Area*>(a);
         print_area(area);
-    }
+    }*/
+	cout << "------------------------------" << endl;
+	cout << "Before Analyser" << endl;
+	cout << "------------------------------" << endl;
+
+	ansyslib::AnsysMacroWriter initWriter(geometry);
+	string initmacro = initWriter.getMacro();
+	cout << initmacro << endl;
 
     processlib::LineAnalysis analyser(geometry);
     analyser.findSingularities();

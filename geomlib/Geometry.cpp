@@ -3,10 +3,10 @@
 
 namespace geomlib {
 
-int Geometry::next_kp_id = 0;
-int Geometry::next_line_id = 0;
-int Geometry::next_area_id = 0;
-int Geometry::next_volume_id = 0;
+int Geometry::next_kp_id = 1;
+int Geometry::next_line_id = 1;
+int Geometry::next_area_id = 1;
+int Geometry::next_volume_id = 1;
 int Geometry::getNextId(GeometryType type) {
     switch (type)
     {

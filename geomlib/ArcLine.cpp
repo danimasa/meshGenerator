@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include "ArcLine.hpp"
 #include "Vector.hpp"
 #include "mathUtils.hpp"

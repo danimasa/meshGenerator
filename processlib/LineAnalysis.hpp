@@ -27,6 +27,7 @@ private:
     GeometryList *geomList;
     map<int, int> processedLinePoint;
 
+	vector<Line*> substituteCommomLine(vector<Line*> newLines, Polyline* polyline);
 };
 
 }
