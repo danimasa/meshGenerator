@@ -17,7 +17,12 @@ public:
 
 private:
     GeometryList* geometries;
+	double greaterX;
+	double greaterY;
+	double greaterZ;
 
+	KeyPoint* generateGhostPoint();
+	Line* generateGhostLine();
 };
 
 }

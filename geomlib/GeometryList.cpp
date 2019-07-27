@@ -52,6 +52,22 @@ void GeometryList::add(Geometry* geometry) {
     objects.push_back(geometry);
 }
 
+void GeometryList::remove(Geometry* geometry) {
+	if (geometry->getID() == -1)
+		throw std::invalid_argument("Somente são permitidos geometrias com ID no GeometryList");
+
+	auto findId = std::find(ids.begin(), ids.end(), geometry->getID());
+	while (findId != ids.end()) {
+		int pos = std::distance(ids.begin(), findId);
+		if (objects[pos]->getGeometryType() == geometry->getGeometryType()) {
+			ids.erase(findId);
+			objects.erase(objects.begin() + pos);
+			return;
+		}
+		findId = std::find(std::next(findId), ids.end(), geometry->getID());
+	}
+}
+
 std::vector<Geometry*> GeometryList::getListOf(GeometryType geometryType) {
     std::vector<Geometry*> result;
     for(auto i = 0; i < objects.size(); i++) {
