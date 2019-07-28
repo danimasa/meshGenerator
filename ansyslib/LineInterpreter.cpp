@@ -65,7 +65,7 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
         // Linha Reta
         if (equal(distance, lineLength)) {
             auto straightLine = _factory->createStraightLine(init_point, final_point);
-            //straightLine->setID(id);
+            straightLine->setID(id);
             return straightLine;
         }
 
@@ -101,13 +101,13 @@ geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
             auto arco = _factory->createArcLine(init_point, final_point, mid_point, init_versor, final_versor);
             auto arcoLength = arco->length();
             if (equal(arco->length(), lineLength)) {
-                //arco->setID(id);
+                arco->setID(id);
                 return arco;
             }
         }
 
         auto undefinedLine = _factory->createUnspecifiedLine(init_point, final_point, mid_point, init_versor, final_versor, lineLength);
-        //undefinedLine->setID(id);
+        undefinedLine->setID(id);
         return undefinedLine;
     } catch( boost::bad_lexical_cast const& ) {
         cout << "Erro: Problema de sintaxe no bloco: " << block << endl;

@@ -8,6 +8,7 @@
 #include "Polyline.hpp"
 #include "Plane.hpp"
 #include "Area.hpp"
+#include "CoordinateSystem.hpp"
 
 namespace geomlib {
     class GeometryFactory {
@@ -41,6 +42,8 @@ namespace geomlib {
         Plane* createPlane(Point* p1, Vector* v1, Vector* v2) const;
 
         Area* createArea(vector<Line*> lines, Line* first_line, Line* last_line) const;
+
+        CoordinateSystem* createCoordinateSystem(Vector* v1, Vector* v2, Vector* v3) const;
 
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;

@@ -143,4 +143,11 @@ Area* GeometryFactory::createArea(vector<Line*> lines, Line* first_line, Line* l
     return new Area(lines, first_line, last_line);
 }
 
+CoordinateSystem* GeometryFactory::createCoordinateSystem(Vector* v1, Vector* v2, Vector* v3) const {
+    Vector norm1 = v1->normalise();
+    Vector norm2 = v2->normalise();
+    Vector norm3 = v3->normalise();
+    return new CoordinateSystem(&norm1, &norm2, &norm3);
+}
+
 }

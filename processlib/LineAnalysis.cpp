@@ -99,6 +99,7 @@ void LineAnalysis::brokeAndSubstitute(Line *line, Line *innerLine, KeyPoint *bro
 void LineAnalysis::findSingularities()
 {
   auto lines = geomList->getListOf(GeometryType::Line);
+  auto factory = GeometryFactory::getDefaultInstance();
   for (auto l : lines)
   {
     auto line = dynamic_cast<Line *>(l);
@@ -121,7 +122,6 @@ void LineAnalysis::findSingularities()
           auto innerFinalPoint = initPosition < finalPosition
             ? line->final_point : line->init_point;
 
-          auto factory = GeometryFactory::getDefaultInstance();
           auto l1 = factory->createStraightLine(innerLine->init_point, innerInitPoint);
 		  geomList->add(l1);
           auto l2 = factory->createStraightLine(innerFinalPoint, innerLine->final_point);
@@ -150,7 +150,6 @@ void LineAnalysis::findSingularities()
                 ? line->final_point : innerLine->final_point;
             }
 
-            auto factory = GeometryFactory::getDefaultInstance();
             auto l1 = factory->createStraightLine(innerInitPoint, innerFinalPoint);
 			geomList->add(l1);
             vector<Line*> lines { line, l1 };
@@ -162,6 +161,13 @@ void LineAnalysis::findSingularities()
           brokeAndSubstitute(line, innerLine, line->init_point);
         else if (finalInLine && processedLinePoint[innerLine->getID()] != line->final_point->getID())
           brokeAndSubstitute(line, innerLine, line->final_point);
+        else { // Line intersection
+          auto midPoint = line->pointAtPosition(0.5);
+          auto line_plane = factory->createPlane(line->init_point, &midPoint, line->final_point);
+          if (line_plane->contains(innerLine)) { // same plane
+            // double x1 = line->init_point
+          }
+        }
      }
     }
   }

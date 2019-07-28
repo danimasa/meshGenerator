@@ -34,8 +34,17 @@ bool Plane::contains(const Vector* v) {
     return false;
 }
 
+bool Plane::contains(const Line* l) {
+    Vector v(l->init_point, l->final_point);
+    return contains(&v);
+}
+
 Vector Plane::normalVector() const {
     return vector1->vectorProduct(*vector2);
+}
+
+Point Plane::toPlaneCoordinates(const Point* p) const {
+    // double x = 
 }
 
 }

@@ -552,6 +552,9 @@ TEST_CASE("LineAnalysis.hpp") {
         auto l1 = factory->createStraightLine(kp1, kp2);
         auto l2 = factory->createStraightLine(kp3, kp4);
 
+        list.add(l1);
+        list.add(l2);
+
         LineAnalysis analyser(&list);
         analyser.findSingularities();
 

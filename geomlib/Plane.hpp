@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Point.hpp"
+#include "Line.hpp"
 #include "Vector.hpp"
 
 namespace geomlib {
@@ -11,8 +12,10 @@ class Plane {
 public:
     bool contains(const Point* p);
     bool contains(const Vector* v);
+    bool contains(const Line* l);
 
     Vector normalVector() const;
+    Point toPlaneCoordinates(const Point* p) const;
 
 private:
     Point* point;
