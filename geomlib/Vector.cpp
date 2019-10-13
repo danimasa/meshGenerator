@@ -26,14 +26,42 @@ Vector Vector::vectorProduct(const Vector &v) {
     return Vector(a, b, c);
 }
 
-Vector Vector::normalise() {
+void Vector::normalise() {
     arma::vec vec(3);
     vec(0) = x;
     vec(1) = y;
     vec(2) = z;
 
     arma::vec normalized = arma::normalise(vec);
-    return Vector(normalized(0), normalized(1), normalized(2));
+
+    x = normalized(0);
+    y = normalized(1);
+    z = normalized(2);
 }
 
+bool Vector::isNull() {
+    return double_equals(x, 0) && double_equals(y, 0) && double_equals(z, 0);
+}
+
+
+Vector operator+(const Vector &v1, const Vector &v2) {
+    double x = v1.x + v2.x;
+    double y = v1.y + v2.y;
+    double z = v1.z + v2.z;
+    return Vector(x, y, z);
+}
+
+Vector operator-(const Vector &v1, const Vector &v2) {
+    double x = v1.x - v2.x;
+    double y = v1.y - v2.y;
+    double z = v1.z - v2.z;
+    return Vector(x, y, z);
+}
+
+Vector operator*(const Vector &v1, double value) {
+    double x = v1.x * value;
+    double y = v1.y * value;
+    double z = v1.z * value;
+    return Vector(x, y, z);
+}
 }

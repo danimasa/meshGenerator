@@ -16,6 +16,7 @@ public:
     double length() const { return p_length; }
     Point pointAtPosition(const double position) { return Point(); }
     double isPointInLine(const Point &point) { return -1; }
+    Box outBox() { return Box(*mid_point, 0, 0, 0); }
 
 private:
     UnspecifiedLine(

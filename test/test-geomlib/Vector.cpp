@@ -22,5 +22,30 @@ TEST_CASE("Vector") {
 
     // Normalizacao
     Vector v4(2, 0, 0);
-    REQUIRE( v4.normalise() == v );
+    v4.normalise();
+    REQUIRE( v4 == v );
+
+    // Vetor Nulo
+    Vector v5(0, 0, 0);
+    REQUIRE(v5.isNull() == true);
+    REQUIRE(v4.isNull() == false);
+
+    SECTION("Operadores") {
+        // Soma
+        Vector v1(1, 1, 1);
+        Vector v2(2, 2, 2);
+        Vector v3 = v1 + v2;
+        Vector sum(3, 3, 3);
+        REQUIRE( v3 == sum );
+
+        // Subtração
+        Vector v4 = v2 - v1;
+        Vector sub(1, 1, 1);
+        REQUIRE( v4 == sub );
+
+        // Multiplicação
+        Vector v5 = v1 * 5;
+        Vector mul(5, 5, 5);
+        REQUIRE( v5 == mul );
+    }
 }

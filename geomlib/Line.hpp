@@ -4,6 +4,7 @@
 #include "Vector.hpp"
 #include "KeyPoint.hpp"
 #include "Geometry.hpp"
+#include "Box.hpp"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ namespace geomlib {
         virtual double length() const = 0;
         virtual Point pointAtPosition(const double position) = 0;
         virtual double isPointInLine(const Point &point) = 0;
+        virtual Box outBox() = 0;
 
     protected:
         Line(KeyPoint* init_point, KeyPoint* final_point) :

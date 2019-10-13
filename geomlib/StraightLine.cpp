@@ -51,4 +51,11 @@ Point StraightLine::pointAtPosition(const double position) {
     return Point(newX, newY, newZ);
 }
 
+Box StraightLine::outBox() {
+    return Box(pointAtPosition(0.5),
+        std::abs(init_point->x - final_point->x),
+        std::abs(init_point->y - final_point->y),
+        std::abs(init_point->z - final_point->z));
+}
+
 }

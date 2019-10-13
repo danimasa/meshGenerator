@@ -144,4 +144,9 @@ vector<Line*> Polyline::get_lines() const {
   return lineList;
 }
 
+Box Polyline::outBox() {
+  Point p(0, 0, 0);
+  return Box(p, 0, 0, 0);
+}
+
 }

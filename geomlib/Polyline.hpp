@@ -15,6 +15,7 @@ public:
     double length() const;
     Point pointAtPosition(const double position);
     double isPointInLine(const Point &point);
+    Box outBox();
 
     enum class LINE_DIRECTION {
         DIRECT,

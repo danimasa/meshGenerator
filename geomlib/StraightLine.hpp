@@ -12,6 +12,7 @@ public:
     double length() const;
     Point pointAtPosition(const double position);
     double isPointInLine(const Point &point);
+    Box outBox();
 
 private:
     StraightLine(KeyPoint* init_point, KeyPoint* final_point) :

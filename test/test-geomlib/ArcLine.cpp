@@ -61,7 +61,7 @@ TEST_CASE("ArcLine") {
         REQUIRE( arco->isPointInLine(notInLine) == -1 );
 
         Point inCircleNotInArc(-1, 1, 0);
-        arco->isPointInLine(inCircleNotInArc);
+        Point p90(1, 1, 0);
         REQUIRE( arco->isPointInLine(inCircleNotInArc) == -1 );
 
         Point pinit (0, 0, 0);
@@ -79,5 +79,47 @@ TEST_CASE("ArcLine") {
         double length = arc3d->length();
         REQUIRE( double_equals(length, 6.8017956676) == true );
         REQUIRE( double_equals(arc3d->isPointInLine(pinline), 0.402169033073) == true );
+    }
+
+    SECTION("OutBox") {
+        // Simple arc
+        Box box = arco->outBox();
+        Point center = box.get_center();
+
+        REQUIRE( double_equals(center.x, 0.5) == true );
+        REQUIRE( double_equals(center.y, 1) == true );
+        REQUIRE( center.z == 0 );
+
+        REQUIRE( double_equals(box.get_height(), 2) == true );
+        REQUIRE( box.get_depth() == 0 );
+        REQUIRE( double_equals(box.get_width(), 1) == true );
+
+        // Complex arc
+        Point c_ip(1, 2, 3);
+        Point c_fp(6, 5, 4);
+        Point c_mp(5, 2, 3);
+
+        auto c_ikp = factory->createKeypoint(c_ip);
+        auto c_fkp = factory->createKeypoint(c_fp);
+
+        Vector c_itv(-0.7644707872, 0.6115766297, 0.2038588766);
+        Vector c_ftv(-0.2548235957, 0.9173649446, 0.3057883149);
+
+        ArcLine* c_arc = factory->createArcLine(c_ikp, c_fkp, &c_mp, &c_itv, &c_ftv);
+
+        Point verify_point(-0.0907590629, 3.9950733958, 3.6650244653);
+        double inCircle = c_arc->isPointInLine(verify_point);
+        REQUIRE( inCircle == -1 );
+
+        Box c_box = c_arc->outBox();
+        Point c_box_center = c_box.get_center();
+
+        REQUIRE( c_box_center.x == 3.5512092056620714 );
+        REQUIRE( c_box_center.y == 3.1533937347673793 );
+        REQUIRE( c_box_center.z == 3.3844645782557929 );
+
+        REQUIRE( double_equals(c_box.get_height(), 3.6932125305) == true );
+        REQUIRE( double_equals(c_box.get_depth(), 1.2310708435) == true );
+        REQUIRE( double_equals(c_box.get_width(), 5.1024184113) == true );
     }
 }

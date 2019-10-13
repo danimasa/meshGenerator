@@ -28,7 +28,7 @@ StraightLine* GeometryFactory::createStraightLine(KeyPoint* init_point, KeyPoint
 
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Plane* plane,
         double radius, Point* center) const {
-    return new ArcLine(plane, init_point, final_point, radius, center);
+    return new ArcLine(plane, init_point, final_point, radius, center, false);
 }
 
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Point* mid_point,
@@ -66,14 +66,16 @@ ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_po
 
     auto arcInitPoint = init_point;
     auto arcFinalPoint = final_point;
+    bool inverted = false;
 
     double angle = v3.angleWith(*init_tangent_vector);
     if(v3.angleWith(*init_tangent_vector) > M_PI / 2) {
         arcInitPoint = final_point;
         arcFinalPoint = init_point;
+        inverted = true;
     }
 
-    return new ArcLine(plane, arcInitPoint, arcFinalPoint, radius, center);
+    return new ArcLine(plane, arcInitPoint, arcFinalPoint, radius, center, inverted);
 }
 
 UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
@@ -141,13 +143,6 @@ Area* GeometryFactory::createArea(vector<Line*> lines, Line* first_line, Line* l
     } while(searchedPoint != initPoint && remainingLines.size() != 0);
 
     return new Area(lines, first_line, last_line);
-}
-
-CoordinateSystem* GeometryFactory::createCoordinateSystem(Vector* v1, Vector* v2, Vector* v3) const {
-    Vector norm1 = v1->normalise();
-    Vector norm2 = v2->normalise();
-    Vector norm3 = v3->normalise();
-    return new CoordinateSystem(&norm1, &norm2, &norm3);
 }
 
 }

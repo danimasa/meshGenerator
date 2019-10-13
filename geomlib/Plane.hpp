@@ -16,6 +16,7 @@ public:
 
     Vector normalVector() const;
     Point toPlaneCoordinates(const Point* p) const;
+    double angleBetween(const Vector &v1, const Vector &v2) const;
 
 private:
     Point* point;

@@ -47,4 +47,17 @@ Point Plane::toPlaneCoordinates(const Point* p) const {
     // double x = 
 }
 
+double Plane::angleBetween(const Vector &v1, const Vector &v2) const {
+    double dot = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+    Vector n = normalVector();
+    n.normalise();
+    double det = v1.x * v2.y * n.z
+        + v2.x * n.y * v1.z
+        + n.x * v1.y * v2.z
+        - v1.z * v2.y * n.x
+        - v2.z * n.y * v1.x
+        - n.z * v1.y * v2.x;
+    return atan2(det, dot);
+}
+
 }
