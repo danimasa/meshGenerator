@@ -4,6 +4,7 @@
 #include "LineAnalysis.hpp"
 #include "GeometryFactory.hpp"
 #include "mathUtils.hpp"
+#include "LineIntersection.hpp"
 
 namespace processlib
 {
@@ -99,10 +100,12 @@ void LineAnalysis::brokeAndSubstitute(Line *line, Line *innerLine, KeyPoint *bro
 void LineAnalysis::findSingularities()
 {
   auto lines = geomList->getListOf(GeometryType::Line);
+  std::vector<Line*> lvector;
   auto factory = GeometryFactory::getDefaultInstance();
   for (auto l : lines)
   {
     auto line = dynamic_cast<Line *>(l);
+    lvector.push_back(line);
     if (line->getLineType() != LineType::StraightLine) continue;
     for (auto i : lines)
     {
@@ -161,16 +164,25 @@ void LineAnalysis::findSingularities()
           brokeAndSubstitute(line, innerLine, line->init_point);
         else if (finalInLine && processedLinePoint[innerLine->getID()] != line->final_point->getID())
           brokeAndSubstitute(line, innerLine, line->final_point);
-        else { // Line intersection
-          auto midPoint = line->pointAtPosition(0.5);
-          auto line_plane = factory->createPlane(line->init_point, &midPoint, line->final_point);
-          if (line_plane->contains(innerLine)) { // same plane
-            // double x1 = line->init_point
-          }
         }
      }
     }
-  }
+
+    // TODO: Remover interseção de pontos iniciais e finais
+    // LineIntersection inters_service(lvector);
+    // auto intersections = inters_service.findIntersections();
+
+    // for(auto inters : intersections) {
+    //   auto kpInter = factory->createKeypoint(inters.intersection);
+
+    //   auto polyline1 = brokeInPolyline(inters.segments[0], kpInter);
+    //   polyline1->setID(inters.segments[0]->getID());
+    //   geomList->add(polyline1);
+
+    //   auto polyline2 = brokeInPolyline(inters.segments[1], kpInter);
+    //   polyline2->setID(inters.segments[1]->getID());
+    //   geomList->add(polyline2);
+    // }
 }
 
 } // namespace processlib
