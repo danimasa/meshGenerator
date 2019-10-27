@@ -568,15 +568,26 @@ TEST_CASE("LineAnalysis.hpp") {
         auto polyline2 = dynamic_cast<Polyline*>(finLine2);
 
         REQUIRE( polyline1->get_lines().size() == 2 );
-        REQUIRE( polyline1->get_lines()[0]->init_point == kp1 );
-        REQUIRE( polyline1->get_lines()[0]->final_point == kp5 );
-        REQUIRE( polyline1->get_lines()[1]->init_point == kp5 );
-        REQUIRE( polyline1->get_lines()[1]->final_point == kp2 );
+
+        Point poly1_0_init = *(polyline1->get_lines()[0]->init_point);
+        Point poly1_0_final = *(polyline1->get_lines()[0]->final_point);
+        Point poly1_1_init = *(polyline1->get_lines()[1]->init_point);
+        Point poly1_1_final = *(polyline1->get_lines()[1]->final_point);
+
+        REQUIRE( poly1_0_init == p1 );
+        REQUIRE( poly1_0_final == p5 );
+        REQUIRE( poly1_1_init == p5 );
+        REQUIRE( poly1_1_final == p2 );
+
+        Point poly2_0_init = *(polyline2->get_lines()[0]->init_point);
+        Point poly2_0_final = *(polyline2->get_lines()[0]->final_point);
+        Point poly2_1_init = *(polyline2->get_lines()[1]->init_point);
+        Point poly2_1_final = *(polyline2->get_lines()[1]->final_point);
 
         REQUIRE( polyline2->get_lines().size() == 2 );
-        REQUIRE( polyline2->get_lines()[0]->init_point == kp3 );
-        REQUIRE( polyline2->get_lines()[0]->final_point == kp5 );
-        REQUIRE( polyline2->get_lines()[1]->init_point == kp5 );
-        REQUIRE( polyline2->get_lines()[1]->final_point == kp4 );
+        REQUIRE( poly2_0_init == p3 );
+        REQUIRE( poly2_0_final == p5 );
+        REQUIRE( poly2_1_init == p5 );
+        REQUIRE( poly2_1_final == p4 );
     }
 }

@@ -67,21 +67,32 @@ vector<Point_Ints> LineIntersection::findIntersections() {
        if(!a->handle()->segment.is_degenerate() && !b->handle()->segment.is_degenerate() &&
             CGAL::do_intersect(a->handle()->segment, b->handle()->segment)) {
         
-            auto l1 = a->handle()->segment;
-            auto l2 = b->handle()->segment;
+            auto cgal_line_1 = a->handle()->segment;
+            auto cgal_line_2 = b->handle()->segment;
+            auto line_1 = a->handle()->line;
+            auto line_2 = b->handle()->line;
             Point intersection_point;
             CGAL::cpp11::result_of<Intersect_3(Segment_3, Segment_3)>::type
-                r = CGAL::intersection(l1, l2);
+                r = CGAL::intersection(cgal_line_1, cgal_line_2);
             if (r) {
-                const Point_3* p = boost::get<Point_3>(&*r);
-                intersection_point.x = p->x();
-                intersection_point.y = p->y();
-                intersection_point.z = p->z();
+                if(const Point_3* p = boost::get<Point_3>(&*r)) {
+                    intersection_point.x = p->x();
+                    intersection_point.y = p->y();
+                    intersection_point.z = p->z();
+                } else {
+                    return;
+                }
             }
 
-            vector<Line*> lines {a->handle()->line, b->handle()->line};
-            Point_Ints intersection {intersection_point, lines};
-            m_intersections.push_back(intersection);
+            if(intersection_point != *(line_1->final_point)
+                && intersection_point != *(line_1->init_point)
+                && intersection_point != *(line_2->final_point)
+                && intersection_point != *(line_2->init_point)) {
+
+                vector<Line*> lines {line_1, line_2};
+                Point_Ints intersection {intersection_point, lines};
+                m_intersections.push_back(intersection);
+            }
        }
     });
 

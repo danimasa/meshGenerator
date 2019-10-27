@@ -169,20 +169,20 @@ void LineAnalysis::findSingularities()
     }
 
     // TODO: Remover interseção de pontos iniciais e finais
-    // LineIntersection inters_service(lvector);
-    // auto intersections = inters_service.findIntersections();
+    LineIntersection inters_service(lvector);
+    auto intersections = inters_service.findIntersections();
 
-    // for(auto inters : intersections) {
-    //   auto kpInter = factory->createKeypoint(inters.intersection);
+    for(auto inters : intersections) {
+      auto kpInter = factory->createKeypoint(inters.intersection);
 
-    //   auto polyline1 = brokeInPolyline(inters.segments[0], kpInter);
-    //   polyline1->setID(inters.segments[0]->getID());
-    //   geomList->add(polyline1);
+      auto polyline1 = brokeInPolyline(inters.segments[0], kpInter);
+      polyline1->setID(inters.segments[0]->getID());
+      geomList->add(polyline1);
 
-    //   auto polyline2 = brokeInPolyline(inters.segments[1], kpInter);
-    //   polyline2->setID(inters.segments[1]->getID());
-    //   geomList->add(polyline2);
-    // }
+      auto polyline2 = brokeInPolyline(inters.segments[1], kpInter);
+      polyline2->setID(inters.segments[1]->getID());
+      geomList->add(polyline2);
+    }
 }
 
 } // namespace processlib
