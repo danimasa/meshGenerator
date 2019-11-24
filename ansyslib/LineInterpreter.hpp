@@ -10,10 +10,10 @@ public:
     LineInterpreter(geomlib::GeometryList *geomList) :
         geomList(geomList) {}
 
-    int getLinesPerObject(const std::string &firstLine = "") const { return 4; }
     std::string getBlockCode() const { return "20."; }
+    bool belongToCurrentGeometry(const std::string &line);
 
-    geomlib::Geometry* interpret(std::string &block);
+    geomlib::Geometry* interpret();
 
 private:
     geomlib::GeometryList* geomList;

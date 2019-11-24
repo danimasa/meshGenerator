@@ -105,8 +105,8 @@ void LineAnalysis::findSingularities()
   for (auto l : lines)
   {
     auto line = dynamic_cast<Line *>(l);
-    lvector.push_back(line);
     if (line->getLineType() != LineType::StraightLine) continue;
+    lvector.push_back(line);
     for (auto i : lines)
     {
       auto innerLine = dynamic_cast<Line *>(i);
@@ -168,7 +168,6 @@ void LineAnalysis::findSingularities()
      }
     }
 
-    // TODO: Remover interseção de pontos iniciais e finais
     LineIntersection inters_service(lvector);
     auto intersections = inters_service.findIntersections();
 

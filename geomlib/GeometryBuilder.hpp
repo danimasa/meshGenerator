@@ -17,9 +17,6 @@ namespace geomlib {
     private:
         std::vector<Interpreter*> interpreters;
         GeometryList* geometryList;
-        int accumulated_lines_count = 0;
-        std::string accumulated_lines;
-        int linesPerObject = 0;
 
         Interpreter* currentInterpreter;
         READING_TYPES reading_state;

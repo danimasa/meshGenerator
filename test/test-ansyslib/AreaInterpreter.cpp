@@ -1,5 +1,7 @@
 #include "catch.hpp"
 
+#include <sstream>
+
 #include "AreaInterpreter.hpp"
 #include "GeometryList.hpp"
 #include "GeometryFactory.hpp"
@@ -16,10 +18,10 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
 
   REQUIRE( interpreter.getBlockCode() == "30." );
 
-  SECTION("Lines per Object") {
-    std::string firstLine = "        1.        4.        0.";
-    REQUIRE( interpreter.getLinesPerObject(firstLine) == 7 );
-  }
+  // SECTION("Lines per Object") {
+  //   std::string firstLine = "        1.        4.        0.";
+  //   REQUIRE( interpreter.getLinesPerObject(firstLine) == 7 );
+  // }
 
   auto *factory = GeometryFactory::getDefaultInstance();
 
@@ -69,7 +71,8 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
           "1.\n"
           "46.\n";
       
-      auto geom = interpreter.interpret(content);
+      interpreter.setAccumulatedLines(content);
+      auto geom = interpreter.interpret();
 
       auto isArea = dynamic_cast<Area*>(geom);
       REQUIRE( isArea != NULL );
@@ -88,7 +91,8 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
           "1.\n"
           "46.\n";
       
-      auto geom = interpreter.interpret(content);
+      interpreter.setAccumulatedLines(content);
+      auto geom = interpreter.interpret();
 
       auto isArea = dynamic_cast<Area*>(geom);
       REQUIRE( isArea != NULL );
@@ -101,7 +105,8 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     SECTION("Empty block returns null") {
       std::string content = "";
       
-      auto geom = interpreter.interpret(content);
+      interpreter.setAccumulatedLines(content);
+      auto geom = interpreter.interpret();
 
       auto area = dynamic_cast<Area*>(geom);
       REQUIRE( area == NULL );
@@ -114,7 +119,8 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
           "1.\n"
           "4.\n";
 
-      REQUIRE_THROWS_WITH( interpreter.interpret(content), Contains("minimal of 3 lines") );
+      interpreter.setAccumulatedLines(content);
+      REQUIRE_THROWS_WITH( interpreter.interpret(), Contains("minimal of 3 lines") );
     }
 
     SECTION("Line not in list of lines") {
@@ -126,7 +132,8 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
         "1.\n"
         "46.\n";
 
-      REQUIRE_THROWS_WITH( interpreter.interpret(content), Contains("not in the list of lines") );
+      interpreter.setAccumulatedLines(content);
+      REQUIRE_THROWS_WITH( interpreter.interpret(), Contains("not in the list of lines") );
     }
   }
   
@@ -161,28 +168,32 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
         "        1.0000000000E+00    0.5000000000E+00    0.0000000000E+00    0.0000000000E+00\n"
         "        1.0000000000E+00    0.0000000000E+00    0.0000000000E+00\n"
         "        1.0000000000E+00    0.0000000000E+00    0.0000000000E+00\n";
-    auto line2 = lineInterpreter.interpret(line2Content);
+    lineInterpreter.setAccumulatedLines(line2Content);
+    auto line2 = lineInterpreter.interpret();
     list.add(line2);
 
     std::string line3Content = "        3.        6.       7.\n"
         "        1.0000000000E+00    1.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    1.0000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    1.0000000000E+00    0.0000000000E+00\n";
-    auto line3 = lineInterpreter.interpret(line3Content);
+    lineInterpreter.setAccumulatedLines(line3Content);
+    auto line3 = lineInterpreter.interpret();
     list.add(line3);
 
     std::string line5Content = "        5.        7.       9.\n"
         "        1.1661903790E+00    0.5000000000E+00    1.3000000000E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n";
-    auto line5 = lineInterpreter.interpret(line5Content);
+    lineInterpreter.setAccumulatedLines(line5Content);
+    auto line5 = lineInterpreter.interpret();
     list.add(line5);
 
     std::string line8Content = "        8.        9.       5.\n"
         "        1.0000000000E+00    0.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    -1.0000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    -1.0000000000E+00    0.0000000000E+00\n";
-    auto line8 = lineInterpreter.interpret(line8Content);
+    lineInterpreter.setAccumulatedLines(line8Content);
+    auto line8 = lineInterpreter.interpret();
     list.add(line8);
 
     // Lines of concatenated
@@ -190,14 +201,16 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
         "        0.5830951895E+00    0.7500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n";
-    auto line9 = lineInterpreter.interpret(line9Content);
+    lineInterpreter.setAccumulatedLines(line9Content);
+    auto line9 = lineInterpreter.interpret();
     list.add(line9);
 
     std::string line10Content = "        10.        8.       9.\n"
         "        0.5830951895E+00    0.2500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n";
-    auto line10 = lineInterpreter.interpret(line10Content);
+    lineInterpreter.setAccumulatedLines(line10Content);
+    auto line10 = lineInterpreter.interpret();
     list.add(line10);
 
     auto undefinedLine5 = dynamic_cast<Line*>(line5);
@@ -214,7 +227,8 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
       "2.\n"
       "3.\n";
 
-    auto geom = interpreter.interpret(content);
+    interpreter.setAccumulatedLines(content);
+    auto geom = interpreter.interpret();
     auto isArea = dynamic_cast<Area*>(geom);
 
     REQUIRE( isArea->getGeometryType() == GeometryType::Area );

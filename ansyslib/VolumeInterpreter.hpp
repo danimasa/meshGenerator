@@ -10,13 +10,14 @@ public:
     VolumeInterpreter(geomlib::GeometryList *geomList) :
         geomList(geomList) {}
 
-    int getLinesPerObject(const std::string &first_line = "") const;
     std::string getBlockCode() const { return "40."; }
+    bool belongToCurrentGeometry(const std::string &line);
 
-    geomlib::Geometry* interpret(std::string &block);
+    geomlib::Geometry* interpret();
 
 private:
     geomlib::GeometryList* geomList;
+    int totalLines;
 };
 
 }

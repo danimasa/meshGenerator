@@ -12,13 +12,20 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
     LineInterpreter interpreter(&list);
 
     REQUIRE( interpreter.getBlockCode() == "20." );
-    REQUIRE( interpreter.getLinesPerObject() == 4 );
+    SECTION("four lines per object") {
+        std::string content = "line";
+        REQUIRE( interpreter.accumulateLine(content) == false );
+        REQUIRE( interpreter.accumulateLine(content) == false );
+        REQUIRE( interpreter.accumulateLine(content) == false );
+        REQUIRE( interpreter.accumulateLine(content) == false );
+        REQUIRE( interpreter.accumulateLine(content) == true );
+    }
 
     auto *factory = GeometryFactory::getDefaultInstance();
 
     auto p2 = Point(); // x = 0, y = 0, z = 0
     auto kp2 = factory->createKeypoint(p2);
-    kp2->setID(2); // TODO: Deve ser gerado na construção do objeto
+    kp2->setID(2);
     list.add(kp2);
 
     auto p15 = Point(0.1072081295, 0, 0);
@@ -32,7 +39,8 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
             "        -0.4871291193E-16    0.1000000000E+01   -0.2598021970E-15\n"
             "        -0.2857142857E+00    0.9583148475E+00    0.2598021970E-15\n";
 
-        auto geom = interpreter.interpret(content);
+        interpreter.setAccumulatedLines(content);
+        auto geom = interpreter.interpret();
 
         auto isLine = dynamic_cast<Line*>(geom);
         REQUIRE( isLine != NULL );
@@ -58,7 +66,8 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
             "        -0.3809523810E+00    0.9245946590E+00    0.2696692822E-15\n"
             "        -0.1000000000E+01   -0.4719212438E-15   -0.2696692822E-15\n";
         
-        auto geom = interpreter.interpret(content);
+        interpreter.setAccumulatedLines(content);
+        auto geom = interpreter.interpret();
 
         auto isLine = dynamic_cast<Line*>(geom);
         REQUIRE( isLine != NULL );
@@ -74,7 +83,8 @@ TEST_CASE("LineInterpreter", "[interpreter]") {
             "        -0.4871291193E-16    0.1000000000E+01   -0.2598021970E-15\n"
             "        -0.2857142857E+00    0.9583148475E+00    0.2598021970E-15\n";
 
-        auto geom = interpreter.interpret(content);
+        interpreter.setAccumulatedLines(content);
+        auto geom = interpreter.interpret();
 
         auto isLine = dynamic_cast<Line*>(geom);
         REQUIRE( isLine != NULL );

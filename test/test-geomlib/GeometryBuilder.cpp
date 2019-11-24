@@ -1,3 +1,6 @@
+#define protected public
+#define private public
+
 #include "catch.hpp"
 #include "fakeit.hpp"
 
@@ -15,9 +18,11 @@ TEST_CASE("GeometryBuilder", "[builder]") {
 
     When(Method(geometry, getID)).AlwaysReturn(1);
 
-    When(Method(interpreter, getLinesPerObject)).AlwaysReturn(2);
     When(Method(interpreter, interpret)).AlwaysReturn(&geometry.get());
     When(Method(interpreter, getBlockCode)).AlwaysReturn("10.");
+
+    When(Method(interpreter, belongToCurrentGeometry)).AlwaysReturn(true);
+    When(Method(interpreter, belongToCurrentGeometry).Using("nextContent")).AlwaysReturn(false);
 
     std::vector<Interpreter*> interpreters { &interpreter.get() };
 
@@ -57,16 +62,15 @@ TEST_CASE("GeometryBuilder", "[builder]") {
 
     SECTION("Interpreting Data") {
         std::string content = "content";
-        std::string mixedContent = "content\ncontent";
 
         // Read content
         builder.readFileLine(content);
-        Verify(Method(interpreter, getLinesPerObject));
-
         builder.readFileLine(content);
-        Verify(Method(interpreter, getLinesPerObject)).Exactly(1);
+        builder.readFileLine("nextContent");
+
         Verify(Method(interpreter, interpret)).Exactly(1);
 
+        REQUIRE( interpreter.get().accumulatedLinesCount == 0 );
         REQUIRE( list.size() == 1 );
     }
 }

@@ -1,0 +1,253 @@
+﻿﻿!######################################
+!#
+!# MACRO PROCGEOM
+!# JANEIRO DE 2009
+!# PROCESSAMENTO DA GEOMETRIA NO ANSYS PARA O GERADOR DE MALHAS
+!#
+!######################################
+
+!############################
+!# CONTROLE
+!############################
+
+FileName = 'GEOM'
+FileExt  = 'DAT'
+
+/CWD,'C:\Users\root\Desktop\DanielMest\GerMalha'				! Diretorio de trabalho
+/FILNAME, GerMalhas, 1								! Jobname com novos arquivos (log, error, results, etc)
+
+/PREP7
+
+/NERR, 0, 99999999,, -1, -1
+/UIS, MSGPOP, 4									! SO APRESENTAR MENSAGENS DE ERRO
+
+/SYS, DEL GEOM.DAT								! APAGA O ARQUIVO SE JÁ EXISTENTE
+*CFOPEN, %FileName%, %FileExt%,, APPEND						! ARQUIVO PARA RESULTADOS
+
+StartBlock =  9999
+EndBlock   = -9876
+
+!############################
+!# KEYPOINTS
+!############################
+ALLSEL, ALL
+*GET, Total, KP,, COUNT
+*IF, Total, GT, 0, THEN
+   *VWRITE, StartBlock
+   (F10.0)
+   *VWRITE
+   ('       10.')
+   *VWRITE, Total
+   (F10.0)
+   atualEnt = KPNEXT(0)
+   *DOWHILE, atualEnt
+      Xcoord = KX(atualEnt)
+      Ycoord = KY(atualEnt)
+      Zcoord = KZ(atualEnt)
+      *VWRITE, atualEnt, Xcoord, Ycoord, Zcoord
+      (F10.0, 3E20.10)
+      atualEnt = KPNEXT(atualEnt)
+   *ENDDO
+   *VWRITE, EndBlock
+   (F10.0)
+   *VWRITE
+   ()
+*ENDIF
+
+!############################
+!# LINES
+!############################
+ALLSEL, ALL
+*GET, Total, LINE,, COUNT
+*IF, Total, GT, 0, THEN
+   *VWRITE, StartBlock
+   (F10.0)
+   *VWRITE
+   ('       20.')
+   *VWRITE, Total
+   (F10.0)
+   atualEnt = LSNEXT(0)
+   *DOWHILE, atualEnt
+      *GET, KP1, LINE, atualEnt, KP, 1
+      *GET, KP2, LINE, atualEnt, KP, 2
+      *GET, LNl, LINE, atualEnt, LENG
+      Xcoord = LX(atualEnt, 0.5)
+      Ycoord = LY(atualEnt, 0.5)
+      Zcoord = LZ(atualEnt, 0.5)
+      *VWRITE, atualEnt, KP1, KP2, LNl
+      (3F10.0, E20.10)
+      *VWRITE, Xcoord, Ycoord, Zcoord
+      (3E20.10)
+      Xcoord = LSX(atualEnt, 0)
+      Ycoord = LSY(atualEnt, 0)
+      Zcoord = LSZ(atualEnt, 0)
+      *VWRITE, Xcoord, Ycoord, Zcoord
+      (3E20.10)
+      Xcoord = LSX(atualEnt, 1)
+      Ycoord = LSY(atualEnt, 1)
+      Zcoord = LSZ(atualEnt, 1)
+      *VWRITE, Xcoord, Ycoord, Zcoord
+      (3E20.10)
+      atualEnt = LSNEXT(atualEnt)
+   *ENDDO
+   *VWRITE, EndBlock
+   (F10.0)
+   *VWRITE
+   ()
+*ENDIF
+
+!#   *GET, LNrad, LINE, 11, RADIUS  ----- nao sei como ler o raio
+!#  qual outra possibilidade de identificacao de arcos?
+
+!############################
+!# AREAS
+!############################
+ALLSEL, ALL
+*GET, Total, AREA,, COUNT
+*IF, Total, GT, 0, THEN
+   *VWRITE, StartBlock
+   (F10.0)
+   *VWRITE
+   ('       30.')
+   *VWRITE, Total
+   (F10.0)
+   atualEnt = ARNEXT(0)
+   *DOWHILE, atualEnt
+      ASEL, S, AREA,, atualEnt, atualEnt, 1
+      LSLA, S
+      *GET, Nlines, LINE,, COUNT
+      LSEL, R, LCCA
+      *GET, NCctLines, LINE,, COUNT
+      *VWRITE, atualEnt, Nlines, NCctLines
+      (3F10.0)
+!#      *DO, I, 1, Nlines, 1
+!#
+!#         *GET, LNlb, AREA, atualEnt, LOOP, 1, LINE, I
+!#
+!#         *VWRITE, LNlb
+!#         (F10.0)
+!#
+!#      *ENDDO
+      LSLA, S
+      contLn = 1
+      *GET, atualSubEnt, AREA, atualEnt, LOOP, 1, LINE, contLn
+      *IF, atualSubEnt, GT, 0, THEN
+         *VWRITE, 1
+         ('         L', F10.0)
+
+         *DOWHILE, atualSubEnt
+            *VWRITE, atualSubEnt
+            (F10.0)
+            contLn = contLn + 1
+            atualSubEnt = 0
+            *GET, atualSubEnt, AREA, atualEnt, LOOP, 1, LINE, contLn
+         *ENDDO
+      *ENDIF
+
+!      atualSubEnt = LSNEXT(0)
+!      *DOWHILE, atualSubEnt
+!         *VWRITE, atualSubEnt
+!         (F10.0)
+!         atualSubEnt = LSNEXT(atualSubEnt)
+!      *ENDDO
+      LSEL, R, LCCA
+      atualSubEnt = LSNEXT(0)
+      *IF, atualSubEnt, GT, 0, THEN
+         *DOWHILE, atualSubEnt
+            *VWRITE, atualSubEnt
+            (F10.0)
+            atualSubEnt = LSNEXT(atualSubEnt)
+         *ENDDO
+      *ENDIF
+!      *GET, atualSubEnt, AREA, atualEnt, LOOP, 1, LINE, 1
+!      *VWRITE, atualSubEnt
+!      (F10.0)
+!      *GET, atualSubEnt, AREA, atualEnt, LOOP, 1, LINE, 2
+!      *VWRITE, atualSubEnt
+!      (F10.0)
+
+
+      ALLSEL, ALL
+      atualEnt = ARNEXT(atualEnt)
+   *ENDDO
+   *VWRITE, EndBlock
+   (F10.0)
+   *VWRITE
+   ()
+*ENDIF
+
+!############################
+!# VOLUMES
+!############################
+ALLSEL, ALL
+*GET, Total, VOLU,, COUNT
+*IF, Total, GT, 0, THEN
+   *VWRITE, StartBlock
+   (F10.0)
+   *VWRITE
+   ('       40.')
+   *VWRITE, Total
+   (F10.0)
+   atualEnt = VLNEXT(0)
+   *DOWHILE, atualEnt
+      VSEL, S, VOLU,, atualEnt, atualEnt, 1
+      ASLV, S
+      *GET, Nareas, AREA,, COUNT
+      ASEL, R, ACCA
+      *GET, NCctAreas, AREA,, COUNT
+      *VWRITE, atualEnt, Nareas, NCctAreas
+      (3F10.0)
+!#      *DO, I, 1, Nareas, 1
+!#
+!#         *GET, ARlb1, VOLU, atualEnt, SHELL, 1, AREA, I
+!#
+!#         *VWRITE, ARlb1
+!#         (F10.0)
+!#
+!#      *ENDDO
+!# alterar
+      ASLV, S
+      atualSubEnt = ARNEXT(0)
+      *DOWHILE, atualSubEnt
+         *VWRITE, atualSubEnt
+         (F10.0)
+         atualSubEnt = ARNEXT(atualSubEnt)
+      *ENDDO
+      ASEL, R, ACCA
+      atualSubEnt = ARNEXT(0)
+      *IF, atualSubEnt, GT, 0, THEN
+         *DOWHILE, atualSubEnt
+            *VWRITE, atualSubEnt
+            (F10.0)
+            atualSubEnt = ARNEXT(atualSubEnt)
+         *ENDDO
+      *ENDIF
+      *GET, atualSubEnt, VOLU, atualEnt, SHELL, 1, AREA, 1
+      *VWRITE, atualSubEnt
+      (F10.0)
+      *GET, atualSubEnt, VOLU, atualEnt, SHELL, 1, AREA, 2
+      *VWRITE, atualSubEnt
+      (F10.0)
+      ALLSEL, ALL
+      atualEnt = VLNEXT(atualEnt)
+   *ENDDO
+   *VWRITE, EndBlock
+   (F10.0)
+   *VWRITE
+   ()
+*ENDIF
+!############################
+ALLSEL, ALL
+!############################
+!# *VGET, ParR, Entity, ENTNUM, Item1, IT1NUM, Item2, IT2NUM, KLOOP
+!# *DIM, TesteVar, ARRAY, 4
+!# *VGET, TesteVar, VOLU, 4, SHELL, 1, AREA, 1
+!############################
+*if,i,eq,1,then
+VSEL, S, VOLU,, atualEnt, atualEnt, 1
+ASEL, S, EXT
+*endif
+!############################
+
+FINISH
+*CFCLOSE

@@ -1,3 +1,5 @@
+#define private public
+
 #include "catch.hpp"
 
 #include "VolumeInterpreter.hpp"
@@ -15,7 +17,8 @@ TEST_CASE("VolumeInterpreter", "[interpreter]") {
 
     SECTION("Lines per Object") {
         std::string firstLine = "        1.        6.        0.";
-        REQUIRE( interpreter.getLinesPerObject(firstLine) == 9 );
+        interpreter.accumulateLine(firstLine);
+        REQUIRE( interpreter.totalLines == 9 );
     }
 
     auto *factory = GeometryFactory::getDefaultInstance();

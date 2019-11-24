@@ -7,11 +7,15 @@ using namespace std;
 namespace ansyslib
 {
 
-int VolumeInterpreter::getLinesPerObject(const string &firstLine) const {
-    return simplePlusConcatenatedLinesCounter(firstLine);
+bool VolumeInterpreter::belongToCurrentGeometry(const string &line) {
+    if(accumulatedLinesCount == 0) {
+        totalLines = simplePlusConcatenatedLinesCounter(line);
+        return true;
+    }
+    return accumulatedLinesCount < totalLines;
 }
 
-Geometry* VolumeInterpreter::interpret(string &block) {
+Geometry* VolumeInterpreter::interpret() {
     return nullptr;
 }
 

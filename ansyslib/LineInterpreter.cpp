@@ -16,13 +16,17 @@ using namespace geomlib;
 namespace ansyslib {
 
 bool equal(double x, double y) {
-    if (double_equals(x, y)) {
-        return true;
-    }
-    return false;
+    return double_equals(x, y);
 }
 
-geomlib::Geometry* LineInterpreter::interpret(std::string &block) {
+bool LineInterpreter::belongToCurrentGeometry(const std::string &line) {
+    // 4 lines per object
+    return accumulatedLinesCount < 4;
+}
+
+geomlib::Geometry* LineInterpreter::interpret() {
+    auto block = accumulatedLines;
+
     if(block.empty())
         return nullptr;
 

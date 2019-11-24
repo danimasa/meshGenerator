@@ -100,12 +100,19 @@ Polyline* findPolyline(UnspecifiedLine* line, vector<Line*> lineList) {
   }
   return NULL;
 }
-  
-int AreaInterpreter::getLinesPerObject(const string &firstLine) const {
-  return simplePlusConcatenatedLinesCounter(firstLine);
+
+bool AreaInterpreter::belongToCurrentGeometry(const std::string &line) {
+  if(accumulatedLinesCount == 0) return true;
+  int dotsNumber = std::count(
+    accumulatedLines.begin(),
+    accumulatedLines.end(),
+    '.');
+  return dotsNumber < 3;
 }
 
-geomlib::Geometry* AreaInterpreter::interpret(string &block) {
+geomlib::Geometry* AreaInterpreter::interpret() {
+  string block = accumulatedLines;
+
   if(block.empty())
     return nullptr;
 

@@ -12,7 +12,14 @@ using namespace geomlib;
 
 namespace ansyslib {
 
-geomlib::Geometry* KeypointInterpreter::interpret(string &block) {
+bool KeypointInterpreter::belongToCurrentGeometry(const std::string &line) {
+    // only one line per object
+    return accumulatedLinesCount < 1;
+}
+
+geomlib::Geometry* KeypointInterpreter::interpret() {
+    auto block = accumulatedLines;
+
     if(block.empty())
         return nullptr;
 
