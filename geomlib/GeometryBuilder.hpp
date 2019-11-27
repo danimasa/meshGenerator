@@ -20,6 +20,7 @@ namespace geomlib {
 
         Interpreter* currentInterpreter;
         READING_TYPES reading_state;
+        void writeGeometry();
 
     public:
         GeometryBuilder(std::vector<Interpreter*> interpreters)

@@ -19,6 +19,7 @@ namespace geomlib {
         // accumulateLine returns true when current line does not belong to current geometry
         bool accumulateLine(const std::string &line);
         void setAccumulatedLines(const std::string &block);
+        int getLines() { return accumulatedLinesCount; }
 
     protected:
         const GeometryFactory* _factory;

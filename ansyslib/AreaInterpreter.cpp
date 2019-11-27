@@ -107,7 +107,10 @@ bool AreaInterpreter::belongToCurrentGeometry(const std::string &line) {
     accumulatedLines.begin(),
     accumulatedLines.end(),
     '.');
-  return dotsNumber < 3;
+
+  auto cleanLine = line;
+  trim(cleanLine);
+  return dotsNumber < 3 || cleanLine != "-9876";
 }
 
 geomlib::Geometry* AreaInterpreter::interpret() {

@@ -3,6 +3,12 @@
 
 namespace geomlib {
 
+void GeometryBuilder::writeGeometry() {
+    auto geometry = currentInterpreter->interpret();
+    geometryList->add(geometry);
+    currentInterpreter->resetAccumulatedLines();
+}
+
 void GeometryBuilder::readFileLine(const std::string &line) {
     std::string l_line = line;
     trim(l_line);
@@ -15,6 +21,10 @@ void GeometryBuilder::readFileLine(const std::string &line) {
     }
 
     if (l_line == "-9876.") {
+        if (currentInterpreter->getLines() == 1) {
+            writeGeometry();
+        }
+
         reading_state = READING_TYPES::NOTHING;
         return;
     }
@@ -43,9 +53,7 @@ void GeometryBuilder::readFileLine(const std::string &line) {
         bool result = currentInterpreter->accumulateLine(l_line);
 
         if (result) {
-            auto geometry = currentInterpreter->interpret();
-            geometryList->add(geometry);
-            currentInterpreter->resetAccumulatedLines();
+            writeGeometry();
             currentInterpreter->accumulateLine(l_line);
         }
     }
