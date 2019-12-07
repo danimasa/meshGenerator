@@ -48,7 +48,10 @@ TEST_CASE("LineAnalysis.hpp") {
         list.add(l5);
 
         vector<Line*> lines {l1, l2, l3, l4};
-        auto a1 = factory->createArea(lines, l1, l4);
+        Area::Loop loop(lines);
+        vector<Area::Loop*> loops;
+        loops.push_back(&loop);
+        auto a1 = factory->createArea(loops);
         list.add(a1);
 
         LineAnalysis analyser(&list);
@@ -57,8 +60,8 @@ TEST_CASE("LineAnalysis.hpp") {
         auto rawArea = list.getByID(GeometryType::Area, a1->getID());
         Area* afterArea = dynamic_cast<Area*>(rawArea);
 
-        auto lafter1 = afterArea->lines[0];
-        auto lafter2 = afterArea->lines[2];
+        auto lafter1 = afterArea->loops[0]->lines[0];
+        auto lafter2 = afterArea->loops[0]->lines[2];
         REQUIRE( lafter1->getLineType() == LineType::Polyline );
         REQUIRE( lafter2->getLineType() == LineType::Polyline );
 

@@ -12,16 +12,21 @@ class GeometryFactory;
 
 class Area : public Geometry {
 public:
-  vector<Line*> lines;
-  Line* first_line;
-  Line* last_line;
+  class Loop {
+    public:
+    vector<Line*> lines;
+
+    Loop(vector<Line*> lines) : lines(lines) {}
+  };
+
+  vector<Loop*> loops;
 
   GeometryType getGeometryType() const { return GeometryType::Area; }
 
 private:
-  Area(vector<Line*> lines, Line* first_line, Line* last_line) :
+  Area(vector<Loop*> loops) :
     Geometry(GeometryType::Area),
-    lines(lines), first_line(first_line), last_line(last_line) {}
+     loops(loops) {}
 
   friend class GeometryFactory;
 }; // Area

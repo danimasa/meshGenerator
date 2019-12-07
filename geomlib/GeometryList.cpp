@@ -23,10 +23,13 @@ void GeometryList::substituteInAreas(Line *line) {
   auto areas = getListOf(GeometryType::Area);
   for(auto rawArea : areas) {
     auto area = dynamic_cast<Area*>(rawArea);
-    for(int i=0; i < area->lines.size(); i++) {
-      auto aLine = area->lines[i];
-      if (aLine->getID() == line->getID())
-        area->lines[i] = line;
+    for(int o=0; o < area->loops.size(); o++) {
+      auto loop = area->loops[o];
+      for(int i=0; i < loop->lines.size(); i++) {
+        auto aLine = area->loops[o]->lines[i];
+        if (aLine->getID() == line->getID())
+          area->loops[o]->lines[i] = line;
+      }
     }
   }
 }

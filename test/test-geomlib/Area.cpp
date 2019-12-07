@@ -27,19 +27,19 @@ TEST_CASE("Area") {
 
   SECTION("Valid area") {
     vector<Line*> lines { line1, line2, line3, line4 };
-    Area* area = factory->createArea(lines, line1, line4);
+    Area::Loop loop(lines);
+    vector<Area::Loop*> loops;
+    loops.push_back(&loop);
+    Area* area = factory->createArea(loops);
 
     REQUIRE( area != nullptr );
   }
 
   SECTION("Not permited non touching lines") {
     vector<Line*> lines { line1, line3, line4 };
-    REQUIRE_THROWS( factory->createArea(lines, line1, line3) );
-  }
-
-  SECTION("Not permited initial or final lines not in the list") {
-    vector<Line*> lines { line1, line2, line3, line4 };
-    REQUIRE_THROWS( factory->createArea(lines, line1, line5) );
-    REQUIRE_THROWS( factory->createArea(lines, line5, line4) );
+    Area::Loop loop(lines);
+    vector<Area::Loop*> loops;
+    loops.push_back(&loop);
+    REQUIRE_THROWS( factory->createArea(loops) );
   }
 }

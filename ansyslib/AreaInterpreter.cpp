@@ -32,6 +32,16 @@ Line* findLineWithId(string id_str, GeometryList *geomList) {
   return corresp_line;
 }
 
+Area::Loop* findLoopWithLine(Line* line, vector<Area::Loop*> loops) {
+  for(auto loop : loops) {
+    for(auto l : loop->lines) {
+      if (l->getID() == line->getID()) return loop;
+    }
+  }
+
+  return nullptr;
+}
+
 Polyline::Line_in_Polyline nextTouchingLine(const KeyPoint& point, vector<Line*>& remainingLines) {
   int index = -1;
   Line* searchedLine = NULL;
@@ -147,58 +157,71 @@ geomlib::Geometry* AreaInterpreter::interpret() {
     throw std::invalid_argument("minimal of 3 lines to define an area is necessary.");
   }
 
+  int initial_concatenated_position = lines.size() - concatenated_lines_qtd;
+  vector<Area::Loop*> loopList;
+  // Leitura dos loops
+  int linePos = 1;
   vector<Line*> lineList;
-  lineList.reserve(normal_lines_qtd);
 
-  // Leitura das Linhas
-  for (int i=0; i < normal_lines_qtd; i++) {
-    line = lines.at(i + 1);
+  while(linePos < initial_concatenated_position) {
+    line = lines.at(linePos);
+    trim(line);
+    
+    if(line[0] == 'L') {
+      if (linePos > 1) {
+        auto loop = new Area::Loop(lineList);
+        loopList.push_back(loop);
+        lineList.clear();
+      }
+      linePos++;
+      continue;
+    }
+
     auto corresp_line = findLineWithId(line, geomList);
     lineList.push_back(corresp_line);
+    linePos++;
+  }
+
+  auto lineLoop = new Area::Loop(lineList);
+  loopList.push_back(lineLoop);
+
+  // Leitura das Linhas
+  // for (int i=0; i < normal_lines_qtd; i++) {
+  //   line = lines.at(i + 1);
+  //   auto corresp_line = findLineWithId(line, geomList);
+  //   lineList.push_back(corresp_line);
+  // }
+
+  auto allGeometryLines = geomList->getListOf(GeometryType::Line);
+  vector<Line*> allLines;
+  for(auto l : allGeometryLines) {
+    Line* line = dynamic_cast<Line*>(l);
+    allLines.push_back(line);
   }
 
   // Processar linhas concatenadas
-  for(int i=normal_lines_qtd; i < totalLines; i++) {
-    line = lines.at(i + 1);
+  for(int i = initial_concatenated_position; i < lines.size(); i++) {
+    line = lines.at(i);
     auto corresp_line = findLineWithId(line, geomList);
+    auto loop = findLoopWithLine(corresp_line, loopList);
     Polyline* polyline;
 
     if (corresp_line->getLineType() == LineType::UnspecifiedLine) {
       UnspecifiedLine* uLine = dynamic_cast<UnspecifiedLine*>(corresp_line);
-      polyline = findPolyline(uLine, lineList);
+      polyline = findPolyline(uLine, allLines);
       polyline->setID(uLine->getID());
       geomList->add(polyline);
       
-      auto uLinePos = std::find(lineList.begin(), lineList.end(), corresp_line);
-      auto pos = std::distance(lineList.begin(), uLinePos);
-      lineList[pos] = polyline;
-    } else {
+      auto uLinePos = std::find(loop->lines.begin(), loop->lines.end(), corresp_line);
+      auto pos = std::distance(loop->lines.begin(), uLinePos);
+      loop->lines[pos] = polyline;
+    } else if (corresp_line->getLineType() == LineType::Polyline) {
       polyline = dynamic_cast<Polyline*>(corresp_line);
-    }
-
-    // Remove lines from polyline
-    for(auto l : polyline->get_lines()) {
-      auto firstIt = std::find(lineList.begin(), lineList.end(), l);
-      lineList.erase(firstIt);
-    }
+    } else continue;
   }
-
-  line = lines.at(totalLines + 1);
-  auto first_line = findLineWithId(line, geomList);
-  auto type = first_line->getLineType();
   
-  line = lines.at(totalLines + 2);
-  auto last_line = findLineWithId(line, geomList);
-  auto type2 = last_line->getLineType();
-  Area* area;
-
-  try {
-    area = _factory->createArea(lineList, first_line, last_line);
-    area->setID(id);
-  } catch(const std::exception& e) {
-    std::cout << "Area: " << id << std::endl;
-    throw std::invalid_argument("Not permited non touching lines");
-  }
+  auto area = _factory->createArea(loopList);
+  area->setID(id);
 
   return area;
 }

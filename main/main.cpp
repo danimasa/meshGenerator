@@ -37,13 +37,13 @@ void print_Line(const Line *line) {
    cout << "(" << line->getID() << ") type: " << lineName(line->getLineType()) << endl;
 };
 
-void print_area(const Area *area) {
-    cout << "(" << area->getID() << ") - ";
-    for(auto line : area->lines) {
-        cout << line->getID() << ", ";
-    }
-    cout << endl;
-}
+// void print_area(const Area *area) {
+//     cout << "(" << area->getID() << ") - ";
+//     for(auto line : area->lines) {
+//         cout << line->getID() << ", ";
+//     }
+//     cout << endl;
+// }
 
 int main(int argc, char **argv) {
     if(argc < 2) {

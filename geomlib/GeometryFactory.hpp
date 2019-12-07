@@ -40,7 +40,7 @@ namespace geomlib {
         Plane* createPlane(Point* p1, Point* p2, Point* p3) const;
         Plane* createPlane(Point* p1, Vector* v1, Vector* v2) const;
 
-        Area* createArea(vector<Line*> lines, Line* first_line, Line* last_line) const;
+        Area* createArea(vector<Area::Loop*> loops) const;
 
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;

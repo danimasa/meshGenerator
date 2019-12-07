@@ -107,15 +107,16 @@ Plane* GeometryFactory::createPlane(Point* p1, Point* p2, Point* p3) const {
     return new Plane(p1, vector1, vector2);
 }
 
-Area* GeometryFactory::createArea(vector<Line*> lines, Line* first_line, Line* last_line) const {
-    if(std::find(lines.begin(), lines.end(), first_line) == lines.end() || 
-        std::find(lines.begin(), lines.end(), last_line) == lines.end()) {
-        throw std::invalid_argument("first_line and last_line must contain in lines list");
+void verifyAreaLoop(const Area::Loop* loop) {
+    if(loop->lines.size() < 3) {
+        throw std::invalid_argument("An area loop should have a minimal of 3 lines");
     }
 
+    auto first_line = loop->lines[0];
     KeyPoint *initPoint = first_line->init_point;
     KeyPoint *searchedPoint = first_line->final_point;
 
+    auto lines = loop->lines;
     // Verify all touching lines
     std::list<Line*> remainingLines(lines.begin(), lines.end());
     // Remove first_line
@@ -141,8 +142,14 @@ Area* GeometryFactory::createArea(vector<Line*> lines, Line* first_line, Line* l
             throw std::invalid_argument("Not permited non touching lines");
         }
     } while(searchedPoint != initPoint && remainingLines.size() != 0);
+}
 
-    return new Area(lines, first_line, last_line);
+Area* GeometryFactory::createArea(vector<Area::Loop*> loops) const {
+    for(auto loop : loops) {
+        verifyAreaLoop(loop);
+    }
+
+    return new Area(loops);
 }
 
 }
