@@ -38,8 +38,8 @@ Polyline::Line_in_Polyline nextTouchingLine(const KeyPoint& point, vector<Line*>
 
   remainingLines.erase(remainingLines.begin() + index);
   
-  Polyline::LINE_DIRECTION lineDirection = Polyline::LINE_DIRECTION::DIRECT;
-  if (*searchedLine->final_point == point) lineDirection = Polyline::LINE_DIRECTION::INVERSE;
+  LineDirection lineDirection = LineDirection::DIRECT;
+  if (*searchedLine->final_point == point) lineDirection = LineDirection::INVERSE;
   return Polyline::Line_in_Polyline{ searchedLine, lineDirection };
 }
 
@@ -68,7 +68,7 @@ Polyline::Polyline(
     Line_in_Polyline searchedLine = nextTouchingLine(searchedPoint, remainingLines);
     lines.push_back(searchedLine);
 
-    if(searchedLine.direction == LINE_DIRECTION::DIRECT) searchedPoint = *searchedLine.line->final_point;
+    if(searchedLine.direction == LineDirection::DIRECT) searchedPoint = *searchedLine.line->final_point;
     else searchedPoint = *searchedLine.line->init_point;
   } while(searchedPoint != finalPoint);
 
@@ -130,7 +130,7 @@ Point Polyline::pointAtPosition(const double position) {
 
     Line_in_Polyline lineWIthPoint = *litr;
     double linePosition = (position - initialLinePosition) / (finalLinePosition - initialLinePosition);
-    if (lineWIthPoint.direction == LINE_DIRECTION::INVERSE) {
+    if (lineWIthPoint.direction == LineDirection::INVERSE) {
       linePosition = 1 - linePosition;
     }
     auto point = lineWIthPoint.line->pointAtPosition(linePosition); 

@@ -26,9 +26,9 @@ void GeometryList::substituteInAreas(Line *line) {
     for(int o=0; o < area->loops.size(); o++) {
       auto loop = area->loops[o];
       for(int i=0; i < loop->lines.size(); i++) {
-        auto aLine = area->loops[o]->lines[i];
+        auto aLine = area->loops[o]->lines[i].line;
         if (aLine->getID() == line->getID())
-          area->loops[o]->lines[i] = line;
+          area->loops[o]->lines[i].line = line;
       }
     }
   }

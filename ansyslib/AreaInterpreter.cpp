@@ -35,7 +35,7 @@ Line* findLineWithId(string id_str, GeometryList *geomList) {
 Area::Loop* findLoopWithLine(Line* line, vector<Area::Loop*> loops) {
   for(auto loop : loops) {
     for(auto l : loop->lines) {
-      if (l->getID() == line->getID()) return loop;
+      if (l.line->getID() == line->getID()) return loop;
     }
   }
 
@@ -55,12 +55,12 @@ Polyline::Line_in_Polyline nextTouchingLine(const KeyPoint& point, vector<Line*>
   }
 
   if (searchedLine == NULL)
-    return Polyline::Line_in_Polyline{ NULL, Polyline::LINE_DIRECTION::DIRECT };
+    return Polyline::Line_in_Polyline{ NULL, LineDirection::DIRECT };
 
   remainingLines.erase(remainingLines.begin() + index);
   
-  Polyline::LINE_DIRECTION lineDirection = Polyline::LINE_DIRECTION::DIRECT;
-  if (*searchedLine->final_point == point) lineDirection = Polyline::LINE_DIRECTION::INVERSE;
+  LineDirection lineDirection = LineDirection::DIRECT;
+  if (*searchedLine->final_point == point) lineDirection = LineDirection::INVERSE;
   return Polyline::Line_in_Polyline{ searchedLine, lineDirection };
 }
 
@@ -80,7 +80,7 @@ Polyline* findPath(Line* startLine,
       if(searchedLine.line == startLine) continue;
       lines.push_back(searchedLine.line);
 
-      if(searchedLine.direction == Polyline::LINE_DIRECTION::DIRECT) searchedPoint = *searchedLine.line->final_point;
+      if(searchedLine.direction == LineDirection::DIRECT) searchedPoint = *searchedLine.line->final_point;
       else searchedPoint = *searchedLine.line->init_point;
     } while(searchedPoint != *final_point);
 
@@ -186,12 +186,6 @@ geomlib::Geometry* AreaInterpreter::interpret() {
   loopList.push_back(lineLoop);
 
   // Leitura das Linhas
-  // for (int i=0; i < normal_lines_qtd; i++) {
-  //   line = lines.at(i + 1);
-  //   auto corresp_line = findLineWithId(line, geomList);
-  //   lineList.push_back(corresp_line);
-  // }
-
   auto allGeometryLines = geomList->getListOf(GeometryType::Line);
   vector<Line*> allLines;
   for(auto l : allGeometryLines) {
@@ -212,9 +206,10 @@ geomlib::Geometry* AreaInterpreter::interpret() {
       polyline->setID(uLine->getID());
       geomList->add(polyline);
       
-      auto uLinePos = std::find(loop->lines.begin(), loop->lines.end(), corresp_line);
-      auto pos = std::distance(loop->lines.begin(), uLinePos);
-      loop->lines[pos] = polyline;
+      auto loopLines = loop->getLines();
+      auto uLinePos = std::find(loopLines.begin(), loopLines.end(), corresp_line);
+      auto pos = std::distance(loopLines.begin(), uLinePos);
+      loop->lines[pos].line = polyline;
     } else if (corresp_line->getLineType() == LineType::Polyline) {
       polyline = dynamic_cast<Polyline*>(corresp_line);
     } else continue;

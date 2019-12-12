@@ -42,4 +42,16 @@ TEST_CASE("Area") {
     loops.push_back(&loop);
     REQUIRE_THROWS( factory->createArea(loops) );
   }
+
+  SECTION("Direct and Inverse Lines in Loop") {
+    StraightLine* line6 = factory->createStraightLine(kp4, kp3);
+
+    vector<Line*> lines { line1, line2, line6, line4 };
+    Area::Loop loop(lines);
+
+    REQUIRE( loop.lines[0].direction == LineDirection::DIRECT );
+    REQUIRE( loop.lines[1].direction == LineDirection::DIRECT );
+    REQUIRE( loop.lines[2].direction == LineDirection::INVERSE );
+    REQUIRE( loop.lines[3].direction == LineDirection::DIRECT );
+  }
 }

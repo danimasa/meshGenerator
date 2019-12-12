@@ -12,6 +12,11 @@ namespace geomlib {
 
     enum class LineType { StraightLine, ArcLine, Polyline, UnspecifiedLine };
 
+    enum class LineDirection {
+        DIRECT,
+        INVERSE
+    };
+
     class Line : public Geometry {
     public:
         KeyPoint* init_point;

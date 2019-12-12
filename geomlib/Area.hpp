@@ -12,11 +12,17 @@ class GeometryFactory;
 
 class Area : public Geometry {
 public:
-  class Loop {
-    public:
-    vector<Line*> lines;
+  struct LoopLine {
+    Line* line;
+    LineDirection direction;
+  };
 
-    Loop(vector<Line*> lines) : lines(lines) {}
+  struct Loop {
+    vector<LoopLine> lines;
+    
+    vector<Line*> getLines() const;
+
+    Loop(vector<Line*> lines);
   };
 
   vector<Loop*> loops;

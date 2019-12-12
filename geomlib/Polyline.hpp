@@ -17,14 +17,9 @@ public:
     double isPointInLine(const Point &point);
     Box outBox();
 
-    enum class LINE_DIRECTION {
-        DIRECT,
-        INVERSE
-    };
-
     struct Line_in_Polyline {
         Line* line;
-        LINE_DIRECTION direction;
+        LineDirection direction;
     };
 
 private:
