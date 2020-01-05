@@ -27,13 +27,10 @@ TEST_CASE("AreaMesh.hpp") {
     auto l4 = factory->createStraightLine(kp4, kp1);
 
     vector<Line*> lines {l1, l2, l3, l4};
-    Area::Loop loop(lines);
-    vector<Area::Loop*> loops;
-    loops.push_back(&loop);
-    auto a1 = factory->createArea(loops);
+    QuadArea a1(lines);
 
-    AreaMesh meshGenerator(a1);
-    Mesh* mesh = meshGenerator.generateMesh();
+    AreaMesh meshGenerator(0.25);
+    Mesh* mesh = meshGenerator.generateMesh(&a1);
 
     REQUIRE( mesh->vertices.size() > 0 );
     REQUIRE( mesh->elements.size() > 0 );

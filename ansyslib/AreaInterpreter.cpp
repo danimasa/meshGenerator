@@ -35,7 +35,7 @@ Line* findLineWithId(string id_str, GeometryList *geomList) {
 Area::Loop* findLoopWithLine(Line* line, vector<Area::Loop*> loops) {
   for(auto loop : loops) {
     for(auto l : loop->lines) {
-      if (l.line->getID() == line->getID()) return loop;
+      if (l->getID() == line->getID()) return loop;
     }
   }
 
@@ -206,10 +206,10 @@ geomlib::Geometry* AreaInterpreter::interpret() {
       polyline->setID(uLine->getID());
       geomList->add(polyline);
       
-      auto loopLines = loop->getLines();
+      auto loopLines = loop->lines;
       auto uLinePos = std::find(loopLines.begin(), loopLines.end(), corresp_line);
       auto pos = std::distance(loopLines.begin(), uLinePos);
-      loop->lines[pos].line = polyline;
+      loop->lines[pos] = polyline;
     } else if (corresp_line->getLineType() == LineType::Polyline) {
       polyline = dynamic_cast<Polyline*>(corresp_line);
     } else continue;

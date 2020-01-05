@@ -136,8 +136,8 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
       REQUIRE( isArea->loops.size() == 2 );
       REQUIRE( isArea->loops[0]->lines.size() == 4 );
       REQUIRE( isArea->loops[1]->lines.size() == 4 );
-      REQUIRE( isArea->loops[0]->lines[0].line->getID() == 1 );
-      REQUIRE( isArea->loops[1]->lines[0].line->getID() == 2 );
+      REQUIRE( isArea->loops[0]->lines[0]->getID() == 1 );
+      REQUIRE( isArea->loops[1]->lines[0]->getID() == 2 );
     }
 
     SECTION("Empty block returns null") {

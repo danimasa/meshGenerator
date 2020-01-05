@@ -112,13 +112,13 @@ void verifyAreaLoop(const Area::Loop* loop) {
         throw std::invalid_argument("An area loop should have a minimal of 3 lines");
     }
 
-    auto first_line = loop->lines[0].line;
+    auto first_line = loop->lines[0];
     KeyPoint *initPoint = first_line->init_point;
     KeyPoint *searchedPoint = first_line->final_point;
 
     auto lines = loop->lines;
     // Verify all touching lines
-    std::vector<Line*> remainingLines = loop->getLines();
+    std::vector<Line*> remainingLines = loop->lines;
 
     // Remove first_line
     std::vector<Line*>::iterator firstIt = std::find(remainingLines.begin(), remainingLines.end(), first_line);

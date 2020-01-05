@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Area.hpp"
+#include "QuadArea.hpp"
 #include "Mesh.hpp"
 
 namespace meshlib {
@@ -9,12 +9,12 @@ using namespace geomlib;
 
 class AreaMesh {
 public:
-    AreaMesh(Area* area)
-        : area(area) {}
+    AreaMesh(double elementSize)
+        : elementSize(elementSize) {}
 
-    Mesh* generateMesh();
+    Mesh* generateMesh(QuadArea* area);
 private:
-    Area *area;
+    double elementSize;
 }; // class AreaMesh
 
 } // namespace meshlib
