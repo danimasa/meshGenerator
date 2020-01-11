@@ -81,4 +81,27 @@ vector<Line*> QuadArea::getLines() const {
     return result;
 }
 
+vector<Point*> QuadArea::getVertex() const {
+    std::vector<Point*> result;
+
+    Point* lastPoint = nullptr;
+    for(auto l : lines) {
+        if (lastPoint == nullptr) {
+            lastPoint = l.line->init_point;
+            result.push_back(l.line->init_point);
+            continue;
+        }
+
+        if (lastPoint == l.line->init_point) {
+            result.push_back(l.line->final_point);
+            lastPoint = l.line->final_point;
+        } else {
+            result.push_back(l.line->init_point);
+            lastPoint = l.line->init_point;
+        }
+    }
+
+    return result;
+}
+
 } // namespace geomlib

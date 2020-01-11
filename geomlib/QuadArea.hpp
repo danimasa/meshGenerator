@@ -18,6 +18,7 @@ public:
 
   QuadArea(vector<Line*> lines);
   vector<Line*> getLines() const;
+  vector<Point*> getVertex() const;
 
   vector<TopologicalLine> lines;
 };

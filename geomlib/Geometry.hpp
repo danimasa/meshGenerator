@@ -10,7 +10,7 @@ namespace geomlib {
 
 namespace geomlib {
   
-  enum class GeometryType { Keypoint, Line, Area, Volume };
+  enum class GeometryType { Keypoint, Line, Area, Volume, Vertex, Element };
 
   class Geometry {
   public:
@@ -34,6 +34,8 @@ namespace geomlib {
     static int next_line_id;
     static int next_area_id;
     static int next_volume_id;
+    static int next_vertex_id;
+    static int next_element_id;
 
     GeometryType pvt_type;
   };

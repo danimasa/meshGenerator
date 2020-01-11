@@ -7,6 +7,9 @@
 #include "AnsysFileReaderFactory.hpp"
 #include "AnsysMacroWriter.hpp"
 #include "LineAnalysis.hpp"
+#include "GeometryFactory.hpp"
+#include "meshlib.hpp"
+#include "MeshWriter.hpp"
 
 using namespace std;
 
@@ -45,14 +48,48 @@ void print_Line(const Line *line) {
 //     cout << endl;
 // }
 
-int main(int argc, char **argv) {
-    if(argc < 2) {
-        help();
-        return 1;
-    }
+void testMeshGeneration() {
+    auto factory = GeometryFactory::getDefaultInstance();
 
-    string filepath = argv[1];
-    leitura(filepath);
+    auto p1 = Point(0, 0, 0);
+    auto p2 = Point(5, 2, 3);
+    auto p3 = Point(4, 6, 2);
+    auto p4 = Point(1, 5, 1);
+
+    auto kp1 = factory->createKeypoint(p1);
+    auto kp2 = factory->createKeypoint(p2);
+    auto kp3 = factory->createKeypoint(p3);
+    auto kp4 = factory->createKeypoint(p4);
+
+    auto l1 = factory->createStraightLine(kp1, kp2);
+    auto l2 = factory->createStraightLine(kp2, kp3);
+    auto l3 = factory->createStraightLine(kp3, kp4);
+    auto l4 = factory->createStraightLine(kp4, kp1);
+
+    std::vector<Line*> lines;
+    lines.push_back(l1);
+    lines.push_back(l2);
+    lines.push_back(l3);
+    lines.push_back(l4);
+
+    QuadArea area(lines);
+
+    Mesh regMesh = meshlib::generateRegGrid(8, 10);
+    auto transfMesh = meshlib::transfiniteMapping(regMesh, area);
+
+    gmshlib::MeshWriter writer(&transfMesh);
+    cout << writer.getMshFile() << endl;
+}
+
+int main(int argc, char **argv) {
+    // if(argc < 2) {
+    //     help();
+    //     return 1;
+    // }
+
+    // string filepath = argv[1];
+    // leitura(filepath);
+    testMeshGeneration();
 
     return 0;
 }

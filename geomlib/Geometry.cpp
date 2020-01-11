@@ -7,6 +7,9 @@ int Geometry::next_kp_id = 1;
 int Geometry::next_line_id = 1;
 int Geometry::next_area_id = 1;
 int Geometry::next_volume_id = 1;
+int Geometry::next_vertex_id = 1;
+int Geometry::next_element_id = 1;
+
 int Geometry::getNextId(GeometryType type) {
     switch (type)
     {
@@ -18,6 +21,10 @@ int Geometry::getNextId(GeometryType type) {
             return next_area_id++;
         case GeometryType::Volume:
             return next_volume_id++;
+        case GeometryType::Vertex:
+            return next_vertex_id++;
+        case GeometryType::Element:
+            return next_element_id++;
     }
 }
 

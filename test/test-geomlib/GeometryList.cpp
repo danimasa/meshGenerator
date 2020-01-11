@@ -2,12 +2,14 @@
 
 #include <memory>
 #include "GeometryList.hpp"
+#include "GeometryFactory.hpp"
 #include "KeyPoint.hpp"
 
 using namespace geomlib;
 
 TEST_CASE("GeometryList.hpp") {
     GeometryList list;
+    auto factory = GeometryFactory::getDefaultInstance();
 
     REQUIRE( list.size() == 0 );
     REQUIRE( list.capacity() == 0 );
@@ -20,17 +22,19 @@ TEST_CASE("GeometryList.hpp") {
     }
 
     SECTION("Should add a Geometry") {
-        std::unique_ptr<Geometry> geom { new KeyPoint() };
+        Point p;
+        auto geom = factory->createKeypoint(p);
         geom->setID(1);
-        list.add(geom.get());
+        list.add(geom);
         
         REQUIRE(list.size() == 1);
     }
 
     SECTION("Should get By Id") {
-        std::unique_ptr<Geometry> geom { new KeyPoint() };
+        Point p;
+        auto geom = factory->createKeypoint(p);
         geom->setID(2);
-        list.add(geom.get());
+        list.add(geom);
 
         auto kp = list.getByID(GeometryType::Keypoint, 2);
         REQUIRE( kp != NULL );
@@ -39,17 +43,18 @@ TEST_CASE("GeometryList.hpp") {
     }
 
     SECTION("Should substite if added the same ID") {
-        std::unique_ptr<Geometry> geom { new KeyPoint() };
+        Point p1;
+        auto geom = factory->createKeypoint(p1);
         geom->setID(2);
-        list.add(geom.get());
+        list.add(geom);
 
-        Point p(1, 1, 1);
-        std::unique_ptr<Geometry> geom2 { new KeyPoint(p) };
+        Point p2(1, 1, 1);
+        auto geom2 = factory->createKeypoint(p2);
         geom2->setID(2);
-        list.add(geom2.get());
+        list.add(geom2);
 
         auto kp = list.getByID(GeometryType::Keypoint, 2);
         Point* point = dynamic_cast<Point*>(kp);
-        REQUIRE( *point == p );
+        REQUIRE( *point == p2 );
     }
 }
