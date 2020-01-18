@@ -57,17 +57,17 @@ double ArcLine::isPointInLine(const Point &point) {
 
 Point ArcLine::pointAtPosition(const double position)
 {
-    if (position < 0 || position > 1)
+    if (position < 0.0 || position > 1.0)
     {
         throw std::invalid_argument("pointInLine so aceita valores entre 0 e 1");
     }
 
-    if (position == 0)
+    if (double_equals(position, 0.0))
     {
         return *init_point;
     }
 
-    if (position == 1)
+    if (double_equals(position, 1.0))
     {
         return *final_point;
     }
@@ -96,7 +96,7 @@ Point ArcLine::pointAtPosition(const double position)
     vec(0) = k;
     vec(1) = w;
     vec(2) = 0;
-
+    
     auto resultVector = A * vec;
 
     arma::vec centerVector(3);

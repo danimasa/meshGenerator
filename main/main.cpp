@@ -55,15 +55,20 @@ void testMeshGeneration() {
     auto p2 = Point(5, 2, 3);
     auto p3 = Point(4, 6, 2);
     auto p4 = Point(1, 5, 1);
+    auto p5 = Point(2, 6, 3);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
+    auto kp5 = factory->createKeypoint(p5);
+
+    Vector v1(0, 0, 1);
+    Vector v2(0, 0, -1);
 
     auto l1 = factory->createStraightLine(kp1, kp2);
     auto l2 = factory->createStraightLine(kp2, kp3);
-    auto l3 = factory->createStraightLine(kp3, kp4);
+    auto l3 = factory->createArcLine(kp3, kp4, kp5, &v1, &v2);
     auto l4 = factory->createStraightLine(kp4, kp1);
 
     std::vector<Line*> lines;
@@ -74,7 +79,7 @@ void testMeshGeneration() {
 
     QuadArea area(lines);
 
-    Mesh regMesh = meshlib::generateRegGrid(8, 10);
+    Mesh regMesh = meshlib::generateRegGrid(20, 20);
     auto transfMesh = meshlib::transfiniteMapping(regMesh, area);
 
     gmshlib::MeshWriter writer(&transfMesh);

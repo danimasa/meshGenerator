@@ -6,6 +6,14 @@
 #include <list>
 #include "armadillo"
 
+#include <CGAL/Cartesian.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Exact_rational.h>
+
+typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+typedef Kernel::Circle_3                                    Circle_3;
+typedef Kernel::Point_3                                     Point_3;
+
 namespace geomlib {
 
 const GeometryFactory* GeometryFactory::getDefaultInstance()
@@ -34,29 +42,15 @@ ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_po
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Point* mid_point,
         Vector* init_tangent_vector, Vector* final_tangent_vector) const {
     Plane* plane = createPlane(init_point, final_point, mid_point);
-    auto planeNormal = plane->normalVector();
-    Vector toCenter1 = init_tangent_vector->vectorProduct(planeNormal);
-    Vector toCenter2 = final_tangent_vector->vectorProduct(planeNormal);
     
-    // Calcula coeficientes alfa e beta
-    arma::mat A;
-    A << toCenter1.x << (toCenter2.x) * -1 << arma::endr
-      << toCenter1.y << (toCenter2.y) * -1 << arma::endr;
+    auto p1 = Point_3(init_point->x, init_point->y, init_point->z);
+    auto p2 = Point_3(mid_point->x, mid_point->y, mid_point->z);
+    auto p3 = Point_3(final_point->x, final_point->y, final_point->z);
 
-    arma::vec b;
-    b << final_point->x - init_point->x << final_point->y - init_point->y;
+    auto circle = Circle_3(p1, p2, p3);
 
-    arma::mat alphaBeta = arma::solve(A, b);
-
-    // Validar coeficiente
-    double alfa = alphaBeta(0);
-    double beta = alphaBeta(1);
-    // assert(alfa * toCenter1.z - beta * toCenter2.z != final_point->z - init_point->z);
-
-    double xc = init_point->x + alfa * toCenter1.x;
-    double yc = init_point->y + alfa * toCenter1.y;
-    double zc = init_point->z + alfa * toCenter1.z;
-    auto center = new Point(xc, yc, zc);
+    auto pCenter = circle.center();
+    auto center = new Point(pCenter.x(), pCenter.y(), pCenter.z());
 
     double radius = init_point->distance(center);
 
