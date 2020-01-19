@@ -114,9 +114,9 @@ TEST_CASE("ArcLine") {
         Box c_box = c_arc->outBox();
         Point c_box_center = c_box.get_center();
 
-        REQUIRE( c_box_center.x == 3.5512092056620714 );
-        REQUIRE( c_box_center.y == 3.1533937347673793 );
-        REQUIRE( c_box_center.z == 3.3844645782557929 );
+        REQUIRE( double_equals(c_box_center.x, 3.5512092056620714) );
+        REQUIRE( double_equals(c_box_center.y, 3.1533937347673793) );
+        REQUIRE( double_equals(c_box_center.z, 3.3844645782557929) );
 
         REQUIRE( double_equals(c_box.get_height(), 3.6932125305) == true );
         REQUIRE( double_equals(c_box.get_depth(), 1.2310708435) == true );

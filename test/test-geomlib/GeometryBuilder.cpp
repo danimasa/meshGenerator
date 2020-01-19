@@ -1,8 +1,8 @@
-#define protected public
-#define private public
-
 #include "catch.hpp"
 #include "fakeit.hpp"
+
+#define protected public
+#define private public
 
 #include <vector>
 

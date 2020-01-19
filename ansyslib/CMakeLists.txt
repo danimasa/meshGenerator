@@ -3,7 +3,7 @@ file(GLOB ANSYSLIB_SRCS
     "*.cpp"
 )
 
-find_package(Boost 1.71 REQUIRED)
+find_package(Boost 1.65 REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 
