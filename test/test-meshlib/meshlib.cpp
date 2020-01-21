@@ -1,6 +1,5 @@
 #include <catch.hpp>
 #include <vector>
-#include <iostream>
 
 #include "meshlib.hpp"
 #include "GeometryFactory.hpp"

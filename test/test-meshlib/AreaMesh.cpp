@@ -30,8 +30,8 @@ TEST_CASE("AreaMesh.hpp") {
     QuadArea a1(lines);
 
     AreaMesh meshGenerator(0.25);
-    Mesh* mesh = meshGenerator.generateMesh(&a1);
+    Mesh mesh = meshGenerator.generateMesh(&a1);
 
-    REQUIRE( mesh->vertices.size() > 0 );
-    REQUIRE( mesh->elements.size() > 0 );
+    REQUIRE( mesh.vertices.size() == 81 );
+    REQUIRE( mesh.elements.size() == 64 );
 }

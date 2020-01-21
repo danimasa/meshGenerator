@@ -12,7 +12,7 @@ public:
     AreaMesh(double elementSize)
         : elementSize(elementSize) {}
 
-    Mesh* generateMesh(QuadArea* area);
+    Mesh generateMesh(QuadArea* area);
 private:
     double elementSize;
 }; // class AreaMesh
