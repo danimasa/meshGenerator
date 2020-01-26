@@ -10,6 +10,7 @@
 #include "GeometryFactory.hpp"
 #include "meshlib.hpp"
 #include "MeshWriter.hpp"
+#include "AreaMesh.hpp"
 
 using namespace std;
 
@@ -56,17 +57,23 @@ void testMeshGeneration() {
     auto p3 = Point(4, 6, 2);
     auto p4 = Point(1, 5, 1);
     auto p5 = Point(2, 6, 3);
+    auto p6 = Point(2.5, 1, 5);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
     auto kp5 = factory->createKeypoint(p5);
+    auto kp6 = factory->createKeypoint(p6);
 
     Vector v1(0, 0, 1);
     Vector v2(0, 0, -1);
 
-    auto l1 = factory->createStraightLine(kp1, kp2);
+    auto l5 = factory->createStraightLine(kp1, kp6);
+    auto l6 = factory->createStraightLine(kp6, kp2);
+    vector<Line*> polyList { l5, l6 };
+
+    auto l1 = factory->createPolyline(kp1, kp2, polyList);
     auto l2 = factory->createStraightLine(kp2, kp3);
     auto l3 = factory->createArcLine(kp3, kp4, kp5, &v1, &v2);
     auto l4 = factory->createStraightLine(kp4, kp1);
@@ -79,10 +86,12 @@ void testMeshGeneration() {
 
     QuadArea area(lines);
 
-    Mesh regMesh = meshlib::generateRegGrid(20, 20);
-    auto transfMesh = meshlib::transfiniteMapping(regMesh, area);
+    AreaMesh meshGenerator(0.25);
+    Mesh mesh = meshGenerator.generateMesh(&area);
+    // Mesh regMesh = meshlib::generateRegGrid(20, 20);
+    // auto transfMesh = meshlib::transfiniteMapping(regMesh, area);
 
-    gmshlib::MeshWriter writer(&transfMesh);
+    gmshlib::MeshWriter writer(&mesh);
     cout << writer.getMshFile() << endl;
 }
 

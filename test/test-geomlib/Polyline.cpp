@@ -203,4 +203,27 @@ TEST_CASE("Polyline") {
         Point outerPoint(0, 2, 0);
         REQUIRE(polyline->isPointInLine(outerPoint) == -1 );
     }
+
+    SECTION("Intermediary points") {
+        Point initPoint(0, 0, 0);
+        Point midPoint(0, 1, 0);
+        Point finalPoint(1, 1, 0);
+
+        auto initKp = factory->createKeypoint(initPoint);
+        auto midKp = factory->createKeypoint(midPoint);
+        auto finalKp = factory->createKeypoint(finalPoint);
+
+        auto line1 = factory->createStraightLine(initKp, midKp);
+        auto line2 = factory->createStraightLine(midKp, finalKp);
+
+        vector<Line*> lines;
+        lines.push_back(line1);
+        lines.push_back(line2);
+
+        auto polyline = factory->createPolyline(initKp, finalKp, lines);
+        auto inter_points = polyline->intermidiaryPoints();
+
+        REQUIRE( inter_points.size() == 1 );
+        REQUIRE( inter_points[0] == midKp );
+    }
 }

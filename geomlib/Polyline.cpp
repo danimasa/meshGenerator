@@ -149,4 +149,18 @@ Box Polyline::outBox() {
   return Box(p, 0, 0, 0);
 }
 
+std::vector<KeyPoint*> Polyline::intermidiaryPoints() const {
+  std::vector<KeyPoint*> result;
+  for(auto l : lines) {
+    if (l.direction == LineDirection::DIRECT) {
+      if (l.line->final_point != final_point)
+        result.push_back(l.line->final_point);
+    } else {
+      if (l.line->init_point != final_point)
+        result.push_back(l.line->init_point);
+    }
+  }
+  return result;
+}
+
 }

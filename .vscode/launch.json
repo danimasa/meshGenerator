@@ -6,18 +6,30 @@
     "configurations": [
         {
             "name": "meshGenerator",
-            "type": "lldb",
+            "type": "cppdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
             "args": [ "data/GEOM.DAT" ],
             "cwd": "${workspaceFolder}",
+            "linux": {
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb"
+            }
         },
         {
             "name": "unit-tests",
-            "type": "lldb",
+            "type": "cppdbg",
             "request": "launch",
             "program": "${command:cmake.launchTargetPath}",
             "cwd": "${workspaceFolder}",
+            "linux": {
+                "MIMode": "gdb"
+            },
+            "osx": {
+                "MIMode": "lldb"
+            }
         }
     ]
 }

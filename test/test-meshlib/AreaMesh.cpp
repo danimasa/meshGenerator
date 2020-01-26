@@ -3,6 +3,7 @@
 
 #include "AreaMesh.hpp"
 #include "GeometryFactory.hpp"
+#include "Vertex.hpp"
 
 using namespace meshlib;
 using namespace geomlib;
@@ -26,12 +27,39 @@ TEST_CASE("AreaMesh.hpp") {
     auto l3 = factory->createStraightLine(kp3, kp4);
     auto l4 = factory->createStraightLine(kp4, kp1);
 
-    vector<Line*> lines {l1, l2, l3, l4};
-    QuadArea a1(lines);
+    SECTION("simple mesh") {
+        vector<Line*> lines {l1, l2, l3, l4};
+        QuadArea a1(lines);
 
-    AreaMesh meshGenerator(0.25);
-    Mesh mesh = meshGenerator.generateMesh(&a1);
+        AreaMesh meshGenerator(0.25);
+        Mesh mesh = meshGenerator.generateMesh(&a1);
 
-    REQUIRE( mesh.vertices.size() == 81 );
-    REQUIRE( mesh.elements.size() == 64 );
+        REQUIRE( mesh.vertices.size() == 81 );
+        REQUIRE( mesh.elements.size() == 64 );
+    }
+
+    SECTION("Polyline mesh") {
+        auto p5 = Point(1, 2.5, 0);
+        auto kp5 = factory->createKeypoint(p5);
+
+        auto l5 = factory->createStraightLine(kp3, kp5);
+        auto l6 = factory->createStraightLine(kp5, kp4);
+        std::vector<Line*> polylineList { l5, l6 };
+
+        auto l7 = factory->createPolyline(kp3, kp4, polylineList);
+
+        vector<Line*> quadLines { l1, l2, l7, l4 };
+        QuadArea a2(quadLines);
+
+        AreaMesh meshGenerator(0.25);
+        Mesh mesh = meshGenerator.generateMesh(&a2);
+
+        auto vertices = mesh.vertices;
+        Vertex v(p5);
+        auto findVertex = std::find_if(vertices.begin(), vertices.end(),
+            [&v](const Vertex* vertex){
+                return v == *vertex;
+            });
+        REQUIRE( findVertex != vertices.end() );
+    }
 }

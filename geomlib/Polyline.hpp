@@ -16,6 +16,7 @@ public:
     Point pointAtPosition(const double position);
     double isPointInLine(const Point &point);
     Box outBox();
+    std::vector<KeyPoint*> intermidiaryPoints() const;
 
     struct Line_in_Polyline {
         Line* line;
