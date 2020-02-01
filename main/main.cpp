@@ -58,6 +58,8 @@ void testMeshGeneration() {
     auto p4 = Point(1, 5, 1);
     auto p5 = Point(2, 6, 3);
     auto p6 = Point(2.5, 1, 5);
+    auto p7 = Point(1.5, 0.5, 1);
+    auto p8 = Point(4, 2, 3);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
@@ -65,13 +67,17 @@ void testMeshGeneration() {
     auto kp4 = factory->createKeypoint(p4);
     auto kp5 = factory->createKeypoint(p5);
     auto kp6 = factory->createKeypoint(p6);
+    auto kp7 = factory->createKeypoint(p7);
+    auto kp8 = factory->createKeypoint(p8);
 
     Vector v1(0, 0, 1);
     Vector v2(0, 0, -1);
 
-    auto l5 = factory->createStraightLine(kp1, kp6);
-    auto l6 = factory->createStraightLine(kp6, kp2);
-    vector<Line*> polyList { l5, l6 };
+    auto l5 = factory->createStraightLine(kp1, kp7);
+    auto l6 = factory->createStraightLine(kp7, kp6);
+    auto l7 = factory->createStraightLine(kp6, kp8);
+    auto l8 = factory->createStraightLine(kp8, kp2);
+    vector<Line*> polyList { l5, l6, l7, l8 };
 
     auto l1 = factory->createPolyline(kp1, kp2, polyList);
     auto l2 = factory->createStraightLine(kp2, kp3);
@@ -86,7 +92,7 @@ void testMeshGeneration() {
 
     QuadArea area(lines);
 
-    AreaMesh meshGenerator(0.25);
+    AreaMesh meshGenerator(0.2);
     Mesh mesh = meshGenerator.generateMesh(&area);
     // Mesh regMesh = meshlib::generateRegGrid(20, 20);
     // auto transfMesh = meshlib::transfiniteMapping(regMesh, area);

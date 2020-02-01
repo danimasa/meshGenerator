@@ -118,13 +118,14 @@ Point Polyline::pointAtPosition(const double position) {
     double initialLinePosition = 0;
     double finalLinePosition = 0;
     auto litr = lines.begin();
-    maxLinePosition = litr->line->length() / totalLength;
+    double cPos = litr->line->length() / totalLength;
+    maxLinePosition = cPos;
     finalLinePosition = maxLinePosition;
     while(maxLinePosition < position) {
-      sumPassedPosition += maxLinePosition;
       initialLinePosition = maxLinePosition;
       litr++;
-      maxLinePosition = sumPassedPosition + ( litr->line->length() / totalLength );
+      cPos = litr->line->length() / totalLength;
+      maxLinePosition += cPos;
       finalLinePosition = maxLinePosition;
     } 
 

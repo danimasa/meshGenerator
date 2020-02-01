@@ -16,13 +16,23 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
             linePoints.push_back(regMesh.vertices[i * points_s]);
         
         auto inter_points = cLine->intermidiaryPoints();
+        double lastPosition = 0;
+        int lastIndex = 0;
         for(auto kp : inter_points) {
-            double iPosition = cLine->isPointInLine(*kp); 
+            double iPosition = cLine->isPointInLine(*kp);
+            int firstPoint = 0;
+            int lastPoint = linePoints.size() - 1;
+            if (lastPosition < iPosition) {
+                firstPoint = lastIndex + 1;
+            } else {
+                lastPoint = lastIndex - 1;
+            }
+            
             double pDiff = 0;
             double sDiff = 0;
             int pPosition = 0;
             // finding nearer point
-            for(int i = 1; i < linePoints.size() - 1; i++) {
+            for(int i = firstPoint; i < lastPoint; i++) {
                 auto p = linePoints[i];
                 double diff = std::fabs(iPosition - p->x);
                 if (pDiff == 0 || diff <= pDiff) {
@@ -34,26 +44,39 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
 
             linePoints[pPosition]->x = iPosition;
             // correcting other points
-            double distance = iPosition / pPosition;
-            double location = distance;
-            for(int i = 1; i < pPosition; i++) {
+            double initPosition = linePoints[firstPoint - 1]->x;
+            double distance = (iPosition - initPosition) / (pPosition - firstPoint + 1);
+            double location = initPosition + distance;
+            for(int i = firstPoint; i < pPosition; i++) {
                 linePoints[i]->x = location;
                 location += distance;
             }
-            distance = (1 - iPosition) / (linePoints.size() - pPosition - 1);
+            double finalPosition = linePoints[lastPoint]->x;
+            distance = (finalPosition - iPosition) / (lastPoint - pPosition);
             location = iPosition + distance;
-            for(int i = pPosition + 1; i < linePoints.size() - 1; i++) {
+            for(int i = pPosition + 1; i < lastPoint; i++) {
                 linePoints[i]->x = location;
                 location += distance;
             }
 
             // propagate on axis
-            for(int i = 1; i < points_r - 1; i++) {
+            for(int i = firstPoint; i < lastPoint; i++) {
+                double diff = 0.0;
+                double fPosition = linePoints[firstPoint - 1]->x;
+                double lPosition = linePoints[lastPoint]->x;
+                if (i == pPosition) diff = iPosition;
+                else if (i < pPosition)
+                    diff = fPosition + (i - firstPoint + 1) * ((iPosition - fPosition) / (pPosition - firstPoint + 1));
+                else
+                    diff = iPosition + (i - pPosition) * ((lPosition - iPosition) / (lastPoint - pPosition));
                 for(int o = 1; o < points_s; o++) {
                     auto p = regMesh.vertices[points_s * i + o];
-                    p->x += sDiff * (1 - p->y);
+                    p->x += (diff - p->x) * (1 - p->y);
                 }
             }
+
+            lastPosition = iPosition;
+            lastIndex = pPosition;
         }
     }
 }
