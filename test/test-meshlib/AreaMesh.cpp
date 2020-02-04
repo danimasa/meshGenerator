@@ -58,7 +58,7 @@ TEST_CASE("AreaMesh.hpp") {
         Vertex v(p5);
         auto findVertex = std::find_if(vertices.begin(), vertices.end(),
             [&v](const Vertex* vertex){
-                return v == *vertex;
+                return v.x == vertex->x && v.y == vertex->y && v.z == vertex->z;
             });
         REQUIRE( findVertex != vertices.end() );
     }

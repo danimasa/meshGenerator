@@ -60,6 +60,8 @@ void testMeshGeneration() {
     auto p6 = Point(2.5, 1, 5);
     auto p7 = Point(1.5, 0.5, 1);
     auto p8 = Point(4, 2, 3);
+    auto p9 = Point(0, 3, 2);
+    auto p10 = Point(4, 4, 3);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
@@ -69,6 +71,8 @@ void testMeshGeneration() {
     auto kp6 = factory->createKeypoint(p6);
     auto kp7 = factory->createKeypoint(p7);
     auto kp8 = factory->createKeypoint(p8);
+    auto kp9 = factory->createKeypoint(p9);
+    auto kp10 = factory->createKeypoint(p10);
 
     Vector v1(0, 0, 1);
     Vector v2(0, 0, -1);
@@ -79,10 +83,23 @@ void testMeshGeneration() {
     auto l8 = factory->createStraightLine(kp8, kp2);
     vector<Line*> polyList { l5, l6, l7, l8 };
 
+    auto l9 = factory->createStraightLine(kp4, kp9);
+    auto l10 = factory->createStraightLine(kp9, kp1);
+    vector<Line*> polyList2 { l9, l10 };
+
+    auto l11 = factory->createStraightLine(kp2, kp10);
+    auto l12 = factory->createStraightLine(kp10, kp3);
+    vector<Line*> polyList3 { l11, l12 };
+
+    auto l13 = factory->createStraightLine(kp3, kp5);
+    auto l14 = factory->createStraightLine(kp5, kp4);
+    vector<Line*> polyList4 { l13, l14 };
+
     auto l1 = factory->createPolyline(kp1, kp2, polyList);
-    auto l2 = factory->createStraightLine(kp2, kp3);
-    auto l3 = factory->createArcLine(kp3, kp4, kp5, &v1, &v2);
-    auto l4 = factory->createStraightLine(kp4, kp1);
+    auto l2 = factory->createPolyline(kp2, kp3, polyList3);
+    // auto l3 = factory->createArcLine(kp3, kp4, kp5, &v1, &v2);
+    auto l3 = factory->createPolyline(kp3, kp4, polyList4);
+    auto l4 = factory->createPolyline(kp4, kp1, polyList2);
 
     std::vector<Line*> lines;
     lines.push_back(l1);
@@ -92,7 +109,7 @@ void testMeshGeneration() {
 
     QuadArea area(lines);
 
-    AreaMesh meshGenerator(0.2);
+    AreaMesh meshGenerator(0.5);
     Mesh mesh = meshGenerator.generateMesh(&area);
     // Mesh regMesh = meshlib::generateRegGrid(20, 20);
     // auto transfMesh = meshlib::transfiniteMapping(regMesh, area);
