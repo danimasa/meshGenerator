@@ -9,8 +9,8 @@
 namespace meshlib {
 
 struct PolylineProcess {
-    __bind<double geomlib::Point::*, const std::__1::placeholders::__ph<1> &> e;
-    __bind<double geomlib::Point::*, const std::__1::placeholders::__ph<1> &> n;
+    double Vertex::* e;
+    double Vertex::* n;
     std::function<int(int, int, int)> vert_pos;
     int points_op_dir;
     int points_mesh_direction;
@@ -31,6 +31,8 @@ void processPolyline(
     auto inter_points = l->intermidiaryPoints();
     double lastPosition = 0;
     int lastIndex = 0;
+    double Vertex::* e = params.e;
+    double Vertex::* n = params.n;
     for(auto kp : inter_points) {
         double iPosition = l->isPointInLine(*kp);
 
@@ -51,36 +53,36 @@ void processPolyline(
         // finding nearer point
         for(int i = firstPoint; i < lastPoint; i++) {
             auto p = linePoints[i];
-            double diff = std::fabs(iPosition - params.e(p));
+            double diff = std::fabs(iPosition - p->*e);
             if (pDiff == 0 || diff <= pDiff) {
                 pDiff = diff;
-                sDiff = iPosition - params.e(p);
+                sDiff = iPosition - p->*e;
                 pPosition = i;
             }
         }
 
-        params.e(linePoints[pPosition]) = iPosition;
+        linePoints[pPosition]->*e = iPosition;
         // correcting other points
-        double initPosition = params.e(linePoints[firstPoint - 1]);
+        double initPosition = linePoints[firstPoint - 1]->*e;
         double distance = (iPosition - initPosition) / (pPosition - firstPoint + 1);
         double location = initPosition + distance;
         for(int i = firstPoint; i < pPosition; i++) {
-            params.e(linePoints[i]) = location;
+            linePoints[i]->*e = location;
             location += distance;
         }
-        double finalPosition = params.e(linePoints[lastPoint]);
+        double finalPosition = linePoints[lastPoint]->*e;
         distance = (finalPosition - iPosition) / (lastPoint - pPosition);
         location = iPosition + distance;
         for(int i = pPosition + 1; i < lastPoint; i++) {
-            params.e(linePoints[i]) = location;
+            linePoints[i]->*e = location;
             location += distance;
         }
 
         // propagate on axis
         for(int i = firstPoint; i < lastPoint; i++) {
             double diff = 0.0;
-            double fPosition = params.e(linePoints[firstPoint - 1]);
-            double lPosition = params.e(linePoints[lastPoint]);
+            double fPosition = linePoints[firstPoint - 1]->*e;
+            double lPosition = linePoints[lastPoint]->*e;
             if (i == pPosition) diff = iPosition;
             else if (i < pPosition)
                 diff = fPosition + (i - firstPoint + 1) * ((iPosition - fPosition) / (pPosition - firstPoint + 1));
@@ -88,8 +90,8 @@ void processPolyline(
                 diff = iPosition + (i - pPosition) * ((lPosition - iPosition) / (lastPoint - pPosition));
             for(int o = 1; o < params.points_op_dir; o++) {
                 auto p = regMesh.vertices[params.vert_pos(params.points_mesh_direction, i, o)];
-                double corr = params.mDirection == LineDirection::DIRECT ? (1 - params.n(p)) : params.n(p);
-                params.e(p) += (diff - params.e(p)) * corr;
+                double corr = params.mDirection == LineDirection::DIRECT ? (1 - p->*n) : p->*n;
+                p->*e += (diff - p->*e) * corr;
             }
         }
 
@@ -106,10 +108,10 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
         linePoints.reserve(points_r);
         for(int i = 0; i < points_r; i++)
             linePoints.push_back(regMesh.vertices[i * points_s]);
-        
+
         PolylineProcess p {
-            std::bind(&Vertex::x, std::placeholders::_1),
-            std::bind(&Vertex::y, std::placeholders::_1),
+            &Vertex::x,
+            &Vertex::y,
             [](int points, int i, int o) { return points * i + o; },
             points_s,
             points_s,
@@ -129,8 +131,8 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
             linePoints.push_back(regMesh.vertices[(points_r - 1) * points_s + i]);
         
         PolylineProcess p {
-            std::bind(&Vertex::y, std::placeholders::_1),
-            std::bind(&Vertex::x, std::placeholders::_1),
+            &Vertex::y,
+            &Vertex::x,
             [](int points, int i, int o) { return points * o + i; },
             points_r,
             points_s,
@@ -150,8 +152,8 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
             linePoints.push_back(regMesh.vertices[(i * points_s) - 1]);
         
         PolylineProcess p {
-            std::bind(&Vertex::x, std::placeholders::_1),
-            std::bind(&Vertex::y, std::placeholders::_1),
+            &Vertex::x,
+            &Vertex::y,
             [](int points, int i, int o) { return points * i + o; },
             points_s,
             points_s,
@@ -171,8 +173,8 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
             linePoints.push_back(regMesh.vertices[i]);
         
         PolylineProcess p {
-            std::bind(&Vertex::y, std::placeholders::_1),
-            std::bind(&Vertex::x, std::placeholders::_1),
+            &Vertex::y,
+            &Vertex::x,
             [](int points, int i, int o) { return points * o + i; },
             points_r,
             points_s,
