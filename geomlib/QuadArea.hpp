@@ -21,13 +21,14 @@ public:
   vector<Line*> getLines() const;
   vector<Point*> getVertex() const;
 
-  TopologicalLine south() { return lines[0]; }
-  TopologicalLine east() { return lines[1]; }
-  TopologicalLine north() { return lines[2]; }
-  TopologicalLine west() { return lines[3]; }
+  TopologicalLine south() const { return lines[0]; }
+  TopologicalLine east() const { return lines[1]; }
+  TopologicalLine north() const { return lines[2]; }
+  TopologicalLine west() const { return lines[3]; }
 
-  bool someQtdElementsZero();
-  int sumQtdElements();
+  bool someQtdElementsZero() const;
+  int sumQtdElements() const;
+  bool isEvenElements() const;
 
   vector<TopologicalLine> lines;
 };

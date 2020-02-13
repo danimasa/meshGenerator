@@ -70,7 +70,7 @@ QuadArea::QuadArea(vector<Line*> lines) {
     }
 }
 
-bool QuadArea::someQtdElementsZero() {
+bool QuadArea::someQtdElementsZero() const {
     bool someZeroElements = false;
 
     for(int i = 0; i < 4; i++) {
@@ -81,11 +81,15 @@ bool QuadArea::someQtdElementsZero() {
     return someZeroElements;
 }
 
-int QuadArea::sumQtdElements() {
+int QuadArea::sumQtdElements() const {
     int sum = 0;
     for(int i = 0; i < 4; i++)
         sum += lines[i].qtdElements;
     return sum;
+}
+
+bool QuadArea::isEvenElements() const {
+    return sumQtdElements() % 2 == 0;
 }
 
 vector<Line*> QuadArea::getLines() const {

@@ -219,6 +219,8 @@ void AreaMesh::determineLinesSubdivision(QuadArea* area) {
 }
 
 Mesh AreaMesh::generateMesh(QuadArea* area) {
+    determineLinesSubdivision(area);
+
     double major_r = area->south().line->length() >= area->north().line->length()
         ? area->south().line->length()
         : area->north().line->length();
