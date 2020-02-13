@@ -38,6 +38,40 @@ TEST_CASE("AreaMesh.hpp") {
         REQUIRE( mesh.elements.size() == 64 );
     }
 
+    SECTION("Line subdivision") {
+        SECTION("exact subdivision") {
+            vector<Line*> lines = { l1, l2, l3, l4 };
+            QuadArea a1(lines);
+
+            AreaMesh meshGenerator(0.1);
+            meshGenerator.determineLinesSubdivision(&a1);
+
+            REQUIRE(a1.south().qtdElements == 20);
+            REQUIRE(a1.east().qtdElements == 20);
+            REQUIRE(a1.north().qtdElements == 20);
+            REQUIRE(a1.west().qtdElements == 20);
+        }
+
+        SECTION("adjusted subdivision") {
+            auto p5 = Point(2, 3, 0);
+            auto kp5 = factory->createKeypoint(p5);
+
+            auto l5 = factory->createStraightLine(kp2, kp5);
+            auto l6 = factory->createStraightLine(kp5, kp4);
+
+            vector<Line*> lines = { l1, l5, l6, l4 };
+            QuadArea a1(lines);
+
+            AreaMesh meshGenerator(0.2);
+            meshGenerator.determineLinesSubdivision(&a1);
+
+            REQUIRE(a1.south().qtdElements == 10);
+            REQUIRE(a1.east().qtdElements == 15);
+            REQUIRE(a1.north().qtdElements == 11);
+            REQUIRE(a1.west().qtdElements == 10);
+        }
+    }
+
     SECTION("Polyline mesh") {
         auto p5 = Point(1, 2.5, 0);
         auto kp5 = factory->createKeypoint(p5);

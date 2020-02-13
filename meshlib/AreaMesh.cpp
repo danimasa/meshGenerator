@@ -101,8 +101,8 @@ void processPolyline(
 }
 
 void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s) {
-    if (area->lines[0].line->getLineType() == LineType::Polyline) {
-        auto l = area->lines[0];
+    if (area->south().line->getLineType() == LineType::Polyline) {
+        auto l = area->south();
         Polyline* cLine = dynamic_cast<Polyline*>(l.line);
         vector<Vertex*> linePoints;
         linePoints.reserve(points_r);
@@ -122,8 +122,8 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
         processPolyline(regMesh, cLine, linePoints, p);
     }
 
-    if(area->lines[1].line->getLineType() == LineType::Polyline) {
-        auto l = area->lines[1];
+    if(area->east().line->getLineType() == LineType::Polyline) {
+        auto l = area->east();
         Polyline* cLine = dynamic_cast<Polyline*>(l.line);
         vector<Vertex*> linePoints;
         linePoints.reserve(points_s);
@@ -143,8 +143,8 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
         processPolyline(regMesh, cLine, linePoints, p);
     }
 
-    if (area->lines[2].line->getLineType() == LineType::Polyline) {
-        auto l = area->lines[2];
+    if (area->north().line->getLineType() == LineType::Polyline) {
+        auto l = area->north();
         Polyline* cLine = dynamic_cast<Polyline*>(l.line);
         vector<Vertex*> linePoints;
         linePoints.reserve(points_r);
@@ -164,8 +164,8 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
         processPolyline(regMesh, cLine, linePoints, p);
     }
 
-    if(area->lines[3].line->getLineType() == LineType::Polyline) {
-        auto l = area->lines[3];
+    if(area->west().line->getLineType() == LineType::Polyline) {
+        auto l = area->west();
         Polyline* cLine = dynamic_cast<Polyline*>(l.line);
         vector<Vertex*> linePoints;
         linePoints.reserve(points_s);
@@ -186,14 +186,46 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
     }
 }
 
-Mesh AreaMesh::generateMesh(QuadArea* area) {
-    double major_r = area->lines[0].line->length() >= area->lines[2].line->length()
-        ? area->lines[0].line->length()
-        : area->lines[2].line->length();
+void AreaMesh::determineLinesSubdivision(QuadArea* area) {
+    int sum = area->sumQtdElements();
+    bool someNonZero = area->someQtdElementsZero();
+    if(sum % 2 == 0 && !someNonZero) return;
 
-    double major_s = area->lines[1].line->length() >= area->lines[3].line->length()
-        ? area->lines[1].line->length()
-        : area->lines[3].line->length();
+    int leIndex = 0;
+    int newQtdElements = 0;
+    double leastDiff = 0.0;
+    for(int i = 0; i < 4; i++) {
+        QuadArea::TopologicalLine& tLine = area->lines[i];
+        if (tLine.qtdElements == 0)
+            tLine.qtdElements = std::ceil(tLine.line->length() / elementSize);
+        else if(!someNonZero) {
+            double nf = tLine.line->length() / elementSize;
+            int upElements = tLine.qtdElements + 1;
+            int downElements = tLine.qtdElements - 1;
+            double upDiff = std::abs((nf - upElements) / upElements);
+            double downDiff = std::abs((nf - downElements) / downElements);
+            double lDiff = upDiff <= downDiff ? upDiff : downDiff;
+            double dElements = upDiff <= downDiff ? upElements : downElements;
+            if (lDiff <= leastDiff || leastDiff == 0.0) {
+                leIndex = i;
+                leastDiff = lDiff;
+                newQtdElements = dElements;
+            }
+        }
+    }
+
+    if(someNonZero) determineLinesSubdivision(area);
+    else area->lines[leIndex].qtdElements = newQtdElements;
+}
+
+Mesh AreaMesh::generateMesh(QuadArea* area) {
+    double major_r = area->south().line->length() >= area->north().line->length()
+        ? area->south().line->length()
+        : area->north().line->length();
+
+    double major_s = area->east().line->length() >= area->west().line->length()
+        ? area->east().line->length()
+        : area->west().line->length();
 
     int qtd_elements_r = std::ceil(major_r / elementSize);
     int qtd_elements_s = std::ceil(major_s / elementSize);

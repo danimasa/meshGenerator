@@ -13,6 +13,7 @@ public:
         : elementSize(elementSize) {}
 
     Mesh generateMesh(QuadArea* area);
+    void determineLinesSubdivision(QuadArea* area);
 private:
     double elementSize;
 }; // class AreaMesh
