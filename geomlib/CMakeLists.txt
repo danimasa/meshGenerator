@@ -7,7 +7,12 @@ find_package(Boost 1.65 REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 
-find_package(Armadillo CONFIG REQUIRED)
+if (WIN32)
+    find_package(Armadillo CONFIG REQUIRED)
+else()
+    find_package(Armadillo REQUIRED)
+endif (WIN32)
+
 include_directories(${ARMADILLO_INCLUDE_DIRS})
 
 find_package(CGAL)
