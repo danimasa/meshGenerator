@@ -7,7 +7,7 @@ find_package(Boost 1.65 REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 
-find_package(Armadillo REQUIRED)
+find_package(Armadillo CONFIG REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIRS})
 
 find_package(CGAL)

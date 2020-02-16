@@ -12,6 +12,7 @@ public:
 
     std::string getBlockCode() const { return "40."; }
     bool belongToCurrentGeometry(const std::string &line);
+	int get_totalLines() const { return totalLines; }
 
     geomlib::Geometry* interpret();
 

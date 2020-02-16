@@ -1,4 +1,5 @@
 #include "MeshShapes.hpp"
+#include <stdexcept>
 
 namespace meshlib {
 

@@ -43,10 +43,6 @@ Vector Plane::normalVector() const {
     return vector1->vectorProduct(*vector2);
 }
 
-Point Plane::toPlaneCoordinates(const Point* p) const {
-    // double x = 
-}
-
 double Plane::angleBetween(const Vector &v1, const Vector &v2) const {
     double dot = v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
     Vector n = normalVector();
