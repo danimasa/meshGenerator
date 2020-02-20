@@ -7,15 +7,26 @@ namespace meshlib {
 
 using namespace geomlib;
 
-class AreaMesh {
+class AreaMesh : public QuadArea {
 public:
-    AreaMesh(double elementSize)
-        : elementSize(elementSize) {}
+    AreaMesh(vector<Line*> lines, double elementSize)
+        : elementSize(elementSize),
+        QuadArea(lines) {
+            determineLinesSubdivision();
+        }
 
-    Mesh generateMesh(QuadArea* area);
-    void determineLinesSubdivision(QuadArea* area);
+    AreaMesh(QuadArea &area, double elementSize)
+        : elementSize(elementSize),
+        QuadArea(area) {
+            determineLinesSubdivision();
+        }
+
+    Mesh generateMesh();
+
 private:
     double elementSize;
+
+    void determineLinesSubdivision();
 }; // class AreaMesh
 
 } // namespace meshlib

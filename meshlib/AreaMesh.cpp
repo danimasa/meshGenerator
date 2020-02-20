@@ -186,16 +186,16 @@ void processPolylines (Mesh &regMesh, QuadArea* area, int points_r, int points_s
     }
 }
 
-void AreaMesh::determineLinesSubdivision(QuadArea* area) {
-    int sum = area->sumQtdElements();
-    bool someNonZero = area->someQtdElementsZero();
+void AreaMesh::determineLinesSubdivision() {
+    int sum = sumQtdElements();
+    bool someNonZero = someQtdElementsZero();
     if(sum % 2 == 0 && !someNonZero) return;
 
     int leIndex = 0;
     int newQtdElements = 0;
     double leastDiff = 0.0;
     for(int i = 0; i < 4; i++) {
-        QuadArea::TopologicalLine& tLine = area->lines[i];
+        QuadArea::TopologicalLine& tLine = lines[i];
         if (tLine.qtdElements == 0)
             tLine.qtdElements = std::ceil(tLine.line->length() / elementSize);
         else if(!someNonZero) {
@@ -214,20 +214,18 @@ void AreaMesh::determineLinesSubdivision(QuadArea* area) {
         }
     }
 
-    if(someNonZero) determineLinesSubdivision(area);
-    else area->lines[leIndex].qtdElements = newQtdElements;
+    if(someNonZero) determineLinesSubdivision();
+    else lines[leIndex].qtdElements = newQtdElements;
 }
 
-Mesh AreaMesh::generateMesh(QuadArea* area) {
-    determineLinesSubdivision(area);
+Mesh AreaMesh::generateMesh() {
+    double major_r = south().line->length() >= north().line->length()
+        ? south().line->length()
+        : north().line->length();
 
-    double major_r = area->south().line->length() >= area->north().line->length()
-        ? area->south().line->length()
-        : area->north().line->length();
-
-    double major_s = area->east().line->length() >= area->west().line->length()
-        ? area->east().line->length()
-        : area->west().line->length();
+    double major_s = east().line->length() >= west().line->length()
+        ? east().line->length()
+        : west().line->length();
 
     int qtd_elements_r = std::ceil(major_r / elementSize);
     int qtd_elements_s = std::ceil(major_s / elementSize);
@@ -235,8 +233,8 @@ Mesh AreaMesh::generateMesh(QuadArea* area) {
     int points_s = qtd_elements_s + 1;
 
     Mesh regMesh = generateRegGrid(qtd_elements_r, qtd_elements_s);
-    processPolylines(regMesh, area, points_r, points_s);
-    return transfiniteMapping(regMesh, *area);
+    processPolylines(regMesh, this, points_r, points_s);
+    return transfiniteMapping(regMesh, *this);
 }
 
 } // namespace meshlib

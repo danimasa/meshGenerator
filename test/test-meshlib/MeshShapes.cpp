@@ -33,17 +33,15 @@ TEST_CASE("MeshShapes.hpp") {
     }
 
     SECTION("Insufficient mesh size") {
-        AreaMesh meshGenerator(1);
-        meshGenerator.determineLinesSubdivision(&a1);
+        AreaMesh area(a1, 1);
 
-        REQUIRE_THROWS_WITH( MeshShapes::generateShapeList(a1), Catch::Contains("insuficient element size") );
+        REQUIRE_THROWS_WITH( MeshShapes::generateShapeList(area), Catch::Contains("insuficient element size") );
     }
 
     SECTION("U Subdivision") {
-        AreaMesh meshGenerator(0.2);
-        meshGenerator.determineLinesSubdivision(&a1);
+        AreaMesh area(a1, 0.2);
 
-        auto shapeList = MeshShapes::generateShapeList(a1);
+        auto shapeList = MeshShapes::generateShapeList(area);
 
         REQUIRE( shapeList.size() == 6 );
         REQUIRE( shapeList[0] == MeshShapes::RelativeShapes::PPOO_270 );
@@ -70,11 +68,9 @@ TEST_CASE("MeshShapes.hpp") {
 
         std::vector<Line*> lsubLines { l5, l6, l7, l8 };
         QuadArea a2(lsubLines);
+        AreaMesh area(a2, 0.25);
 
-        AreaMesh meshGenerator(0.25);
-        meshGenerator.determineLinesSubdivision(&a2);
-
-        auto shapeList = MeshShapes::generateShapeList(a2);
+        auto shapeList = MeshShapes::generateShapeList(area);
 
         REQUIRE( shapeList.size() == 2 );
         REQUIRE( shapeList[0] == MeshShapes::RelativeShapes::POOO_90 );

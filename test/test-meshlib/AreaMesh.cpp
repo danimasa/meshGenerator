@@ -29,10 +29,9 @@ TEST_CASE("AreaMesh.hpp") {
 
     SECTION("simple mesh") {
         vector<Line*> lines {l1, l2, l3, l4};
-        QuadArea a1(lines);
 
-        AreaMesh meshGenerator(0.25);
-        Mesh mesh = meshGenerator.generateMesh(&a1);
+        AreaMesh area(lines, 0.25);
+        Mesh mesh = area.generateMesh();
 
         REQUIRE( mesh.vertices.size() == 81 );
         REQUIRE( mesh.elements.size() == 64 );
@@ -41,15 +40,13 @@ TEST_CASE("AreaMesh.hpp") {
     SECTION("Line subdivision") {
         SECTION("exact subdivision") {
             vector<Line*> lines = { l1, l2, l3, l4 };
-            QuadArea a1(lines);
 
-            AreaMesh meshGenerator(0.1);
-            meshGenerator.determineLinesSubdivision(&a1);
+            AreaMesh area(lines, 0.1);
 
-            REQUIRE(a1.south().qtdElements == 20);
-            REQUIRE(a1.east().qtdElements == 20);
-            REQUIRE(a1.north().qtdElements == 20);
-            REQUIRE(a1.west().qtdElements == 20);
+            REQUIRE(area.south().qtdElements == 20);
+            REQUIRE(area.east().qtdElements == 20);
+            REQUIRE(area.north().qtdElements == 20);
+            REQUIRE(area.west().qtdElements == 20);
         }
 
         SECTION("adjusted subdivision") {
@@ -60,15 +57,13 @@ TEST_CASE("AreaMesh.hpp") {
             auto l6 = factory->createStraightLine(kp5, kp4);
 
             vector<Line*> lines = { l1, l5, l6, l4 };
-            QuadArea a1(lines);
 
-            AreaMesh meshGenerator(0.2);
-            meshGenerator.determineLinesSubdivision(&a1);
+            AreaMesh area(lines, 0.2);
 
-            REQUIRE(a1.south().qtdElements == 10);
-            REQUIRE(a1.east().qtdElements == 15);
-            REQUIRE(a1.north().qtdElements == 11);
-            REQUIRE(a1.west().qtdElements == 10);
+            REQUIRE(area.south().qtdElements == 10);
+            REQUIRE(area.east().qtdElements == 15);
+            REQUIRE(area.north().qtdElements == 11);
+            REQUIRE(area.west().qtdElements == 10);
         }
     }
 
@@ -83,10 +78,9 @@ TEST_CASE("AreaMesh.hpp") {
         auto l7 = factory->createPolyline(kp3, kp4, polylineList);
 
         vector<Line*> quadLines { l1, l2, l7, l4 };
-        QuadArea a2(quadLines);
 
-        AreaMesh meshGenerator(0.25);
-        Mesh mesh = meshGenerator.generateMesh(&a2);
+        AreaMesh area(quadLines, 0.25);
+        Mesh mesh = area.generateMesh();
 
         auto vertices = mesh.vertices;
         Vertex v(p5);

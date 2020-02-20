@@ -15,6 +15,10 @@ public:
         Geometry(GeometryType::Vertex),
         Point(point.x, point.y, point.z) {}
 
+    Vertex(double x, double y, double z) :
+        Geometry(GeometryType::Vertex),
+        Point(x, y, z) {}
+
     GeometryType getGeometryType() const { return GeometryType::Vertex; }
 
     bool operator==(const Vertex &that) const {

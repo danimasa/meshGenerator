@@ -11,6 +11,7 @@
 #include "meshlib.hpp"
 #include "MeshWriter.hpp"
 #include "AreaMesh.hpp"
+#include "MeshShapesGenerator.hpp"
 
 using namespace std;
 
@@ -53,53 +54,19 @@ void testMeshGeneration() {
     auto factory = GeometryFactory::getDefaultInstance();
 
     auto p1 = Point(0, 0, 0);
-    auto p2 = Point(5, 2, 3);
-    auto p3 = Point(4, 6, 2);
-    auto p4 = Point(1, 5, 1);
-    auto p5 = Point(2, 6, 3);
-    auto p6 = Point(2.5, 1, 5);
-    auto p7 = Point(1.5, 0.5, 1);
-    auto p8 = Point(4, 2, 3);
-    auto p9 = Point(0, 3, 2);
-    auto p10 = Point(4, 4, 3);
+    auto p2 = Point(1, 0, 0);
+    auto p3 = Point(1, 1, 0);
+    auto p4 = Point(0, 1, 0);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
-    auto kp5 = factory->createKeypoint(p5);
-    auto kp6 = factory->createKeypoint(p6);
-    auto kp7 = factory->createKeypoint(p7);
-    auto kp8 = factory->createKeypoint(p8);
-    auto kp9 = factory->createKeypoint(p9);
-    auto kp10 = factory->createKeypoint(p10);
 
-    Vector v1(0, 0, 1);
-    Vector v2(0, 0, -1);
-
-    auto l5 = factory->createStraightLine(kp1, kp7);
-    auto l6 = factory->createStraightLine(kp7, kp6);
-    auto l7 = factory->createStraightLine(kp6, kp8);
-    auto l8 = factory->createStraightLine(kp8, kp2);
-    vector<Line*> polyList { l5, l6, l7, l8 };
-
-    auto l9 = factory->createStraightLine(kp4, kp9);
-    auto l10 = factory->createStraightLine(kp9, kp1);
-    vector<Line*> polyList2 { l9, l10 };
-
-    auto l11 = factory->createStraightLine(kp2, kp10);
-    auto l12 = factory->createStraightLine(kp10, kp3);
-    vector<Line*> polyList3 { l11, l12 };
-
-    auto l13 = factory->createStraightLine(kp3, kp5);
-    auto l14 = factory->createStraightLine(kp5, kp4);
-    vector<Line*> polyList4 { l13, l14 };
-
-    auto l1 = factory->createPolyline(kp1, kp2, polyList);
-    auto l2 = factory->createPolyline(kp2, kp3, polyList3);
-    // auto l3 = factory->createArcLine(kp3, kp4, kp5, &v1, &v2);
-    auto l3 = factory->createPolyline(kp3, kp4, polyList4);
-    auto l4 = factory->createPolyline(kp4, kp1, polyList2);
+    auto l1 = factory->createStraightLine(kp1, kp2);
+    auto l2 = factory->createStraightLine(kp2, kp3);
+    auto l3 = factory->createStraightLine(kp3, kp4);
+    auto l4 = factory->createStraightLine(kp4, kp1);
 
     std::vector<Line*> lines;
     lines.push_back(l1);
@@ -107,12 +74,18 @@ void testMeshGeneration() {
     lines.push_back(l3);
     lines.push_back(l4);
 
-    QuadArea area(lines);
+    AreaMesh area(lines, 0.1);
+    area.lines[3].qtdElements = area.west().qtdElements + 1;
+    area.lines[0].qtdElements = area.south().qtdElements + 1;
 
-    AreaMesh meshGenerator(0.5);
-    Mesh mesh = meshGenerator.generateMesh(&area);
-    // Mesh regMesh = meshlib::generateRegGrid(20, 20);
-    // auto transfMesh = meshlib::transfiniteMapping(regMesh, area);
+    vector<MeshShapes::RelativeShapes> shapeList;
+    shapeList.push_back(MeshShapes::RelativeShapes::POOO_180);
+    shapeList.push_back(MeshShapes::RelativeShapes::OOOO);
+
+    MeshShapesGenerator gen;
+    auto mesh = gen.genMesh(shapeList, area);
+    // AreaMesh meshGenerator(0.5);
+    // Mesh mesh = meshGenerator.generateMesh(&area);
 
     gmshlib::MeshWriter writer(&mesh);
     cout << writer.getMshFile() << endl;
