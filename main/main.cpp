@@ -75,11 +75,10 @@ void testMeshGeneration() {
     lines.push_back(l4);
 
     AreaMesh area(lines, 0.1);
-    area.lines[3].qtdElements = area.west().qtdElements + 1;
-    area.lines[0].qtdElements = area.south().qtdElements + 1;
+    area.lines[1].qtdElements = area.east().qtdElements + 2;
 
     vector<MeshShapes::RelativeShapes> shapeList;
-    shapeList.push_back(MeshShapes::RelativeShapes::POOO_180);
+    shapeList.push_back(MeshShapes::RelativeShapes::PPOO_270);
     shapeList.push_back(MeshShapes::RelativeShapes::OOOO);
 
     MeshShapesGenerator gen;
