@@ -49,4 +49,18 @@ TEST_CASE("Straight Line") {
         Point notInLinePoint(2, 0, 1.5);
         REQUIRE( line3d->isPointInLine(notInLinePoint) == -1 );
     }
+
+    SECTION("init and final vector") {
+        Point p3(2, 0, 0);
+        auto kp3 = factory->createKeypoint(p3);
+
+        auto sLine = factory->createStraightLine(initKp, kp3);
+        Vector result(1, 0, 0);
+
+        auto initVector = sLine->get_init_vector();
+        auto finalVector = sLine->get_final_vector();
+
+        REQUIRE( initVector == result );
+        REQUIRE( finalVector == result );
+    }
 }

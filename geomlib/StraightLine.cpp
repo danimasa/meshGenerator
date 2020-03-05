@@ -58,4 +58,18 @@ Box StraightLine::outBox() {
         std::abs(init_point->z - final_point->z));
 }
 
+Vector StraightLine::get_direction_vector() const {
+    Vector v(init_point, final_point);
+    v.normalise();
+    return v;
+}
+
+Vector StraightLine::get_init_vector() const {
+    return get_direction_vector();
+}
+
+Vector StraightLine::get_final_vector() const {
+    return get_direction_vector();
+}
+
 }

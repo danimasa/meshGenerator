@@ -268,4 +268,18 @@ Box ArcLine::outBox() {
     return Box(midPoint, width, height, depth);
 }
 
+Vector ArcLine::get_init_vector() const {
+    Vector toInitPoint(center, init_point);
+    Vector result = toInitPoint.vectorProduct(plane->normalVector());
+    result.normalise();
+    return result;
+}
+
+Vector ArcLine::get_final_vector() const {
+    Vector toFinalPoint(center, final_point);
+    Vector result = toFinalPoint.vectorProduct(plane->normalVector());
+    result.normalise();
+    return result;
+}
+
 } // namespace geomlib

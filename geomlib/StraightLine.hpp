@@ -14,9 +14,14 @@ public:
     double isPointInLine(const Point &point);
     Box outBox();
 
+    Vector get_init_vector() const;
+    Vector get_final_vector() const;
+
 private:
     StraightLine(KeyPoint* init_point, KeyPoint* final_point) :
         Line(init_point, final_point) {}
+
+    Vector get_direction_vector() const;
 
     friend class GeometryFactory;
 };

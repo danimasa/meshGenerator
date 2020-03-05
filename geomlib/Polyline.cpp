@@ -164,4 +164,13 @@ std::vector<KeyPoint*> Polyline::intermidiaryPoints() const {
   return result;
 }
 
+Vector Polyline::get_init_vector() const {
+  return lines.begin()->line->get_init_vector();
+}
+
+Vector Polyline::get_final_vector() const {
+  auto lastLine = lines.end() - 1;
+  return lastLine->line->get_final_vector();
+}
+
 }

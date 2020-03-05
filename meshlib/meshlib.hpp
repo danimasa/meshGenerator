@@ -17,4 +17,6 @@ Mesh transfiniteMapping(Mesh &parametricMesh, geomlib::QuadArea &area);
 
 MesheableBoundary generateMesheableBoundary(const AreaMesh &area);
 
+double angleBetweenLines(const Line &l1, const Line &l2);
+
 }

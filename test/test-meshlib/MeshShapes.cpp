@@ -29,19 +29,19 @@ TEST_CASE("MeshShapes.hpp") {
     QuadArea a1(lines);
 
     SECTION("Throw error if without elements quantity") {
-        REQUIRE_THROWS( MeshShapes::generateShapeList(a1) );
+        REQUIRE_THROWS( MeshShapes::shapeListFromElementQtd(a1) );
     }
 
     SECTION("Insufficient mesh size") {
         AreaMesh area(a1, 1);
 
-        REQUIRE_THROWS_WITH( MeshShapes::generateShapeList(area), Catch::Contains("insuficient element size") );
+        REQUIRE_THROWS_WITH( MeshShapes::shapeListFromElementQtd(area), Catch::Contains("insuficient element size") );
     }
 
     SECTION("U Subdivision") {
         AreaMesh area(a1, 0.2);
 
-        auto shapeList = MeshShapes::generateShapeList(area);
+        auto shapeList = MeshShapes::shapeListFromElementQtd(area);
 
         REQUIRE( shapeList.size() == 6 );
         REQUIRE( shapeList[0] == MeshShapes::RelativeShapes::PPOO_270 );
@@ -70,7 +70,7 @@ TEST_CASE("MeshShapes.hpp") {
         QuadArea a2(lsubLines);
         AreaMesh area(a2, 0.25);
 
-        auto shapeList = MeshShapes::generateShapeList(area);
+        auto shapeList = MeshShapes::shapeListFromElementQtd(area);
 
         REQUIRE( shapeList.size() == 2 );
         REQUIRE( shapeList[0] == MeshShapes::RelativeShapes::POOO_90 );
@@ -84,7 +84,7 @@ TEST_CASE("MeshShapes.hpp") {
         a1.lines[3].qtdElements = 10;
         
         AreaMesh area(a1, 0.25);
-        auto shapeList = MeshShapes::generateShapeList(area);
+        auto shapeList = MeshShapes::shapeListFromElementQtd(area);
 
         REQUIRE(shapeList.size() == 3);
         REQUIRE( shapeList[0] == MeshShapes::RelativeShapes::POOO_0 );

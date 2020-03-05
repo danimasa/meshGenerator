@@ -18,6 +18,8 @@ public:
     double get_radius() { return radius; }
     Point* get_center() { return center; }
     Plane* get_plane() { return plane; }
+    Vector get_final_vector() const;
+    Vector get_init_vector() const;
 
 private:
     ArcLine(

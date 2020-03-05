@@ -1,11 +1,12 @@
 #include "MeshShapes.hpp"
+#include "meshlib.hpp"
 #include <stdexcept>
 
 namespace meshlib {
 
 using namespace std;
 
-vector<MeshShapes::RelativeShapes> MeshShapes::generateShapeList(const QuadArea& area) {
+vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromElementQtd(const QuadArea& area) {
     if(area.someQtdElementsZero() || !area.isEvenElements())
         throw std::invalid_argument("Only even elements in surface boundary permited");
 
@@ -80,6 +81,23 @@ vector<MeshShapes::RelativeShapes> MeshShapes::generateShapeList(const QuadArea&
     if (n != 1 || s != 1 || l != 1 || o != 1)
         throw std::invalid_argument("insuficient element size for geometry");
 
+    return result;
+}
+
+vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromDisposition(const QuadArea& area) {
+    vector<MeshShapes::RelativeShapes> result;
+
+    // 1 Point
+    double angle = angleBetweenLines(*area.west().line, *area.south().line);
+
+    return result;
+}
+
+vector<MeshShapes::RelativeShapes> MeshShapes::mergeShapeLists(
+    vector<MeshShapes::RelativeShapes>& elemQtd,
+    vector<MeshShapes::RelativeShapes>& elemDisp
+) {
+    vector<MeshShapes::RelativeShapes> result;
     return result;
 }
 

@@ -48,4 +48,11 @@ TEST_CASE("Vector") {
         Vector mul(5, 5, 5);
         REQUIRE( v5 == mul );
     }
+
+    SECTION("Invert") {
+        Vector v1(1, 1, 1);
+        Vector v1_inverted(-1, -1, -1);
+
+        REQUIRE( v1.invert() == v1_inverted );
+    }
 }

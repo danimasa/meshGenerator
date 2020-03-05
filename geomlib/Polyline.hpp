@@ -18,6 +18,9 @@ public:
     Box outBox();
     std::vector<KeyPoint*> intermidiaryPoints() const;
 
+    Vector get_init_vector() const;
+    Vector get_final_vector() const;
+
     struct Line_in_Polyline {
         Line* line;
         LineDirection direction;

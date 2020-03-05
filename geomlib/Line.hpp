@@ -28,6 +28,9 @@ namespace geomlib {
         virtual double isPointInLine(const Point &point) = 0;
         virtual Box outBox() = 0;
 
+        virtual Vector get_init_vector() const = 0;
+        virtual Vector get_final_vector() const = 0;
+
     protected:
         Line(KeyPoint* init_point, KeyPoint* final_point) :
             Geometry(GeometryType::Line),

@@ -32,6 +32,9 @@ namespace geomlib {
         // Vetor nulo
         bool isNull();
 
+        // Vetor inverso
+        Vector invert();
+
         friend Vector operator+(const Vector &v1, const Vector &v2);
         friend Vector operator-(const Vector &v1, const Vector &v2);
         friend Vector operator*(const Vector &v1, double value);

@@ -18,6 +18,9 @@ public:
     double isPointInLine(const Point &point) { return -1; }
     Box outBox() { return Box(*mid_point, 0, 0, 0); }
 
+    Vector get_init_vector() const { return *tangent_init_vector; }
+    Vector get_final_vector() const { return *tangent_final_vector; }
+
 private:
     UnspecifiedLine(
         KeyPoint* init_point,

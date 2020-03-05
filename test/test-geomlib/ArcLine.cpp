@@ -31,6 +31,8 @@ TEST_CASE("ArcLine") {
     REQUIRE( arco->get_center()->x == 0. );
     REQUIRE( (arco->get_center()->y - 1.0) < epsilon );
     REQUIRE( arco->get_center()->z == 0. );
+    REQUIRE( arco->get_init_vector() == init_tangent_vector );
+    REQUIRE( arco->get_final_vector() == final_tangent_vector );
 
     // Calculo do comprimento
     double length = arco->length();

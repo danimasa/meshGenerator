@@ -43,6 +43,12 @@ bool Vector::isNull() {
     return double_equals(x, 0) && double_equals(y, 0) && double_equals(z, 0);
 }
 
+Vector Vector::invert() {
+    double nX = x * -1;
+    double nY = y * -1;
+    double nZ = z * -1;
+    return Vector(nX, nY, nZ);
+}
 
 Vector operator+(const Vector &v1, const Vector &v2) {
     double x = v1.x + v2.x;

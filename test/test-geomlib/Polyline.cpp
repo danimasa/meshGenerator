@@ -226,4 +226,23 @@ TEST_CASE("Polyline") {
         REQUIRE( inter_points.size() == 1 );
         REQUIRE( inter_points[0] == midKp );
     }
+
+    SECTION("init and final vectors") {
+        Point initPoint(0, 0, 0);
+        Point midPoint(1, 1, 0);
+        Point finalPoint(2, 0, 0);
+
+        auto initKp = factory->createKeypoint(initPoint);
+        auto midKp = factory->createKeypoint(midPoint);
+        auto finalKp = factory->createKeypoint(finalPoint);
+
+        auto line1 = factory->createStraightLine(initKp, midKp);
+        auto line2 = factory->createStraightLine(midKp, finalKp);
+
+        vector<Line*> lines { line1, line2 };
+        auto polyline = factory->createPolyline(initKp, finalKp, lines);
+
+        REQUIRE( polyline->get_init_vector() == line1->get_init_vector() );
+        REQUIRE( polyline->get_final_vector() == line2->get_final_vector() );
+    }
 }

@@ -1,4 +1,6 @@
 #include "meshlib.hpp"
+#include "ArcLine.hpp"
+#include <stdexcept>
 
 namespace meshlib {
 
@@ -143,6 +145,24 @@ MesheableBoundary generateMesheableBoundary(const AreaMesh &area) {
     boundary.west = fillBoundary(westLine.qtdElements, &Vertex::y, &Vertex::x, 0.0);
 
     return boundary;
+}
+
+double angleBetweenLines(const Line &l1, const Line &l2) {
+    // find common point
+    Point *common_p = nullptr;
+    if (l1.init_point == l2.init_point || l1.init_point == l2.final_point)
+        common_p = l1.init_point;
+    else if (l1.final_point == l2.init_point || l1.final_point == l2.final_point)
+        common_p = l1.final_point;
+    else throw std::invalid_argument("angleBetweenLines: Lines have to share a point");
+
+    // find vector for the first line
+    auto v1 = l1.init_point == common_p ? l1.get_init_vector().invert() : l1.get_final_vector();
+
+    // find vector for the second line
+    auto v2 = l2.init_point == common_p ? l2.get_init_vector().invert() : l2.get_final_vector();
+
+    return v1.angleWith(v2);
 }
 
 }

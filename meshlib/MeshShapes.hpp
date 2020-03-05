@@ -18,7 +18,11 @@ public:
         OOOO,
     };
 
-    static std::vector<RelativeShapes> generateShapeList(const QuadArea& area);
+    static std::vector<RelativeShapes> shapeListFromDisposition(const QuadArea& area);
+    static std::vector<RelativeShapes> shapeListFromElementQtd(const QuadArea& area);
+    static std::vector<RelativeShapes> mergeShapeLists(
+        std::vector<RelativeShapes> &elemQtd,
+        std::vector<RelativeShapes> &elemDisp);
 
 private:
     MeshShapes () {}
