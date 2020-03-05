@@ -6,8 +6,8 @@
     "configurations": [
         {
             "name": "meshGenerator",
-            "type": "cppdbg",
             "request": "launch",
+            "type": "cppdbg",
             "program": "${command:cmake.launchTargetPath}",
             "args": [ "data/GEOM.DAT" ],
             "cwd": "${workspaceFolder}",
@@ -15,6 +15,7 @@
                 "MIMode": "gdb"
             },
             "osx": {
+                "type": "lldb",
                 "MIMode": "lldb"
             }
         },
@@ -28,6 +29,7 @@
                 "MIMode": "gdb"
             },
             "osx": {
+                "type": "lldb",
                 "MIMode": "lldb"
             }
         }
