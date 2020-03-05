@@ -18,6 +18,12 @@ public:
         OOOO,
     };
 
+    enum class VertexShape {
+        ANY,
+        ORTHOGONAL,
+        POLAR
+    };
+
     static std::vector<RelativeShapes> shapeListFromDisposition(const QuadArea& area);
     static std::vector<RelativeShapes> shapeListFromElementQtd(const QuadArea& area);
     static std::vector<RelativeShapes> mergeShapeLists(

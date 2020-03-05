@@ -5,12 +5,20 @@
 namespace meshlib {
 
 using namespace std;
+using VShape = MeshShapes::VertexShape;
+using RShape = MeshShapes::RelativeShapes;
 
-vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromElementQtd(const QuadArea& area) {
+VShape getVertexShape(double angle) {
+    if (angle < (M_PI / 3)) VShape::POLAR;
+    if (angle > (2 * M_PI / 3)) VShape::ORTHOGONAL;
+    return VShape::ANY;
+}
+
+vector<RShape> MeshShapes::shapeListFromElementQtd(const QuadArea& area) {
     if(area.someQtdElementsZero() || !area.isEvenElements())
         throw std::invalid_argument("Only even elements in surface boundary permited");
 
-    vector<MeshShapes::RelativeShapes> result;
+    vector<RShape> result;
     int n = area.north().qtdElements;
     int s = area.south().qtdElements;
     int l = area.east().qtdElements;
@@ -25,20 +33,20 @@ vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromElementQtd(const Qua
             if(nsDiff > loDiff) {
                 if(n > s) {
                     n -= 2;
-                    result.push_back(MeshShapes::RelativeShapes::PPOO_0);
+                    result.push_back(RShape::PPOO_0);
                 } else {
                     s -= 2;
-                    result.push_back(MeshShapes::RelativeShapes::PPOO_180);
+                    result.push_back(RShape::PPOO_180);
                 }
             }
             // U_90 or U_270
             else {
                 if (o > l) {
                     o -= 2;
-                    result.push_back(MeshShapes::RelativeShapes::PPOO_90);
+                    result.push_back(RShape::PPOO_90);
                 } else {
                     l -= 2;
-                    result.push_back(MeshShapes::RelativeShapes::PPOO_270);
+                    result.push_back(RShape::PPOO_270);
                 }
             }
             continue;
@@ -50,21 +58,21 @@ vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromElementQtd(const Qua
                 if (l > o) {
                     l -= 1;
                     n -= 1;
-                    result.push_back(MeshShapes::RelativeShapes::POOO_0);
+                    result.push_back(RShape::POOO_0);
                 } else {
                     o -= 1;
                     n -= 1;
-                    result.push_back(MeshShapes::RelativeShapes::POOO_90);
+                    result.push_back(RShape::POOO_90);
                 }
             } else {
                 if (o > l) {
                     o -= 1;
                     s -= 1;
-                    result.push_back(MeshShapes::RelativeShapes::POOO_180);
+                    result.push_back(RShape::POOO_180);
                 } else {
                     l -= 1;
                     s -= 1;
-                    result.push_back(MeshShapes::RelativeShapes::POOO_270);
+                    result.push_back(RShape::POOO_270);
                 }
             }
             continue;
@@ -75,7 +83,7 @@ vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromElementQtd(const Qua
         s -= s - 1;
         l -= l - 1;
         o -= o - 1;
-        result.push_back(MeshShapes::RelativeShapes::OOOO);
+        result.push_back(RShape::OOOO);
     }
 
     if (n != 1 || s != 1 || l != 1 || o != 1)
@@ -84,20 +92,78 @@ vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromElementQtd(const Qua
     return result;
 }
 
-vector<MeshShapes::RelativeShapes> MeshShapes::shapeListFromDisposition(const QuadArea& area) {
-    vector<MeshShapes::RelativeShapes> result;
+vector<RShape> MeshShapes::shapeListFromDisposition(const QuadArea& area) {
+    vector<RShape> result;
+    double angle = 0.0;
+    RShape cShape;
 
-    // 1 Point
-    double angle = angleBetweenLines(*area.west().line, *area.south().line);
+    constexpr VShape O = VShape::ORTHOGONAL;
+    constexpr VShape P = VShape::POLAR;
+    constexpr VShape A = VShape::ANY;
+
+    do {
+        // 1 Point
+        angle = angleBetweenLines(*area.west().line, *area.south().line);
+        auto v1s = getVertexShape(angle);
+
+        // 2 Point
+        angle = angleBetweenLines(*area.south().line, *area.east().line);
+        auto v2s = getVertexShape(angle);
+
+        // 3 Point
+        angle = angleBetweenLines(*area.east().line, *area.north().line);
+        auto v3s = getVertexShape(angle);
+
+        // 4 Point
+        angle = angleBetweenLines(*area.north().line, *area.west().line);
+        auto v4s = getVertexShape(angle);
+
+        if (v1s == P && v2s != P && v3s != P && v4s != P)
+            cShape = RShape::POOO_0;
+        else if (v1s != P && v2s == P && v3s != P && v4s != P)
+            cShape = RShape::POOO_90;
+        else if (v1s != P && v2s != P && v3s == P && v4s != P)
+            cShape = RShape::POOO_180;
+        else if (v1s != P && v2s != P && v3s != P && v4s == P)
+            cShape = RShape::POOO_270;
+        else if (v1s == P && v2s == P && v3s != P && v4s != P)
+            cShape = RShape::PPOO_0;
+        else if (v1s != P && v2s == P && v3s == P && v4s != P)
+            cShape = RShape::PPOO_90;
+        else if (v1s != P && v2s != P && v3s == P && v4s == P)
+            cShape = RShape::PPOO_180;
+        else if (v1s == P && v2s != P && v3s != P && v4s == P)
+            cShape = RShape::PPOO_270;
+        else if (v1s == P && v2s != P && v3s == P && v4s != P)
+            cShape = RShape::POPO_0;
+        else if (v1s != P && v2s == P && v3s != P && v4s == P)
+            cShape = RShape::POPO_90;
+        else if (v1s == P && v2s == P && v3s == P && v4s != P)
+            cShape = RShape::POPP_0;
+        else if (v1s != P && v2s == P && v3s == P && v4s == P)
+            cShape = RShape::POPP_90;
+        else if (v1s == P && v2s != P && v3s == P && v4s == P)
+            cShape = RShape::POPP_180;
+        else if (v1s == P && v2s == P && v3s != P && v4s == P)
+            cShape = RShape::POPP_270;
+        else if (v1s == P && v2s == P && v3s == P && v4s == P)
+            cShape = RShape::PPPP;
+        else
+            cShape = RShape::OOOO;
+
+        result.push_back(cShape);
+        // update area
+
+    } while (cShape != RShape::OOOO);
 
     return result;
 }
 
-vector<MeshShapes::RelativeShapes> MeshShapes::mergeShapeLists(
-    vector<MeshShapes::RelativeShapes>& elemQtd,
-    vector<MeshShapes::RelativeShapes>& elemDisp
+vector<RShape> MeshShapes::mergeShapeLists(
+    vector<RShape>& elemQtd,
+    vector<RShape>& elemDisp
 ) {
-    vector<MeshShapes::RelativeShapes> result;
+    vector<RShape> result;
     return result;
 }
 
