@@ -76,4 +76,19 @@ TEST_CASE("MeshShapes.hpp") {
         REQUIRE( shapeList[0] == MeshShapes::RelativeShapes::POOO_90 );
         REQUIRE( shapeList[1] == MeshShapes::RelativeShapes::OOOO );
     }
+
+    SECTION("Mixed Subdivision") {
+        a1.lines[0].qtdElements = 10;
+        a1.lines[1].qtdElements = 11;
+        a1.lines[2].qtdElements = 13;
+        a1.lines[3].qtdElements = 10;
+        
+        AreaMesh area(a1, 0.25);
+        auto shapeList = MeshShapes::generateShapeList(area);
+
+        REQUIRE(shapeList.size() == 3);
+        REQUIRE( shapeList[0] == MeshShapes::RelativeShapes::POOO_0 );
+        REQUIRE( shapeList[1] == MeshShapes::RelativeShapes::PPOO_0 );
+        REQUIRE( shapeList[2] == MeshShapes::RelativeShapes::OOOO );
+    }
 }

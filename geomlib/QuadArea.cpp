@@ -8,7 +8,7 @@ namespace geomlib
 
 QuadArea::QuadArea(vector<Line*> lines) {
     if (lines.size() != 4)
-        throw new invalid_argument("A QuadArea must have 4 lines");
+        throw invalid_argument("A QuadArea must have 4 lines");
 
     TopologicalLine lastLine;
     for(int i = 0; i < lines.size(); i++) {
@@ -23,7 +23,7 @@ QuadArea::QuadArea(vector<Line*> lines) {
             } else if (lines[0]->final_point == cLine->final_point) {
                 l.direction = LineDirection::INVERSE;
             } else {
-                throw new invalid_argument("Not touching line or not in sequence for QuadArea");
+                throw invalid_argument("Not touching line or not in sequence for QuadArea");
             }
         } else if (i == 2) {
             if (lastLine.direction == LineDirection::DIRECT) {
@@ -32,7 +32,7 @@ QuadArea::QuadArea(vector<Line*> lines) {
                 } else if (lines[1]->final_point == cLine->final_point) {
                     l.direction = LineDirection::DIRECT;
                 } else {
-                    throw new invalid_argument("Not touching line or not in sequence for QuadArea");
+                    throw invalid_argument("Not touching line or not in sequence for QuadArea");
                 }
             } else {
                 if (lines[1]->init_point == cLine->init_point) {
@@ -40,7 +40,7 @@ QuadArea::QuadArea(vector<Line*> lines) {
                 } else if (lines[1]->init_point == cLine->final_point) {
                     l.direction = LineDirection::DIRECT;
                 } else {
-                    throw new invalid_argument("Not touching line or not in sequence for QuadArea");
+                    throw invalid_argument("Not touching line or not in sequence for QuadArea");
                 }
             }
         } else if (i == 3) {
@@ -50,7 +50,7 @@ QuadArea::QuadArea(vector<Line*> lines) {
                 } else if (lines[2]->init_point == cLine->final_point) {
                     l.direction = LineDirection::DIRECT;
                 } else {
-                    throw new invalid_argument("Not touching line or not in sequence for QuadArea");
+                    throw invalid_argument("Not touching line or not in sequence for QuadArea");
                 }
             } else {
                 if (lines[2]->final_point == cLine->init_point) {
@@ -58,7 +58,7 @@ QuadArea::QuadArea(vector<Line*> lines) {
                 } else if (lines[2]->final_point == cLine->final_point) {
                     l.direction = LineDirection::DIRECT;
                 } else {
-                    throw new invalid_argument("Not touching line or not in sequence for QuadArea");
+                    throw invalid_argument("Not touching line or not in sequence for QuadArea");
                 }
             }
         }

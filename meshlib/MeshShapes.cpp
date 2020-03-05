@@ -19,7 +19,7 @@ vector<MeshShapes::RelativeShapes> MeshShapes::generateShapeList(const QuadArea&
         // Verify U shape
         int nsDiff = std::abs(n - s);
         int loDiff = std::abs(l - o);
-        if(std::abs(nsDiff - loDiff) >= 2.0) {
+        if(std::abs(nsDiff - loDiff) >= 2.0 && (nsDiff == 0 || loDiff == 0)) {
             // U_0 or U_180
             if(nsDiff > loDiff) {
                 if(n > s) {

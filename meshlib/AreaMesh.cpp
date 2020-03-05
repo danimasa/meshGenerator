@@ -1,6 +1,8 @@
 #include "AreaMesh.hpp"
 #include "meshlib.hpp"
 #include "Polyline.hpp"
+#include "MeshShapesGenerator.hpp"
+#include "MeshShapes.hpp"
 
 #include <math.h>
 #include <vector>
@@ -219,21 +221,24 @@ void AreaMesh::determineLinesSubdivision() {
 }
 
 Mesh AreaMesh::generateMesh() {
-    double major_r = south().line->length() >= north().line->length()
-        ? south().line->length()
-        : north().line->length();
+    // double major_r = south().line->length() >= north().line->length()
+    //     ? south().line->length()
+    //     : north().line->length();
 
-    double major_s = east().line->length() >= west().line->length()
-        ? east().line->length()
-        : west().line->length();
+    // double major_s = east().line->length() >= west().line->length()
+    //     ? east().line->length()
+    //     : west().line->length();
 
-    int qtd_elements_r = std::ceil(major_r / elementSize);
-    int qtd_elements_s = std::ceil(major_s / elementSize);
-    int points_r = qtd_elements_r + 1;
-    int points_s = qtd_elements_s + 1;
+    // int qtd_elements_r = std::ceil(major_r / elementSize);
+    // int qtd_elements_s = std::ceil(major_s / elementSize);
+    // int points_r = qtd_elements_r + 1;
+    // int points_s = qtd_elements_s + 1;
 
-    Mesh regMesh = generateRegGrid(qtd_elements_r, qtd_elements_s);
-    processPolylines(regMesh, this, points_r, points_s);
+    // Mesh regMesh = generateRegGrid(qtd_elements_r, qtd_elements_s);
+    // processPolylines(regMesh, this, points_r, points_s);
+    auto shapeList = MeshShapes::generateShapeList(*this);
+    MeshShapesGenerator gen;
+    auto regMesh = gen.genMesh(shapeList, *this);
     return transfiniteMapping(regMesh, *this);
 }
 

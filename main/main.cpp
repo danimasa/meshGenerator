@@ -2,6 +2,7 @@
 #include <memory>
 #include <fstream>
 #include <string>
+#include <exception>
 #include "Line.hpp"
 #include "FileReader.hpp"
 #include "AnsysFileReaderFactory.hpp"
@@ -55,17 +56,23 @@ void testMeshGeneration() {
 
     auto p1 = Point(0, 0, 0);
     auto p2 = Point(1, 0, 0);
-    auto p3 = Point(1, 1, 0);
-    auto p4 = Point(0, 1, 0);
+    auto p3 = Point(2, 1, 0);
+    auto p4 = Point(-1, 1, 0);
+    // auto p5 = Point(2, 6, 3);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
+    // auto kp5 = factory->createKeypoint(p5);
+
+    // Vector v1(0, 0, 1);
+    // Vector v2(0, 0, -1);
 
     auto l1 = factory->createStraightLine(kp1, kp2);
     auto l2 = factory->createStraightLine(kp2, kp3);
     auto l3 = factory->createStraightLine(kp3, kp4);
+    // auto l3 = factory->createArcLine(kp3, kp4, kp5, &v1, &v2);
     auto l4 = factory->createStraightLine(kp4, kp1);
 
     std::vector<Line*> lines;
@@ -74,17 +81,19 @@ void testMeshGeneration() {
     lines.push_back(l3);
     lines.push_back(l4);
 
-    AreaMesh area(lines, 0.1);
-    area.lines[1].qtdElements = area.east().qtdElements + 2;
+    // AreaMesh area(lines, 0.1);
+    // area.lines[1].qtdElements = area.east().qtdElements + 1;
+    // area.lines[0].qtdElements = area.south().qtdElements + 1;
 
-    vector<MeshShapes::RelativeShapes> shapeList;
-    shapeList.push_back(MeshShapes::RelativeShapes::PPOO_270);
-    shapeList.push_back(MeshShapes::RelativeShapes::OOOO);
+    // vector<MeshShapes::RelativeShapes> shapeList;
+    // shapeList.push_back(MeshShapes::RelativeShapes::POOO_270);
+    // shapeList.push_back(MeshShapes::RelativeShapes::OOOO);
 
-    MeshShapesGenerator gen;
-    auto mesh = gen.genMesh(shapeList, area);
+    // MeshShapesGenerator gen;
+    // auto mesh = gen.genMesh(shapeList, area);
+    AreaMesh area(lines, 0.2);
     // AreaMesh meshGenerator(0.5);
-    // Mesh mesh = meshGenerator.generateMesh(&area);
+    Mesh mesh = area.generateMesh();
 
     gmshlib::MeshWriter writer(&mesh);
     cout << writer.getMshFile() << endl;
@@ -98,7 +107,11 @@ int main(int argc, char **argv) {
 
     // string filepath = argv[1];
     // leitura(filepath);
-    testMeshGeneration();
+    try {
+        testMeshGeneration();
+    } catch(std::exception& e) {
+        cerr << "Exception: " << e.what();
+    }
 
     return 0;
 }

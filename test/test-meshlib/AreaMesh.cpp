@@ -33,7 +33,7 @@ TEST_CASE("AreaMesh.hpp") {
         AreaMesh area(lines, 0.25);
         Mesh mesh = area.generateMesh();
 
-        REQUIRE( mesh.vertices.size() == 81 );
+        REQUIRE( mesh.vertices.size() == 85 );
         REQUIRE( mesh.elements.size() == 64 );
     }
 

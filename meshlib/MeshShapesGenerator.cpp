@@ -71,9 +71,9 @@ Mesh MeshShapesGenerator::genMesh(std::vector<MeshShapes::RelativeShapes> shapeL
 
 void MeshShapesGenerator::gen_POOO_0() {
 
-if(cBoundary.north.size() + 1 != cBoundary.south.size()
-    || cBoundary.east.size() + 1 != cBoundary.west.size()) {
-    throw new std::invalid_argument("POOO_0_TYPE: north and east boundary should have 1 more elements.");
+if(cBoundary.south.size() + 1 > cBoundary.north.size()
+    || cBoundary.west.size() + 1 > cBoundary.east.size()) {
+    throw std::invalid_argument("POOO_0_TYPE: north and east boundary should have at least 1 more elements.");
 }
 
 auto sLine = cBoundary.south;
@@ -89,8 +89,13 @@ Vertex* refVert = new Vertex(cXPos, cYPos, 0);
 cMesh.vertices.push_back(refVert);
 newVLine.push_back(refVert);
 
-for(int i = 2; i < eLine.size() - 1; i++) {
-    auto v = new Vertex(cXPos, eLine[i]->y, 0);
+double vLineSize = nLine[1]->y - refVert->y;
+double vElementSize = vLineSize / (wLine.size() - 1);
+double vElementPos = refVert->y;
+
+for(int i = 1; i < wLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
 }
@@ -101,11 +106,13 @@ generateElements(wLine, newVLine, cMesh);
 vector<Vertex*> newHLine;
 newHLine.push_back(refVert);
 
-cYPos = refVert->y;
-cXPos = refVert->x;
+vLineSize = eLine[1]->x - refVert->x;
+vElementSize = vLineSize / (sLine.size() - 1);
+vElementPos = cXPos;
 
-for(int i = 2; i < nLine.size() - 1; i++) {
-    auto v = new Vertex(nLine[i]->x, cYPos, 0);
+for(int i = 1; i < sLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
 }
@@ -122,9 +129,9 @@ cBoundary.north.erase(cBoundary.north.begin());
 
 void MeshShapesGenerator::gen_POOO_90() {
 
-if(cBoundary.north.size() + 1 != cBoundary.south.size()
-    || cBoundary.west.size() + 1 != cBoundary.east.size()) {
-    throw new std::invalid_argument("POOO_90_TYPE: north and west boundary should have 1 more elements.");
+if(cBoundary.south.size() + 1 > cBoundary.north.size()
+    || cBoundary.east.size() + 1 > cBoundary.west.size()) {
+    throw std::invalid_argument("POOO_90_TYPE: north and west boundary should have at least 1 more elements.");
 }
 
 auto sLine = cBoundary.south;
@@ -132,32 +139,39 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-int lastXInd = nLine.size() - 2;
+int lastIndN = nLine.size() - 2;
 vector<Vertex*> newVLine;
 double cYPos = wLine[1]->y;
-double cXPos = nLine[lastXInd]->x;
+double cXPos = nLine[lastIndN]->x;
 
 Vertex* refVert = new Vertex(cXPos, cYPos, 0);
 cMesh.vertices.push_back(refVert);
 newVLine.push_back(refVert);
 
-for(int i = 2; i < wLine.size() - 1; i++) {
-    auto v = new Vertex(cXPos, wLine[i]->y, 0);
+double vLineSize = nLine[lastIndN]->y - refVert->y;
+double vElementSize = vLineSize / (eLine.size() - 1);
+double vElementPos = refVert->y;
+
+for(int i = 1; i < eLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
 }
-newVLine.push_back(nLine[lastXInd]);
+newVLine.push_back(nLine[lastIndN]);
 
 generateElements(eLine, newVLine, cMesh);
 
 vector<Vertex*> newHLine;
 newHLine.push_back(wLine[1]);
 
-cYPos = refVert->y;
-cXPos = refVert->x;
+vLineSize = refVert->x - wLine[1]->x;
+vElementSize = vLineSize / (sLine.size() - 1);
+vElementPos = wLine[1]->x;
 
-for(int i = 1; i < nLine.size() - 2; i++) {
-    auto v = new Vertex(nLine[i]->x, cYPos, 0);
+for(int i = 1; i < sLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
 }
@@ -174,9 +188,9 @@ cBoundary.north.erase(cBoundary.north.end() - 1);
 
 void MeshShapesGenerator::gen_POOO_180() {
 
-if(cBoundary.south.size() + 1 != cBoundary.north.size()
-    || cBoundary.west.size() + 1 != cBoundary.east.size()) {
-    throw new std::invalid_argument("POOO_180_TYPE: south and west boundary should have 1 more elements.");
+if(cBoundary.north.size() + 1 > cBoundary.south.size()
+    || cBoundary.east.size() + 1 > cBoundary.west.size()) {
+    throw std::invalid_argument("POOO_180_TYPE: south and west boundary should have at least 1 more elements.");
 }
 
 auto sLine = cBoundary.south;
@@ -184,18 +198,25 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-int lastXInd = sLine.size() - 2;
-int lastYInd = wLine.size() - 2;
+int lastIndN = nLine.size() - 2;
+int lastIndE = eLine.size() - 2;
+int lastIndW = wLine.size() - 2;
+int lastIndS = sLine.size() - 2;
 vector<Vertex*> newVLine;
-double cYPos = wLine[lastYInd]->y;
-double cXPos = sLine[lastXInd]->x;
+double cYPos = wLine[lastIndW]->y;
+double cXPos = sLine[lastIndS]->x;
 
 Vertex* refVert = new Vertex(cXPos, cYPos, 0);
 cMesh.vertices.push_back(refVert);
 
-newVLine.push_back(sLine[lastXInd]);
-for(int i = 1; i < wLine.size() - 2; i++) {
-    auto v = new Vertex(cXPos, wLine[i]->y, 0);
+double vLineSize = refVert->y - sLine[lastIndS]->y;
+double vElementSize = vLineSize / (eLine.size() - 1);
+double vElementPos = sLine[lastIndS]->y;
+
+newVLine.push_back(sLine[lastIndS]);
+for(int i = 1; i < eLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
 }
@@ -204,13 +225,15 @@ newVLine.push_back(refVert);
 generateElements(eLine, newVLine, cMesh);
 
 vector<Vertex*> newHLine;
-newHLine.push_back(wLine[lastYInd]);
+newHLine.push_back(wLine[lastIndW]);
 
-cYPos = refVert->y;
-cXPos = refVert->x;
+vLineSize = refVert->x - wLine[lastIndW]->x;
+vElementSize = vLineSize / (nLine.size() - 1);
+vElementPos = wLine[lastIndW]->x;
 
-for(int i = 1; i < sLine.size() - 2; i++) {
-    auto v = new Vertex(sLine[i]->x, cYPos, 0);
+for(int i = 1; i < nLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
 }
@@ -227,9 +250,9 @@ cBoundary.north = newHLine;
 
 void MeshShapesGenerator::gen_POOO_270() {
 
-if(cBoundary.south.size() + 1 != cBoundary.north.size()
-    || cBoundary.east.size() + 1 != cBoundary.west.size()) {
-    throw new std::invalid_argument("POOO_270_TYPE: south and east boundary should have 1 more elements.");
+if(cBoundary.north.size() + 1 > cBoundary.south.size()
+    || cBoundary.west.size() + 1 > cBoundary.east.size()) {
+    throw std::invalid_argument("POOO_270_TYPE: south and east boundary should have at least 1 more elements.");
 }
 
 auto sLine = cBoundary.south;
@@ -237,17 +260,22 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-int lastYInd = eLine.size() - 2;
+int lastIndE = eLine.size() - 2;
 vector<Vertex*> newVLine;
-double cYPos = eLine[lastYInd]->y;
+double cYPos = eLine[lastIndE]->y;
 double cXPos = sLine[1]->x;
 
 Vertex* refVert = new Vertex(cXPos, cYPos, 0);
 cMesh.vertices.push_back(refVert);
 
+double vLineSize = refVert->y - sLine[1]->y;
+double vElementSize = vLineSize / (wLine.size() - 1);
+double vElementPos = sLine[1]->y;
+
 newVLine.push_back(sLine[1]);
-for(int i = 1; i < eLine.size() - 2; i++) {
-    auto v = new Vertex(cXPos, eLine[i]->y, 0);
+for(int i = 1; i < wLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
 }
@@ -258,15 +286,17 @@ generateElements(wLine, newVLine, cMesh);
 vector<Vertex*> newHLine;
 newHLine.push_back(refVert);
 
-cYPos = refVert->y;
-cXPos = refVert->x;
+vLineSize = eLine[lastIndE]->x - refVert->x;
+vElementSize = vLineSize / (nLine.size() - 1);
+vElementPos = refVert->x;
 
-for(int i = 2; i < sLine.size() - 1; i++) {
-    auto v = new Vertex(sLine[i]->x, cYPos, 0);
+for(int i = 1; i < nLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
 }
-newHLine.push_back(eLine[lastYInd]);
+newHLine.push_back(eLine[lastIndE]);
 
 generateElements(nLine, newHLine, cMesh);
 
@@ -279,9 +309,9 @@ cBoundary.north = newHLine;
 
 void MeshShapesGenerator::gen_PPOO_0() {
 
-if(cBoundary.south.size() + 2 != cBoundary.north.size()
+if(cBoundary.south.size() + 2 > cBoundary.north.size()
     || cBoundary.east.size() != cBoundary.west.size()) {
-    throw new std::invalid_argument("PPOO_0_TYPE: south 2 more elements than north, equal east and west.");
+    throw std::invalid_argument("PPOO_0_TYPE: north should have at least 2 more elements than south, equal east and west.");
 }
 
 auto sLine = cBoundary.south;
@@ -335,8 +365,13 @@ newHLine.push_back(refVertWest);
 
 cYPos = refVertWest->y;
 
-for(int i = 2; i < nLine.size() - 2; i++) {
-    auto v = new Vertex(nLine[i]->x, cYPos, 0);
+vLineSize = refVertEast->x - refVertWest->x;
+vElementSize = vLineSize / (sLine.size() - 1);
+vElementPos = refVertWest->x;
+
+for(int i = 1; i < sLine.size() - 1; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
 }
@@ -353,9 +388,9 @@ cBoundary.north.erase(cBoundary.north.end() - 1);
 
 void MeshShapesGenerator::gen_PPOO_90() {
 
-if(cBoundary.east.size() + 2 != cBoundary.west.size()
+if(cBoundary.east.size() + 2 > cBoundary.west.size()
     || cBoundary.south.size() != cBoundary.north.size()) {
-    throw new std::invalid_argument("PPOO_90_TYPE: west 2 more elements than east, equal north and south.");
+    throw std::invalid_argument("PPOO_90_TYPE: west should have at least 2 more elements than east, equal north and south.");
 }
 
 auto sLine = cBoundary.south;
@@ -375,7 +410,7 @@ cMesh.vertices.push_back(refVertSouth);
 Vertex* lastVertSouth = wLine[1];
 double vLineSize = refVertSouth->x - lastVertSouth->x;
 double vElementSize = vLineSize / (sLine.size() - 1);
-double vElementPos = 0.0;
+double vElementPos = lastVertSouth->x;
 
 newHLineSouth.push_back(wLine[1]);
 for(int i = 1; i < sLine.size() - 1; i++) {
@@ -410,9 +445,13 @@ vector<Vertex*> newVLine;
 newVLine.push_back(refVertSouth);
 
 cXPos = refVertSouth->x;
+vLineSize = refVertNorth->y - refVertSouth->y;
+vElementSize = vLineSize / (eLine.size() - 1);
+vElementPos = refVertSouth->y;
 
-for(int i = 2; i < wLine.size() - 2; i++) {
-    auto v = new Vertex(cXPos, wLine[i]->y, 0);
+for(int i = 2; i < eLine.size() - 2; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
 }
@@ -429,9 +468,9 @@ cBoundary.north = newHLineNorth;
 
 void MeshShapesGenerator::gen_PPOO_180() {
 
-if(cBoundary.north.size() + 2 != cBoundary.south.size()
+if(cBoundary.north.size() + 2 > cBoundary.south.size()
     || cBoundary.east.size() != cBoundary.west.size()) {
-    throw new std::invalid_argument("PPOO_180_TYPE: north 2 more elements than south, equal east and west.");
+    throw std::invalid_argument("PPOO_180_TYPE: south should have at least 2 more elements than north, equal east and west.");
 }
 
 auto sLine = cBoundary.south;
@@ -450,7 +489,7 @@ cMesh.vertices.push_back(refVertWest);
 Vertex* firstVertWest = sLine[1];
 double vLineSize = refVertWest->y - firstVertWest->y ;
 double vElementSize = vLineSize / (wLine.size() - 1);
-double vElementPos = 0.0;
+double vElementPos = firstVertWest->y;
 
 newVLineWest.push_back(sLine[1]);
 for(int i = 1; i < eLine.size() - 1; i++) {
@@ -485,9 +524,13 @@ vector<Vertex*> newHLine;
 newHLine.push_back(refVertWest);
 
 cYPos = refVertWest->y;
+vLineSize = refVertEast->x - refVertWest->x;
+vElementSize = vLineSize / (nLine.size() - 1);
+vElementPos = refVertWest->x;
 
-for(int i = 2; i < sLine.size() - 2; i++) {
-    auto v = new Vertex(sLine[i]->x, cYPos, 0);
+for(int i = 2; i < nLine.size() - 2; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
 }
@@ -504,9 +547,9 @@ cBoundary.south.erase(cBoundary.south.end() - 1);
 
 void MeshShapesGenerator::gen_PPOO_270() {
 
-if(cBoundary.west.size() + 2 != cBoundary.east.size()
+if(cBoundary.west.size() + 2 > cBoundary.east.size()
     || cBoundary.south.size() != cBoundary.north.size()) {
-    throw new std::invalid_argument("PPOO_270_TYPE: east 2 more elements than west, equal north and south.");
+    throw std::invalid_argument("PPOO_270_TYPE: east should have at least 2 more elements than west, equal north and south.");
 }
 
 auto sLine = cBoundary.south;
@@ -559,9 +602,13 @@ vector<Vertex*> newVLine;
 newVLine.push_back(refVertSouth);
 
 cXPos = refVertSouth->x;
+vLineSize = refVertNorth->y - refVertSouth->y;
+vElementSize = vLineSize / (wLine.size() - 1);
+vElementPos = refVertSouth->y;
 
-for(int i = 2; i < eLine.size() - 2; i++) {
-    auto v = new Vertex(cXPos, eLine[i]->y, 0);
+for(int i = 2; i < wLine.size() - 2; i++) {
+    vElementPos += vElementSize;
+    auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
 }
@@ -608,7 +655,7 @@ void MeshShapesGenerator::gen_OOOO() {
 
 if(cBoundary.south.size() != cBoundary.north.size()
     || cBoundary.east.size() != cBoundary.west.size()) {
-    throw new std::invalid_argument("OOOO_TYPE: only equal sided elements quantity permitted.");
+    throw std::invalid_argument("OOOO_TYPE: only equal sided elements quantity permitted.");
 }
 
 auto sLine = cBoundary.south;
