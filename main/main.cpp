@@ -92,6 +92,11 @@ void testMeshGeneration() {
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
     AreaMesh area(lines, 0.2);
+
+    area.lines[0].qtdElements = 5;
+    area.lines[1].qtdElements = 8;
+    area.lines[2].qtdElements = 15;
+    area.lines[3].qtdElements = 8;
     // AreaMesh meshGenerator(0.5);
     Mesh mesh = area.generateMesh();
 
