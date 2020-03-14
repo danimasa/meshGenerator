@@ -46,36 +46,6 @@ Mesh generateRegGrid(int elements_x, int elements_y) {
     return mesh;
 }
 
-void linearMappingBoundary(Mesh &mesh, const MesheableBoundary &boundary) {
-    Vertex* v1 = boundary.south[0];
-    Vertex* v2 = boundary.east[0];
-    Vertex* v3 = boundary.north[boundary.north.size() - 1];
-    Vertex* v4 = boundary.west[boundary.west.size() - 1];
-
-    for(auto node : mesh.vertices) {
-        double e = node->x;
-        double n = node->y;
-
-        double c1x = ( v2->x - v1->x ) * e + v1->x;
-        double c1y = ( v2->y - v1->y ) * n + v1->y;
-        double c2x = ( v3->x - v2->x ) * e + v2->x;
-        double c2y = ( v3->y - v2->y ) * n + v2->y;
-        double c3x = ( v3->x - v4->x ) * e + v4->x;
-        double c3y = ( v3->y - v4->y ) * n + v4->y;
-        double c4x = ( v4->x - v1->x ) * e + v1->x;
-        double c4y = ( v4->y - v1->y ) * n + v1->y;
-
-        double x_value = (1 - n) * c1x + e * c2x + n * c3x + (1 - e) * c4x
-            - ((1 - e) * (1 - n) * v1->x + e * (1 - n) * v2->x + e * n * v3->x + (1 - e) * n * v4->x);
-
-        double y_value = (1 - n) * c1y + e * c2y + n * c3y + (1 - e) * c4y
-            - ((1 - e) * (1 - n) * v1->y + e * (1 - n) * v2->y + e * n * v3->y + (1 - e) * n * v4->y);
-
-        node->x = x_value;
-        node->y = y_value;
-    }
-}
-
 Mesh transfiniteMapping(Mesh &parametricMesh, geomlib::QuadArea &area) {
     Mesh mesh;
     mesh.elements = parametricMesh.elements;
