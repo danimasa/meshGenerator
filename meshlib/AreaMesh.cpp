@@ -238,9 +238,8 @@ Mesh AreaMesh::generateMesh() {
     // processPolylines(regMesh, this, points_r, points_s);
     auto shapeList = MeshShapes::shapeListFromElementQtd(*this);
     MeshShapesGenerator gen;
-    return gen.genMesh(shapeList, *this);
-    // auto regMesh = gen.genMesh(shapeList, *this);
-    // return transfiniteMapping(regMesh, *this);
+    auto regMesh = gen.genMesh(shapeList, *this);
+    return transfiniteMapping(regMesh, *this);
 }
 
 } // namespace meshlib
