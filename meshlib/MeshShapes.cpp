@@ -9,8 +9,8 @@ using VShape = MeshShapes::VertexShape;
 using RShape = MeshShapes::RelativeShapes;
 
 VShape getVertexShape(double angle) {
-    if (angle < (M_PI / 3)) VShape::POLAR;
-    if (angle > (2 * M_PI / 3)) VShape::ORTHOGONAL;
+    if (angle < (M_PI / 3)) return VShape::POLAR;
+    if (angle > (2 * M_PI / 3)) return VShape::ORTHOGONAL;
     return VShape::ANY;
 }
 

@@ -82,42 +82,47 @@ auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
 vector<Vertex*> newVLine;
-double cYPos = eLine[1]->y;
-double cXPos = nLine[1]->x;
+double sxLength = sLine[sLine.size() - 1]->x - sLine[0]->x;
+double syLenght = wLine[wLine.size() - 1]->y - wLine[0]->y;
+double vElementSize = syLenght / wLine.size();
+double hElementSize = sxLength / sLine.size();
+double initXPos = sLine[0]->x + hElementSize;
+double finalXPos = nLine[1]->x;
+double initYPos = wLine[0]->y + vElementSize;
+double finalYPos = eLine[1]->y;
 
-Vertex* refVert = new Vertex(cXPos, cYPos, 0);
+Vertex* refVert = new Vertex(initXPos, initYPos, 0);
 cMesh.vertices.push_back(refVert);
 newVLine.push_back(refVert);
 
-double vLineSize = nLine[1]->y - refVert->y;
-double vElementSize = vLineSize / (wLine.size() - 1);
-double vElementPos = refVert->y;
+double vElementPos = initYPos;
+int n = wLine.size() - 1;
 
-for(int i = 1; i < wLine.size() - 1; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
 }
 newVLine.push_back(nLine[1]);
 
-generateElements(wLine, newVLine, cMesh);
-
 vector<Vertex*> newHLine;
 newHLine.push_back(refVert);
 
-vLineSize = eLine[1]->x - refVert->x;
-vElementSize = vLineSize / (sLine.size() - 1);
-vElementPos = cXPos;
+vElementPos = initXPos;
+n = sLine.size() - 1;
 
-for(int i = 1; i < sLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += hElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
 }
 newHLine.push_back(eLine[1]);
 
+generateElements(wLine, newVLine, cMesh);
 generateElements(sLine, newHLine, cMesh);
 
 cBoundary.west = newVLine;
@@ -141,19 +146,25 @@ auto nLine = cBoundary.north;
 
 int lastIndN = nLine.size() - 2;
 vector<Vertex*> newVLine;
-double cYPos = wLine[1]->y;
-double cXPos = nLine[lastIndN]->x;
+double sxLength = sLine[sLine.size() - 1]->x - sLine[0]->x;
+double syLenght = eLine[eLine.size() - 1]->y - eLine[0]->y;
+double vElementSize = syLenght / eLine.size();
+double hElementSize = sxLength / sLine.size();
+double initXPos = sLine[0]->x + hElementSize * (sLine.size() - 1);
+double finalXPos = nLine[lastIndN]->x;
+double initYPos = wLine[1]->y;
+double finalYPos = eLine[0]->y + vElementSize;
 
-Vertex* refVert = new Vertex(cXPos, cYPos, 0);
+Vertex* refVert = new Vertex(initXPos, finalYPos, 0);
 cMesh.vertices.push_back(refVert);
 newVLine.push_back(refVert);
 
-double vLineSize = nLine[lastIndN]->y - refVert->y;
-double vElementSize = vLineSize / (eLine.size() - 1);
-double vElementPos = refVert->y;
+double vElementPos = finalYPos;
+int n = eLine.size() - 1;
 
-for(int i = 1; i < eLine.size() - 1; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
@@ -165,12 +176,12 @@ generateElements(eLine, newVLine, cMesh);
 vector<Vertex*> newHLine;
 newHLine.push_back(wLine[1]);
 
-vLineSize = refVert->x - wLine[1]->x;
-vElementSize = vLineSize / (sLine.size() - 1);
 vElementPos = wLine[1]->x;
+n = sLine.size() - 1;
 
-for(int i = 1; i < sLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += hElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
@@ -202,20 +213,27 @@ int lastIndN = nLine.size() - 2;
 int lastIndE = eLine.size() - 2;
 int lastIndW = wLine.size() - 2;
 int lastIndS = sLine.size() - 2;
-vector<Vertex*> newVLine;
-double cYPos = wLine[lastIndW]->y;
-double cXPos = sLine[lastIndS]->x;
 
-Vertex* refVert = new Vertex(cXPos, cYPos, 0);
+double sxLength = nLine[nLine.size() - 1]->x - nLine[0]->x;
+double syLenght = eLine[eLine.size() - 1]->y - eLine[0]->y;
+double vElementSize = syLenght / eLine.size();
+double hElementSize = sxLength / nLine.size();
+double initXPos = sLine[lastIndS]->x;
+double finalXPos = nLine[0]->x + hElementSize * (nLine.size() - 1);
+double initYPos = wLine[lastIndW]->y;
+double finalYPos = eLine[0]->y + vElementSize * (eLine.size() - 1);
+
+vector<Vertex*> newVLine;
+Vertex* refVert = new Vertex(finalXPos, finalYPos, 0);
 cMesh.vertices.push_back(refVert);
 
-double vLineSize = refVert->y - sLine[lastIndS]->y;
-double vElementSize = vLineSize / (eLine.size() - 1);
 double vElementPos = sLine[lastIndS]->y;
+int n = eLine.size() - 1;
 
 newVLine.push_back(sLine[lastIndS]);
-for(int i = 1; i < eLine.size() - 1; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
@@ -227,12 +245,12 @@ generateElements(eLine, newVLine, cMesh);
 vector<Vertex*> newHLine;
 newHLine.push_back(wLine[lastIndW]);
 
-vLineSize = refVert->x - wLine[lastIndW]->x;
-vElementSize = vLineSize / (nLine.size() - 1);
 vElementPos = wLine[lastIndW]->x;
+n = nLine.size() - 1;
 
-for(int i = 1; i < nLine.size() - 1; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
@@ -261,20 +279,27 @@ auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
 int lastIndE = eLine.size() - 2;
-vector<Vertex*> newVLine;
-double cYPos = eLine[lastIndE]->y;
-double cXPos = sLine[1]->x;
+double sxLength = nLine[nLine.size() - 1]->x - nLine[0]->x;
+double syLenght = wLine[wLine.size() - 1]->y - wLine[0]->y;
+double vElementSize = syLenght / wLine.size();
+double hElementSize = sxLength / nLine.size();
+double initXPos = sLine[1]->x;
+double finalXPos = nLine[0]->x + hElementSize;
+double initYPos = wLine[0]->y + vElementSize * (wLine.size() - 1);
+double finalYPos = eLine[lastIndE]->y;
 
-Vertex* refVert = new Vertex(cXPos, cYPos, 0);
+vector<Vertex*> newVLine;
+
+Vertex* refVert = new Vertex(finalXPos, initYPos, 0);
 cMesh.vertices.push_back(refVert);
 
-double vLineSize = refVert->y - sLine[1]->y;
-double vElementSize = vLineSize / (wLine.size() - 1);
 double vElementPos = sLine[1]->y;
+int n = wLine.size() - 1;
 
 newVLine.push_back(sLine[1]);
-for(int i = 1; i < wLine.size() - 1; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
@@ -286,12 +311,12 @@ generateElements(wLine, newVLine, cMesh);
 vector<Vertex*> newHLine;
 newHLine.push_back(refVert);
 
-vLineSize = eLine[lastIndE]->x - refVert->x;
-vElementSize = vLineSize / (nLine.size() - 1);
 vElementPos = refVert->x;
+n = nLine.size() - 1;
 
-for(int i = 1; i < nLine.size() - 1; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
@@ -319,21 +344,30 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-vector<Vertex*> newVLineWest;
-double cYPos = wLine[1]->y;
-double cXPos = nLine[1]->x;
+double sxLength = sLine[sLine.size() - 1]->x - sLine[0]->x;
+double swyLenght = wLine[wLine.size() - 1]->y - wLine[0]->y;
+double seyLenght = eLine[eLine.size() - 1]->y - eLine[0]->y;
+double vwElementSize = swyLenght / wLine.size();
+double veElementSize = seyLenght / eLine.size();
+double hElementSize = sxLength / (sLine.size() + 1);
+double initXPos = sLine[0]->x + hElementSize;
+double finalXPos = nLine[1]->x;
+double initYPos = wLine[0]->y + vwElementSize;
+double finalYPos = eLine[0]->y + veElementSize;
 
-Vertex* refVertWest = new Vertex(cXPos, cYPos, 0);
+vector<Vertex*> newVLineWest;
+
+Vertex* refVertWest = new Vertex(initXPos, initYPos, 0);
 cMesh.vertices.push_back(refVertWest);
 
 Vertex* lastVertWest = nLine[1];
-double vLineSize = lastVertWest->y - refVertWest->y;
-double vElementSize = vLineSize / (eLine.size() - 1);
-double vElementPos = cYPos;
+double vElementPos = initYPos;
+int n = wLine.size() - 1;
 
 newVLineWest.push_back(refVertWest);
-for(int i = 1; i < wLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += vwElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLineWest.push_back(v);
@@ -343,15 +377,19 @@ newVLineWest.push_back(nLine[1]);
 generateElements(wLine, newVLineWest, cMesh);
 
 int lastXInd = nLine.size() - 2;
-cXPos = nLine[lastXInd]->x;
-Vertex* refVertEast = new Vertex(cXPos, cYPos, 0);
+initXPos = sLine[0]->x + hElementSize * sLine.size();
+finalXPos = nLine[lastXInd]->x;
+Vertex* refVertEast = new Vertex(initXPos, finalYPos, 0);
 cMesh.vertices.push_back(refVertEast);
 
 vector<Vertex*> newVLineEast;
 newVLineEast.push_back(refVertEast);
-vElementPos = cYPos;
-for(int i = 1; i < wLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+vElementPos = initYPos;
+n = eLine.size() - 1;
+
+for(int i = 1; i < n; i++) {
+    vElementPos += veElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLineEast.push_back(v);
@@ -363,14 +401,12 @@ generateElements(eLine, newVLineEast, cMesh);
 vector<Vertex*> newHLine;
 newHLine.push_back(refVertWest);
 
-cYPos = refVertWest->y;
-
-vLineSize = refVertEast->x - refVertWest->x;
-vElementSize = vLineSize / (sLine.size() - 1);
 vElementPos = refVertWest->x;
+n = sLine.size() - 1;
 
-for(int i = 1; i < sLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += hElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
@@ -398,23 +434,29 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-int lastXInd = nLine.size() - 2;
+double ssxLength = sLine[sLine.size() - 1]->x - sLine[0]->x;
+double snxLenght = nLine[nLine.size() - 1]->x - nLine[0]->x;
+double syLenght = eLine[eLine.size() - 1]->y - eLine[0]->y;
+double vElementSize = syLenght / (eLine.size() + 1);
+double hsElementSize = ssxLength / sLine.size();
+double hnElementSize = snxLenght / nLine.size();
+double initXPos = sLine[0]->x + hsElementSize * (sLine.size() - 1);
+double finalXPos = nLine[0]->x + hnElementSize * (nLine.size() - 1);
+double initYPos = wLine[1]->y;
+double finalYPos = eLine[0]->y + vElementSize;
 
 vector<Vertex*> newHLineSouth;
-double cYPos = wLine[1]->y;
-double cXPos = nLine[lastXInd]->x;
-
-Vertex* refVertSouth = new Vertex(cXPos, cYPos, 0);
+Vertex* refVertSouth = new Vertex(initXPos, finalYPos, 0);
 cMesh.vertices.push_back(refVertSouth);
 
 Vertex* lastVertSouth = wLine[1];
-double vLineSize = refVertSouth->x - lastVertSouth->x;
-double vElementSize = vLineSize / (sLine.size() - 1);
 double vElementPos = lastVertSouth->x;
+int n = sLine.size() - 1;
 
 newHLineSouth.push_back(wLine[1]);
-for(int i = 1; i < sLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += hsElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLineSouth.push_back(v);
@@ -424,15 +466,19 @@ newHLineSouth.push_back(refVertSouth);
 generateElements(sLine, newHLineSouth, cMesh);
 
 int lastYInd = wLine.size() - 2;
-cYPos = wLine[lastYInd]->y;
-Vertex* refVertNorth = new Vertex(cXPos, cYPos, 0);
+initYPos = wLine[lastYInd]->y;
+finalYPos = eLine[0]->y + vElementSize * eLine.size();
+Vertex* refVertNorth = new Vertex(finalXPos, finalYPos, 0);
 cMesh.vertices.push_back(refVertNorth);
 
 vector<Vertex*> newHLineNorth;
 newHLineNorth.push_back(wLine[lastYInd]);
-vElementPos = 0;
-for(int i = 1; i < nLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+vElementPos = wLine[lastYInd]->x;
+n = nLine.size() - 1;
+
+for(int i = 1; i < n; i++) {
+    vElementPos += hnElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLineNorth.push_back(v);
@@ -444,13 +490,12 @@ generateElements(nLine, newHLineNorth, cMesh);
 vector<Vertex*> newVLine;
 newVLine.push_back(refVertSouth);
 
-cXPos = refVertSouth->x;
-vLineSize = refVertNorth->y - refVertSouth->y;
-vElementSize = vLineSize / (eLine.size() - 1);
 vElementPos = refVertSouth->y;
+n = eLine.size() - 1;
 
-for(int i = 2; i < eLine.size() - 2; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
@@ -478,22 +523,30 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-int lastYInd = wLine.size() - 2;
-vector<Vertex*> newVLineWest;
-double cYPos = wLine[lastYInd]->y;
-double cXPos = sLine[1]->x;
+double sxLength = nLine[nLine.size() - 1]->x - nLine[0]->x;
+double swyLenght = wLine[wLine.size() - 1]->y - wLine[0]->y;
+double seyLenght = eLine[eLine.size() - 1]->y - eLine[0]->y;
+double vwElementSize = swyLenght / wLine.size();
+double veElementSize = seyLenght / eLine.size();
+double hElementSize = sxLength / (nLine.size() + 1);
+double initXPos = sLine[1]->x;
+double finalXPos = nLine[0]->x + hElementSize;
+double initYPos = wLine[0]->y + vwElementSize * (wLine.size() - 1);
+double finalYPos = eLine[0]->y + veElementSize * (eLine.size() - 1);
 
-Vertex* refVertWest = new Vertex(cXPos, cYPos, 0);
+vector<Vertex*> newVLineWest;
+
+Vertex* refVertWest = new Vertex(finalXPos, initYPos, 0);
 cMesh.vertices.push_back(refVertWest);
 
 Vertex* firstVertWest = sLine[1];
-double vLineSize = refVertWest->y - firstVertWest->y ;
-double vElementSize = vLineSize / (wLine.size() - 1);
 double vElementPos = firstVertWest->y;
+int n = wLine.size() - 1;
 
 newVLineWest.push_back(sLine[1]);
-for(int i = 1; i < eLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += vwElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLineWest.push_back(v);
@@ -503,15 +556,19 @@ newVLineWest.push_back(refVertWest);
 generateElements(wLine, newVLineWest, cMesh);
 
 int lastXInd = sLine.size() - 2;
-cXPos = nLine[lastXInd]->x;
-Vertex* refVertEast = new Vertex(cXPos, cYPos, 0);
+initXPos = sLine[lastXInd]->x;
+finalXPos = nLine[0]->x + hElementSize * nLine.size();
+Vertex* refVertEast = new Vertex(finalXPos, finalYPos, 0);
 cMesh.vertices.push_back(refVertEast);
 
 vector<Vertex*> newVLineEast;
 newVLineEast.push_back(sLine[lastXInd]);
-vElementPos = 0.0;
-for(int i = 1; i < eLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+vElementPos = sLine[lastXInd]->y;
+n = eLine.size() - 1;
+
+for(int i = 1; i < n; i++) {
+    vElementPos += veElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLineEast.push_back(v);
@@ -523,13 +580,12 @@ generateElements(eLine, newVLineEast, cMesh);
 vector<Vertex*> newHLine;
 newHLine.push_back(refVertWest);
 
-cYPos = refVertWest->y;
-vLineSize = refVertEast->x - refVertWest->x;
-vElementSize = vLineSize / (nLine.size() - 1);
 vElementPos = refVertWest->x;
+n = nLine.size() - 1;
 
-for(int i = 2; i < nLine.size() - 2; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += hElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLine.push_back(v);
@@ -557,21 +613,28 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-vector<Vertex*> newHLineSouth;
-double cYPos = eLine[1]->y;
-double cXPos = nLine[1]->x;
+double ssxLength = sLine[sLine.size() - 1]->x - sLine[0]->x;
+double snxLenght = nLine[nLine.size() - 1]->x - nLine[0]->x;
+double syLenght = wLine[wLine.size() - 1]->y - wLine[0]->y;
+double vElementSize = syLenght / (wLine.size() + 1);
+double hsElementSize = ssxLength / sLine.size();
+double hnElementSize = snxLenght / nLine.size();
+double initXPos = sLine[0]->x + hsElementSize;
+double finalXPos = nLine[0]->x + hnElementSize;
+double initYPos = wLine[0]->y + vElementSize;
+double finalYPos = eLine[1]->y;
 
-Vertex* refVertSouth = new Vertex(cXPos, cYPos, 0);
+vector<Vertex*> newHLineSouth;
+Vertex* refVertSouth = new Vertex(initXPos, initYPos, 0);
 cMesh.vertices.push_back(refVertSouth);
 
-Vertex* lastVertSouth = eLine[1];
-double vLineSize = lastVertSouth-> x - refVertSouth->x;
-double vElementSize = vLineSize / (sLine.size() - 1);
-double vElementPos = cXPos;
+double vElementPos = initXPos;
+int n = sLine.size() - 1;
 
 newHLineSouth.push_back(refVertSouth);
-for(int i = 1; i < sLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+for(int i = 1; i < n; i++) {
+    vElementPos += hsElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLineSouth.push_back(v);
@@ -581,15 +644,19 @@ newHLineSouth.push_back(eLine[1]);
 generateElements(sLine, newHLineSouth, cMesh);
 
 int lastYInd = eLine.size() - 2;
-cYPos = eLine[lastYInd]->y;
-Vertex* refVertNorth = new Vertex(cXPos, cYPos, 0);
+initYPos = wLine[0]->y + vElementSize * wLine.size();
+finalYPos = eLine[lastYInd]->y;
+Vertex* refVertNorth = new Vertex(finalXPos, initYPos, 0);
 cMesh.vertices.push_back(refVertNorth);
 
 vector<Vertex*> newHLineNorth;
 newHLineNorth.push_back(refVertNorth);
-vElementPos = cXPos;
-for(int i = 1; i < nLine.size() - 1; i++) {
-    vElementPos += vElementSize;
+vElementPos = finalXPos;
+n = nLine.size() - 1;
+
+for(int i = 1; i < n; i++) {
+    vElementPos += hnElementSize;
+    double cYPos = initYPos + i * (finalYPos - initYPos) / n;
     auto v = new Vertex(vElementPos, cYPos, 0);
     cMesh.vertices.push_back(v);
     newHLineNorth.push_back(v);
@@ -601,13 +668,12 @@ generateElements(nLine, newHLineNorth, cMesh);
 vector<Vertex*> newVLine;
 newVLine.push_back(refVertSouth);
 
-cXPos = refVertSouth->x;
-vLineSize = refVertNorth->y - refVertSouth->y;
-vElementSize = vLineSize / (wLine.size() - 1);
 vElementPos = refVertSouth->y;
+n = wLine.size() - 1;
 
-for(int i = 2; i < wLine.size() - 2; i++) {
+for(int i = 1; i < n; i++) {
     vElementPos += vElementSize;
+    double cXPos = initXPos + i * (finalXPos - initXPos) / n;
     auto v = new Vertex(cXPos, vElementPos, 0);
     cMesh.vertices.push_back(v);
     newVLine.push_back(v);
@@ -669,7 +735,13 @@ for(int xInd = 1; xInd < sLine.size() - 1; xInd++) {
     for(int yInd = 1; yInd < wLine.size() - 1; yInd++) {
         if (yInd == 1)
             currVLine.push_back(sLine[xInd]);
-        auto v = new Vertex(sLine[xInd]->x, wLine[yInd]->y, 0);
+        double initXPos = sLine[xInd]->x;
+        double finalXPos = nLine[xInd]->x;
+        double initYPos = wLine[yInd]->y;
+        double finalYPos = eLine[yInd]->y;
+        double cXPos = initXPos + yInd * (finalXPos - initXPos) / (wLine.size() - 1);
+        double cYPos = initYPos + xInd * (finalYPos - initYPos) / (sLine.size() - 1);
+        auto v = new Vertex(cXPos, cYPos, 0);
         cMesh.vertices.push_back(v);
         currVLine.push_back(v);
 

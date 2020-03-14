@@ -55,9 +55,9 @@ void testMeshGeneration() {
     auto factory = GeometryFactory::getDefaultInstance();
 
     auto p1 = Point(0, 0, 0);
-    auto p2 = Point(1, 0, 0);
-    auto p3 = Point(2, 1, 0);
-    auto p4 = Point(-1, 1, 0);
+    auto p2 = Point(1, -1, 0);
+    auto p3 = Point(1, 2, 0);
+    auto p4 = Point(0, 1, 0);
     // auto p5 = Point(2, 6, 3);
 
     auto kp1 = factory->createKeypoint(p1);

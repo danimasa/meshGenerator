@@ -15,6 +15,8 @@ Mesh generateRegGrid(int elements_x, int elements_y);
 
 Mesh transfiniteMapping(Mesh &parametricMesh, geomlib::QuadArea &area);
 
+void linearMappingBoundary(Mesh &mesh, const MesheableBoundary &boundary);
+
 MesheableBoundary generateMesheableBoundary(const AreaMesh &area);
 
 double angleBetweenLines(const Line &l1, const Line &l2);
