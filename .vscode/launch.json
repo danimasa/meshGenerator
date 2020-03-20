@@ -12,7 +12,10 @@
             "args": [ "data/GEOM.DAT" ],
             "cwd": "${workspaceFolder}",
             "linux": {
-                "MIMode": "gdb"
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {"text": "-enable-pretty-printing", "description": "enable pretty printing", "ignoreFailures": true}
+                ]
             },
             "osx": {
                 "type": "lldb",
@@ -26,7 +29,10 @@
             "program": "${command:cmake.launchTargetPath}",
             "cwd": "${workspaceFolder}",
             "linux": {
-                "MIMode": "gdb"
+                "MIMode": "gdb",
+                "setupCommands": [
+                    {"text": "-enable-pretty-printing", "description": "enable pretty printing", "ignoreFailures": true}
+                ]
             },
             "osx": {
                 "type": "lldb",
