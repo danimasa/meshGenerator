@@ -236,7 +236,7 @@ Mesh AreaMesh::generateMesh() {
 
     // Mesh regMesh = generateRegGrid(qtd_elements_r, qtd_elements_s);
     // processPolylines(regMesh, this, points_r, points_s);
-    auto shapeList = MeshShapes::shapeListFromElementQtd(*this);
+    auto shapeList = MeshShapes::generateShapeList(*this);
     MeshShapesGenerator gen;
     auto regMesh = gen.genMesh(shapeList, *this);
     return transfiniteMapping(regMesh, *this);
