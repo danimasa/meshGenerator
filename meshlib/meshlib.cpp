@@ -1,5 +1,6 @@
 #include "meshlib.hpp"
 #include "ArcLine.hpp"
+#include "Polyline.hpp"
 #include <stdexcept>
 
 namespace meshlib {
@@ -112,20 +113,59 @@ Mesh transfiniteMapping(Mesh &parametricMesh, geomlib::QuadArea &area) {
     return mesh;
 }
 
-std::vector<Vertex*> fillBoundary(int qtdElements, double Vertex::* x, double Vertex::* y, double yValue) {
+std::vector<Vertex*> fillBoundary(Line *line, int qtdElements, double Vertex::* x, double Vertex::* y, double yValue) {
     std::vector<Vertex*> vList;
-    double step = 1.0 / qtdElements;
-    for (int i = 0; i < qtdElements; i++) {
-        double pos = i * step;
+
+    if(line->getLineType() == LineType::Polyline) {
+        auto pLine = dynamic_cast<Polyline*>(line);
+        auto pLineList = pLine->get_lines();
+        auto iPoints = pLine->intermidiaryPoints();
+        int lIndex = 0;
+        int nGenElements = 0;
+        double lastXPos = 0.0;
+
+        // first vertex
         auto v = new Vertex();
-        v->*x = pos;
+        v->*x = 0.0;
+        v->*y = yValue;
+        vList.push_back(v);
+
+        for(auto p : iPoints) {
+            double pPosition = pLine->isPointInLine(*p);
+            int nElements = ceil(qtdElements * (pPosition - lastXPos));
+            auto pList = fillBoundary(pLineList[lIndex], nElements, x, y, yValue);
+            for(int i = 1; i < pList.size(); i++) {
+                auto v = pList[i];
+                v->*x = lastXPos + v->*x * (pPosition - lastXPos);
+                vList.push_back(v);
+            }
+            lIndex++;
+            nGenElements += nElements;
+            lastXPos = pPosition;
+        }
+
+        int nElements = qtdElements - nGenElements;
+        auto pList = fillBoundary(pLineList[lIndex], nElements, x, y, yValue);
+        for(int i = 1; i < pList.size(); i++) {
+            auto v = pList[i];
+            v->*x = lastXPos + v->*x * (1.0 - lastXPos);
+            vList.push_back(v);
+        }
+    } else {
+        double step = 1.0 / qtdElements;
+        for (int i = 0; i < qtdElements; i++) {
+            double pos = i * step;
+            auto v = new Vertex();
+            v->*x = pos;
+            v->*y = yValue;
+            vList.push_back(v);
+        }
+        auto v = new Vertex();
+        v->*x = 1;
         v->*y = yValue;
         vList.push_back(v);
     }
-    auto v = new Vertex();
-    v->*x = 1;
-    v->*y = yValue;
-    vList.push_back(v);
+
     return vList;
 }
 
@@ -133,16 +173,16 @@ MesheableBoundary generateMesheableBoundary(const AreaMesh &area) {
     MesheableBoundary boundary;
 
     auto southLine = area.south();
-    boundary.south = fillBoundary(southLine.qtdElements, &Vertex::x, &Vertex::y, 0.0);
+    boundary.south = fillBoundary(southLine.line, southLine.qtdElements, &Vertex::x, &Vertex::y, 0.0);
 
     auto eastLine = area.east();
-    boundary.east = fillBoundary(eastLine.qtdElements, &Vertex::y, &Vertex::x, 1.0);
+    boundary.east = fillBoundary(eastLine.line, eastLine.qtdElements, &Vertex::y, &Vertex::x, 1.0);
 
     auto northLine = area.north();
-    boundary.north = fillBoundary(northLine.qtdElements, &Vertex::x, &Vertex::y, 1.0);
+    boundary.north = fillBoundary(northLine.line, northLine.qtdElements, &Vertex::x, &Vertex::y, 1.0);
 
     auto westLine = area.west();
-    boundary.west = fillBoundary(westLine.qtdElements, &Vertex::y, &Vertex::x, 0.0);
+    boundary.west = fillBoundary(westLine.line, westLine.qtdElements, &Vertex::y, &Vertex::x, 0.0);
 
     return boundary;
 }

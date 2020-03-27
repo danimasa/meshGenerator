@@ -54,11 +54,13 @@ void print_Line(const Line *line) {
 void testMeshGeneration() {
     auto factory = GeometryFactory::getDefaultInstance();
 
-    auto p1 = Point(0, -2, 0);
-    auto p2 = Point(4, 2, 0);
-    auto p3 = Point(4, 4, 0);
-    auto p4 = Point(1, 5, 0);
+    auto p1 = Point(0, 0, 0);
+    auto p2 = Point(2, 0.5, 0);
+    auto p3 = Point(2, 2, 0);
+    auto p4 = Point(0, 2, 0);
 
+    auto p5 = Point(1, 1, 0);
+    auto p6 = Point(0.3, 0, 0);
     // auto p5 = Point(1.9302474402, 2.8027895855, 0);
     // auto p6 = Point(0.2616991886, 1.2254422329, 0);
 
@@ -66,12 +68,19 @@ void testMeshGeneration() {
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
+    auto kp5 = factory->createKeypoint(p5);
+    auto kp6 = factory->createKeypoint(p6);
 
     // Vector v1(0, 1, 0);
     // Vector v2(1, 0, 0);
     // Vector v3(0.7456954357, 0.6662869631, 0);
+    auto l5 = factory->createStraightLine(kp1, kp6);
+    auto l6 = factory->createStraightLine(kp6, kp5);
+    auto l7 = factory->createStraightLine(kp5, kp2);
+    vector<Line*> pLines { l5, l6, l7 };
 
-    auto l1 = factory->createStraightLine(kp1, kp2);
+    // auto l1 = factory->createStraightLine(kp1, kp2);
+    auto l1 = factory->createPolyline(kp1, kp2, pLines);
     auto l2 = factory->createStraightLine(kp2, kp3);
     auto l3 = factory->createStraightLine(kp3, kp4);
     // auto l3 = factory->createArcLine(kp4, kp3, &p5, &v3, &v2);
