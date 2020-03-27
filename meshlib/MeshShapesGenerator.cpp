@@ -54,40 +54,48 @@ VertexLine generateVertexLine(VertexLineParams params, Mesh &mesh) {
     return line;
 }
 
-double getElementSize(const VertexLine &line, VertexLineDirection direction, std::size_t qtdElements) {
+double getElementSize(const Vertex *v1, const Vertex *v2, VertexLineDirection direction, std::size_t qtdElements) {
     double Vertex::*coord = direction == VertexLineDirection::Horizontal ? &Vertex::x : &Vertex::y;
-    double length = line[line.size() - 1]->*coord - line[0]->*coord;
-    return length / qtdElements;
+    double length = v1->*coord - v2->*coord;
+    if (length < 0) length = length * -1;
+    return length / (qtdElements - 1);
 }
 
-struct RefVertexParams {
-    VertexLine hLine;
-    double hLineELemSize;
-    VertexLine vLine;
-    double vLineElemSize;
-};
+Vertex* getRefVertex(const VertexLine &hLine, const VertexLine &vLine) {
+    auto hLFirst = *hLine.front();
+    auto hLLast = *hLine.back();
+    auto vLFirst = *vLine.front();
+    auto vLLast = *vLine.back();
 
-Vertex* getRefVertex(RefVertexParams params) {
-    auto hLFirst = *params.hLine.front();
-    auto hLLast = *params.hLine.back();
-    auto vLFirst = *params.vLine.front();
-    auto vLLast = *params.vLine.back();
+    double hElementSize = getElementSize(
+        hLine[0],
+        hLine[hLine.size() - 1],
+        VertexLineDirection::Horizontal,
+        hLine.size() + 1
+    );
+
+    double vElementSize = getElementSize(
+        vLine[0],
+        vLine[vLine.size() - 1],
+        VertexLineDirection::Vertical,
+        vLine.size() + 1
+    );
 
     double xPos = 0.0;
     double yPos = 0.0;
 
     if (hLFirst.Point::operator==(vLFirst)) {
-        xPos = hLFirst.x + params.hLineELemSize;
-        yPos = hLFirst.y + params.vLineElemSize;
+        xPos = hLFirst.x + hElementSize;
+        yPos = hLFirst.y + vElementSize;
     } else if (hLFirst.Point::operator==(vLLast)) {
-        xPos = hLFirst.x + params.hLineELemSize;
-        yPos = hLFirst.y - params.vLineElemSize;
+        xPos = hLFirst.x + hElementSize;
+        yPos = hLFirst.y - vElementSize;
     } else if (hLLast.Point::operator==(vLFirst)) {
-        xPos = hLLast.x - params.hLineELemSize;
-        yPos = hLLast.y + params.vLineElemSize;
+        xPos = hLLast.x - hElementSize;
+        yPos = hLLast.y + vElementSize;
     } else {
-        xPos = hLLast.x - params.hLineELemSize;
-        yPos = hLLast.y - params.vLineElemSize;
+        xPos = hLLast.x - hElementSize;
+        yPos = hLLast.y - vElementSize;
     }
 
     auto vertex = new Vertex(xPos, yPos, 0.0);
@@ -185,25 +193,21 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, wLine);
+cMesh.vertices.push_back(ref1Vert);
+
 double sElementSize = getElementSize(
-    sLine,
+    ref1Vert,
+    eLine[1],
     VertexLineDirection::Horizontal,
     sLine.size()
 );
 double wElementSize = getElementSize(
-    wLine,
+    ref1Vert,
+    nLine[1],
     VertexLineDirection::Vertical,
     wLine.size()
 );
-
-RefVertexParams r1Params {
-    sLine,
-    sElementSize,
-    wLine,
-    wElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
 
 VertexLineParams Line1Params { 
     ref1Vert,
@@ -239,25 +243,22 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, eLine);
+cMesh.vertices.push_back(ref1Vert);
+
 double sElementSize = getElementSize(
-    sLine,
+    ref1Vert,
+    wLine[1],
     VertexLineDirection::Horizontal,
     sLine.size()
 );
+
 double eElementSize = getElementSize(
-    eLine,
+    ref1Vert,
+    nLine[nLine.size() - 2],
     VertexLineDirection::Vertical,
     eLine.size()
 );
-
-RefVertexParams r1Params {
-    sLine,
-    sElementSize,
-    eLine,
-    eElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
 
 VertexLineParams Line1Params { 
     wLine[1],
@@ -293,25 +294,21 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(nLine, eLine);
+cMesh.vertices.push_back(ref1Vert);
+
 double nElementSize = getElementSize(
-    nLine,
+    ref1Vert,
+    wLine[wLine.size() - 2],
     VertexLineDirection::Horizontal,
     nLine.size()
 );
 double eElementSize = getElementSize(
-    eLine,
+    ref1Vert,
+    sLine[sLine.size() - 2],
     VertexLineDirection::Vertical,
     eLine.size()
 );
-
-RefVertexParams r1Params {
-    nLine,
-    nElementSize,
-    eLine,
-    eElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
 
 VertexLineParams Line1Params { 
     wLine[wLine.size() - 2],
@@ -347,25 +344,21 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(nLine, wLine);
+cMesh.vertices.push_back(ref1Vert);
+
 double nElementSize = getElementSize(
-    nLine,
+    ref1Vert,
+    eLine[eLine.size() - 2],
     VertexLineDirection::Horizontal,
     nLine.size()
 );
 double wElementSize = getElementSize(
-    wLine,
+    ref1Vert,
+    sLine[1],
     VertexLineDirection::Vertical,
     wLine.size()
 );
-
-RefVertexParams r1Params {
-    nLine,
-    nElementSize,
-    wLine,
-    wElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
 
 VertexLineParams Line1Params { 
     ref1Vert,
@@ -401,39 +394,30 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, wLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(sLine, eLine);
+cMesh.vertices.push_back(ref2Vert);
+
 double sElementSize = getElementSize(
-    sLine,
+    ref1Vert,
+    ref2Vert,
     VertexLineDirection::Horizontal,
-    sLine.size() + 1
+    sLine.size()
 );
 double wElementSize = getElementSize(
-    wLine,
+    ref1Vert,
+    nLine[1],
     VertexLineDirection::Vertical,
     wLine.size()
 );
 double eElementSize = getElementSize(
-    eLine,
+    ref2Vert,
+    nLine[nLine.size() - 2],
     VertexLineDirection::Vertical,
     eLine.size()
 );
-
-RefVertexParams r1Params {
-    sLine,
-    sElementSize,
-    wLine,
-    wElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    sLine,
-    sElementSize,
-    eLine,
-    eElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
 
 VertexLineParams Line1Params { 
     ref1Vert,
@@ -479,39 +463,30 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, eLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(nLine, eLine);
+cMesh.vertices.push_back(ref2Vert);
+
 double eElementSize = getElementSize(
-    eLine,
+    ref1Vert,
+    ref2Vert,
     VertexLineDirection::Vertical,
-    eLine.size() + 1
+    eLine.size()
 );
 double sElementSize = getElementSize(
-    sLine,
+    ref1Vert,
+    wLine[1],
     VertexLineDirection::Horizontal,
     sLine.size()
 );
 double nElementSize = getElementSize(
-    nLine,
+    ref2Vert,
+    wLine[wLine.size() - 2],
     VertexLineDirection::Horizontal,
     nLine.size()
 );
-
-RefVertexParams r1Params {
-    sLine,
-    sElementSize,
-    eLine,
-    eElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    nLine,
-    nElementSize,
-    eLine,
-    eElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
 
 VertexLineParams Line1Params { 
     ref1Vert,
@@ -557,39 +532,30 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(nLine, eLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(nLine, wLine);
+cMesh.vertices.push_back(ref2Vert);
+
 double nElementSize = getElementSize(
-    nLine,
+    ref1Vert,
+    ref2Vert,
     VertexLineDirection::Horizontal,
-    nLine.size() + 1
+    nLine.size()
 );
 double wElementSize = getElementSize(
-    wLine,
+    ref2Vert,
+    sLine[1],
     VertexLineDirection::Vertical,
     wLine.size()
 );
 double eElementSize = getElementSize(
-    eLine,
+    ref1Vert,
+    sLine[sLine.size() - 2],
     VertexLineDirection::Vertical,
     eLine.size()
 );
-
-RefVertexParams r1Params {
-    nLine,
-    nElementSize,
-    eLine,
-    eElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    nLine,
-    nElementSize,
-    wLine,
-    wElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
 
 VertexLineParams Line1Params { 
     ref2Vert,
@@ -635,39 +601,30 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(nLine, wLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(sLine, wLine);
+cMesh.vertices.push_back(ref2Vert);
+
 double wElementSize = getElementSize(
-    wLine,
+    ref1Vert,
+    ref2Vert,
     VertexLineDirection::Vertical,
-    wLine.size() + 1
+    wLine.size()
 );
 double sElementSize = getElementSize(
-    sLine,
+    ref2Vert,
+    eLine[1],
     VertexLineDirection::Horizontal,
     sLine.size()
 );
 double nElementSize = getElementSize(
-    nLine,
+    ref1Vert,
+    eLine[eLine.size() - 2],
     VertexLineDirection::Horizontal,
     nLine.size()
 );
-
-RefVertexParams r1Params {
-    nLine,
-    nElementSize,
-    wLine,
-    wElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    sLine,
-    sElementSize,
-    wLine,
-    wElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
 
 VertexLineParams Line1Params { 
     ref2Vert,
@@ -723,53 +680,33 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, eLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(sLine, wLine);
+cMesh.vertices.push_back(ref2Vert);
+
+auto ref3Vert = getRefVertex(nLine, eLine);
+cMesh.vertices.push_back(ref3Vert);
+
 double sElementSize = getElementSize(
-    sLine,
+    ref2Vert,
+    ref1Vert,
     VertexLineDirection::Horizontal,
     sLine.size() + 1
 );
 double eElementSize = getElementSize(
-    eLine,
+    ref1Vert,
+    ref3Vert,
     VertexLineDirection::Vertical,
     eLine.size() + 1
 );
-double nElementSize = getElementSize(
-    nLine,
-    VertexLineDirection::Horizontal,
-    nLine.size()
-);
 double wElementSize = getElementSize(
-    wLine,
+    ref2Vert,
+    nLine[1],
     VertexLineDirection::Vertical,
     wLine.size()
 );
-
-RefVertexParams r1Params {
-    sLine,
-    sElementSize,
-    eLine,
-    eElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    sLine,
-    sElementSize,
-    wLine,
-    wElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
-
-RefVertexParams r3Params {
-    nLine,
-    nElementSize,
-    eLine,
-    eElementSize
-};
-auto ref3Vert = getRefVertex(r3Params);
-cMesh.vertices.push_back(ref3Vert);
 
 VertexLineParams Line1Params { 
     ref1Vert,
@@ -802,6 +739,12 @@ auto newWLine = generateVertexLine(wLineParams, cMesh);
 generateElements(wLine, newWLine, cMesh);
 
 auto rVertex = newWLine[newWLine.size() - 2];
+double nElementSize = getElementSize(
+    ref3Vert,
+    rVertex,
+    VertexLineDirection::Horizontal,
+    nLine.size()
+);
 VertexLineParams nLineParams {
     rVertex,
     ref3Vert,
@@ -828,53 +771,33 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(nLine, eLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(sLine, eLine);
+cMesh.vertices.push_back(ref2Vert);
+
+auto ref3Vert = getRefVertex(nLine, wLine);
+cMesh.vertices.push_back(ref3Vert);
+
 double sElementSize = getElementSize(
-    sLine,
+    ref2Vert,
+    wLine[1],
     VertexLineDirection::Horizontal,
     sLine.size()
 );
 double eElementSize = getElementSize(
-    eLine,
+    ref2Vert,
+    ref1Vert,
     VertexLineDirection::Vertical,
     eLine.size() + 1
 );
 double nElementSize = getElementSize(
-    nLine,
+    ref1Vert,
+    ref3Vert,
     VertexLineDirection::Horizontal,
     nLine.size() + 1
 );
-double wElementSize = getElementSize(
-    wLine,
-    VertexLineDirection::Vertical,
-    wLine.size()
-);
-
-RefVertexParams r1Params {
-    nLine,
-    nElementSize,
-    eLine,
-    eElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    sLine,
-    sElementSize,
-    eLine,
-    eElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
-
-RefVertexParams r3Params {
-    nLine,
-    nElementSize,
-    wLine,
-    wElementSize
-};
-auto ref3Vert = getRefVertex(r3Params);
-cMesh.vertices.push_back(ref3Vert);
 
 VertexLineParams Line1Params { 
     ref3Vert,
@@ -907,6 +830,12 @@ auto newSLine = generateVertexLine(Line3Params, cMesh);
 generateElements(sLine, newSLine, cMesh);
 
 auto rVertex = newSLine[1];
+double wElementSize = getElementSize(
+    ref3Vert,
+    rVertex,
+    VertexLineDirection::Vertical,
+    wLine.size()
+);
 VertexLineParams Line4Params {
     rVertex,
     ref3Vert,
@@ -932,53 +861,33 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-double sElementSize = getElementSize(
-    sLine,
-    VertexLineDirection::Horizontal,
-    sLine.size()
-);
+auto ref1Vert = getRefVertex(nLine, wLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(nLine, eLine);
+cMesh.vertices.push_back(ref2Vert);
+
+auto ref3Vert = getRefVertex(sLine, wLine);
+cMesh.vertices.push_back(ref3Vert);
+
 double eElementSize = getElementSize(
-    eLine,
+    ref2Vert,
+    sLine[sLine.size() - 2],
     VertexLineDirection::Vertical,
     eLine.size()
 );
 double nElementSize = getElementSize(
-    nLine,
+    ref2Vert,
+    ref1Vert,
     VertexLineDirection::Horizontal,
     nLine.size() + 1
 );
 double wElementSize = getElementSize(
-    wLine,
+    ref1Vert,
+    ref3Vert,
     VertexLineDirection::Vertical,
     wLine.size() + 1
 );
-
-RefVertexParams r1Params {
-    nLine,
-    nElementSize,
-    wLine,
-    wElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    nLine,
-    nElementSize,
-    eLine,
-    eElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
-
-RefVertexParams r3Params {
-    sLine,
-    sElementSize,
-    wLine,
-    wElementSize
-};
-auto ref3Vert = getRefVertex(r3Params);
-cMesh.vertices.push_back(ref3Vert);
 
 VertexLineParams Line1Params { 
     ref3Vert,
@@ -1011,6 +920,12 @@ auto newELine = generateVertexLine(Line3Params, cMesh);
 generateElements(eLine, newELine, cMesh);
 
 auto rVertex = newELine[1];
+double sElementSize = getElementSize(
+    rVertex,
+    ref3Vert,
+    VertexLineDirection::Horizontal,
+    sLine.size()
+);
 VertexLineParams Line4Params {
     ref3Vert,
     rVertex,
@@ -1036,53 +951,33 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, wLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(nLine, wLine);
+cMesh.vertices.push_back(ref2Vert);
+
+auto ref3Vert = getRefVertex(sLine, eLine);
+cMesh.vertices.push_back(ref3Vert);
+
 double sElementSize = getElementSize(
-    sLine,
+    ref1Vert,
+    ref2Vert,
     VertexLineDirection::Horizontal,
     sLine.size() + 1
 );
-double eElementSize = getElementSize(
-    eLine,
-    VertexLineDirection::Vertical,
-    eLine.size()
-);
 double nElementSize = getElementSize(
-    nLine,
+    eLine[eLine.size() - 2],
+    ref2Vert,
     VertexLineDirection::Horizontal,
     nLine.size()
 );
 double wElementSize = getElementSize(
-    wLine,
+    ref2Vert,
+    ref1Vert,
     VertexLineDirection::Vertical,
     wLine.size() + 1
 );
-
-RefVertexParams r1Params {
-    sLine,
-    sElementSize,
-    wLine,
-    wElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    nLine,
-    nElementSize,
-    wLine,
-    wElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
-
-RefVertexParams r3Params {
-    sLine,
-    sElementSize,
-    eLine,
-    eElementSize
-};
-auto ref3Vert = getRefVertex(r3Params);
-cMesh.vertices.push_back(ref3Vert);
 
 VertexLineParams Line1Params { 
     ref1Vert,
@@ -1115,6 +1010,12 @@ auto newNLine = generateVertexLine(Line3Params, cMesh);
 generateElements(nLine, newNLine, cMesh);
 
 auto rVertex = newNLine[newNLine.size() - 2];
+double eElementSize = getElementSize(
+    rVertex,
+    ref3Vert,
+    VertexLineDirection::Vertical,
+    eLine.size()
+);
 VertexLineParams Line4Params {
     ref3Vert,
     rVertex,
@@ -1140,62 +1041,42 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, wLine);
+cMesh.vertices.push_back(ref1Vert);
+
+auto ref2Vert = getRefVertex(sLine, eLine);
+cMesh.vertices.push_back(ref2Vert);
+
+auto ref3Vert = getRefVertex(nLine, eLine);
+cMesh.vertices.push_back(ref3Vert);
+
+auto ref4Vert = getRefVertex(nLine, wLine);
+cMesh.vertices.push_back(ref4Vert);
+
 double sElementSize = getElementSize(
-    sLine,
+    ref2Vert,
+    ref1Vert,
     VertexLineDirection::Horizontal,
     sLine.size() + 1
 );
 double eElementSize = getElementSize(
-    eLine,
+    ref3Vert,
+    ref2Vert,
     VertexLineDirection::Vertical,
     eLine.size() + 1
 );
 double nElementSize = getElementSize(
-    nLine,
+    ref3Vert,
+    ref4Vert,
     VertexLineDirection::Horizontal,
     nLine.size() + 1
 );
 double wElementSize = getElementSize(
-    wLine,
+    ref4Vert,
+    ref1Vert,
     VertexLineDirection::Vertical,
     wLine.size() + 1
 );
-
-RefVertexParams r1Params {
-    sLine,
-    sElementSize,
-    wLine,
-    wElementSize
-};
-auto ref1Vert = getRefVertex(r1Params);
-cMesh.vertices.push_back(ref1Vert);
-
-RefVertexParams r2Params {
-    sLine,
-    sElementSize,
-    eLine,
-    eElementSize
-};
-auto ref2Vert = getRefVertex(r2Params);
-cMesh.vertices.push_back(ref2Vert);
-
-RefVertexParams r3Params {
-    nLine,
-    nElementSize,
-    eLine,
-    eElementSize
-};
-auto ref3Vert = getRefVertex(r3Params);
-cMesh.vertices.push_back(ref3Vert);
-
-RefVertexParams r4Params {
-    nLine,
-    nElementSize,
-    wLine,
-    wElementSize
-};
-auto ref4Vert = getRefVertex(r4Params);
-cMesh.vertices.push_back(ref4Vert);
 
 VertexLineParams Line1Params { 
     ref1Vert,

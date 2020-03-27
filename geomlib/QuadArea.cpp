@@ -71,8 +71,8 @@ QuadArea::QuadArea(vector<Line*> lines) {
     }
 }
 
-QuadArea::QuadArea(vector<Line*> lines, double attenuationAngle) : QuadArea(lines) {
-    this->attenuationAngle = attenuationAngle;
+QuadArea::QuadArea(vector<Line*> lines, double attenuationAngleRatio) : QuadArea(lines) {
+    this->attenuationAngleRatio = attenuationAngleRatio;
 }
 
 bool QuadArea::someQtdElementsZero() const {

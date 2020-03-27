@@ -54,26 +54,29 @@ void print_Line(const Line *line) {
 void testMeshGeneration() {
     auto factory = GeometryFactory::getDefaultInstance();
 
-    auto p1 = Point(0, 0, 0);
-    auto p2 = Point(1, 0, 0);
-    auto p3 = Point(0, 1, 0);
-    auto p4 = Point(-1, 1, 0);
-    // auto p5 = Point(2, 6, 3);
+    auto p1 = Point(0, -2, 0);
+    auto p2 = Point(4, 2, 0);
+    auto p3 = Point(4, 4, 0);
+    auto p4 = Point(1, 5, 0);
+
+    // auto p5 = Point(1.9302474402, 2.8027895855, 0);
+    // auto p6 = Point(0.2616991886, 1.2254422329, 0);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
-    // auto kp5 = factory->createKeypoint(p5);
 
-    // Vector v1(0, 0, 1);
-    // Vector v2(0, 0, -1);
+    // Vector v1(0, 1, 0);
+    // Vector v2(1, 0, 0);
+    // Vector v3(0.7456954357, 0.6662869631, 0);
 
     auto l1 = factory->createStraightLine(kp1, kp2);
     auto l2 = factory->createStraightLine(kp2, kp3);
     auto l3 = factory->createStraightLine(kp3, kp4);
-    // auto l3 = factory->createArcLine(kp3, kp4, kp5, &v1, &v2);
+    // auto l3 = factory->createArcLine(kp4, kp3, &p5, &v3, &v2);
     auto l4 = factory->createStraightLine(kp4, kp1);
+    // auto l4 = factory->createArcLine(kp1, kp4, &p6, &v1, &v3);
 
     std::vector<Line*> lines;
     lines.push_back(l1);
@@ -87,10 +90,12 @@ void testMeshGeneration() {
 
     // vector<MeshShapes::RelativeShapes> shapeList;
     // shapeList.push_back(MeshShapes::RelativeShapes::PPOO_270);
+    // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
+    // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
+    // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
 
     AreaMesh area(lines, 0.2);
-    area.lines[1].qtdElements = area.lines[1].qtdElements + 1;
-    area.lines[2].qtdElements = area.lines[2].qtdElements + 1;
+    // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
 

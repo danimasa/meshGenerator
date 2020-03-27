@@ -239,6 +239,7 @@ Mesh AreaMesh::generateMesh() {
     auto shapeList = MeshShapes::generateShapeList(*this);
     MeshShapesGenerator gen;
     auto regMesh = gen.genMesh(shapeList, *this);
+    // return regMesh;
     return transfiniteMapping(regMesh, *this);
 }
 

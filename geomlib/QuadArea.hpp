@@ -18,7 +18,7 @@ public:
   };
 
   QuadArea(vector<Line*> lines);
-  QuadArea(vector<Line*> lines, double attenuationAngle);
+  QuadArea(vector<Line*> lines, double attenuationAngleRatio);
   vector<Line*> getLines() const;
   vector<Point*> getVertex() const;
 
@@ -32,7 +32,7 @@ public:
   bool isEvenElements() const;
 
   vector<TopologicalLine> lines;
-  double attenuationAngle = M_PI * 10 / 180;
+  double attenuationAngleRatio = 0.5;
 };
 
 } // namespace geomlib
