@@ -8,8 +8,11 @@
 #include "Line.hpp"
 #include "Polyline.hpp"
 
+#include "Mesh.hpp"
+
 using namespace std;
 using namespace geomlib;
+using namespace meshlib;
 
 namespace ansyslib {
 
@@ -27,6 +30,11 @@ public:
 	void printBlankLine();
 	void printDeleteLine(Line* line);
 	void printDeleteKeypoint(KeyPoint* kp);
+
+	void printNode(const Vertex* node);
+	void printNodes(const vector<Vertex*> nodes);
+	void printElement(const Quadrilateral* element);
+	void printElements(const vector<Quadrilateral*> elements);
 
 	string getString();
 

@@ -11,6 +11,7 @@
 #include "GeometryFactory.hpp"
 #include "meshlib.hpp"
 #include "MeshWriter.hpp"
+#include "AnsysMeshWriter.hpp"
 #include "AreaMesh.hpp"
 #include "MeshShapesGenerator.hpp"
 
@@ -111,7 +112,8 @@ void testMeshGeneration() {
     // AreaMesh meshGenerator(0.5);
     Mesh mesh = area.generateMesh();
 
-    gmshlib::MeshWriter writer(&mesh);
+    // gmshlib::MeshWriter writer(&mesh);
+    ansyslib::MeshWriter writer(&mesh);
     cout << writer.getMshFile() << endl;
 }
 
