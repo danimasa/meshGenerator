@@ -120,8 +120,8 @@ TEST_CASE("MeshShapes.hpp") {
         auto shapeList = MeshShapes::generateShapeList(area);
 
         REQUIRE( shapeList.size() == 4 );
-        REQUIRE( shapeList[0] == RShape::POPO_0 );
-        REQUIRE( shapeList[1] == RShape::POPO_0 );
+        REQUIRE( shapeList[0] == RShape::POPO_90 );
+        REQUIRE( shapeList[1] == RShape::POPO_90 );
         REQUIRE( shapeList[2] == RShape::PPOO_270 );
         REQUIRE( shapeList[3] == RShape::OOOO );
     }
