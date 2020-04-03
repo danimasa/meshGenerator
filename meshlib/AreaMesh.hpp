@@ -1,32 +1,24 @@
 #pragma once
 
-#include "QuadArea.hpp"
+#include "Area.hpp"
 #include "Mesh.hpp"
 
 namespace meshlib {
 
 using namespace geomlib;
 
-class AreaMesh : public QuadArea {
+class AreaMesh {
 public:
-    AreaMesh(vector<Line*> lines, double elementSize)
-        : elementSize(elementSize),
-        QuadArea(lines) {
-            determineLinesSubdivision();
-        }
-
-    AreaMesh(QuadArea &area, double elementSize)
-        : elementSize(elementSize),
-        QuadArea(area) {
-            determineLinesSubdivision();
-        }
+    AreaMesh(Area *area, double elementSize)
+        : area(area),
+        elementSize(elementSize) {}
 
     Mesh generateMesh();
 
 private:
     double elementSize;
-
-    void determineLinesSubdivision();
+    Area* area;
+    QuadArea* quadArea;
 }; // class AreaMesh
 
 } // namespace meshlib

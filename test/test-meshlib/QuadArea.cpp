@@ -5,6 +5,7 @@
 #include "StraightLine.hpp"
 
 using namespace geomlib;
+using namespace meshlib;
 
 TEST_CASE("QuadArea") {
     const GeometryFactory* factory = GeometryFactory::getDefaultInstance();

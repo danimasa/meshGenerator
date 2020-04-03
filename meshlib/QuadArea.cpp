@@ -3,10 +3,10 @@
 
 #include "QuadArea.hpp"
 
-namespace geomlib
+namespace meshlib
 {
 
-QuadArea::QuadArea(vector<Line*> lines) {
+QuadArea::QuadArea(vector<LineMesh*> lines) {
     if (lines.size() != 4)
         throw invalid_argument("A QuadArea must have 4 lines");
 
@@ -71,7 +71,7 @@ QuadArea::QuadArea(vector<Line*> lines) {
     }
 }
 
-QuadArea::QuadArea(vector<Line*> lines, double attenuationAngleRatio) : QuadArea(lines) {
+QuadArea::QuadArea(vector<LineMesh*> lines, double attenuationAngleRatio) : QuadArea(lines) {
     this->attenuationAngleRatio = attenuationAngleRatio;
 }
 
@@ -97,8 +97,8 @@ bool QuadArea::isEvenElements() const {
     return sumQtdElements() % 2 == 0;
 }
 
-vector<Line*> QuadArea::getLines() const {
-    std::vector<Line*> result;
+vector<LineMesh*> QuadArea::getLines() const {
+    std::vector<LineMesh*> result;
     result.resize(lines.size());
     std::transform(lines.begin(), lines.end(),
         result.begin(),
@@ -107,8 +107,8 @@ vector<Line*> QuadArea::getLines() const {
     return result;
 }
 
-vector<Point*> QuadArea::getVertex() const {
-    std::vector<Point*> result;
+vector<Vertex*> QuadArea::getVertex() const {
+    std::vector<Vertex*> result;
 
     Point* lastPoint = nullptr;
     for(auto l : lines) {
@@ -128,6 +128,38 @@ vector<Point*> QuadArea::getVertex() const {
     }
 
     return result;
+}
+
+void QuadArea::determineLinesSubdivision(double elementSize) {
+    int sum = sumQtdElements();
+    bool someNonZero = someQtdElementsZero();
+    if(sum % 2 == 0 && !someNonZero) return;
+
+    int leIndex = 0;
+    int newQtdElements = 0;
+    double leastDiff = 0.0;
+    for(int i = 0; i < 4; i++) {
+        QuadArea::TopologicalLine& tLine = lines[i];
+        if (tLine.qtdElements == 0)
+            tLine.qtdElements = std::ceil(tLine.line->length() / elementSize);
+        else if(!someNonZero) {
+            double nf = tLine.line->length() / elementSize;
+            int upElements = tLine.qtdElements + 1;
+            int downElements = tLine.qtdElements - 1;
+            double upDiff = std::abs((nf - upElements) / upElements);
+            double downDiff = std::abs((nf - downElements) / downElements);
+            double lDiff = upDiff <= downDiff ? upDiff : downDiff;
+            double dElements = upDiff <= downDiff ? upElements : downElements;
+            if (lDiff <= leastDiff || leastDiff == 0.0) {
+                leIndex = i;
+                leastDiff = lDiff;
+                newQtdElements = dElements;
+            }
+        }
+    }
+
+    if(someNonZero) determineLinesSubdivision();
+    else lines[leIndex].qtdElements = newQtdElements;
 }
 
 } // namespace geomlib
