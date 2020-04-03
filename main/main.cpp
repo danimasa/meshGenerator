@@ -56,9 +56,9 @@ void testMeshGeneration() {
     auto factory = GeometryFactory::getDefaultInstance();
 
     auto p1 = Point(0, 0, 0);
-    auto p2 = Point(2, 0.5, 0);
-    auto p3 = Point(2, 2, 0);
-    auto p4 = Point(0, 2, 0);
+    auto p2 = Point(3, 2, 0);
+    auto p3 = Point(3, 4, 0);
+    auto p4 = Point(2, 5, 0);
 
     // auto p5 = Point(1, 1, 0);
     // auto p6 = Point(0.3, 0, 0);
@@ -104,7 +104,7 @@ void testMeshGeneration() {
     // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
     // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
 
-    AreaMesh area(lines, 0.2);
+    AreaMesh area(lines, 0.4);
     // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);

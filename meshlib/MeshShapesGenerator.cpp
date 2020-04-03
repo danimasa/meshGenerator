@@ -114,7 +114,14 @@ void generateElements (vector<Vertex*> lastVLine, vector<Vertex*> currVLine, Mes
 }
 
 void addVerticesToMesh (vector<Vertex*> vertices, Mesh &mesh) {
-    for(auto v : vertices) mesh.vertices.push_back(v);
+    for(auto v : vertices) {
+        auto findVertex = std::find_if(mesh.vertices.begin(), mesh.vertices.end(),
+            [&v](const Vertex* vertex){
+                return v->getID() == vertex->getID();
+            });
+        if(findVertex == mesh.vertices.end())
+            mesh.vertices.push_back(v);
+    }
 }
 
 Mesh MeshShapesGenerator::genMesh(std::vector<RShapes> shapeList

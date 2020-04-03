@@ -124,21 +124,19 @@ std::vector<Vertex*> fillBoundary(Line *line, int qtdElements, double Vertex::* 
         int nGenElements = 0;
         double lastXPos = 0.0;
 
-        // first vertex
-        auto v = new Vertex();
-        v->*x = 0.0;
-        v->*y = yValue;
-        vList.push_back(v);
-
         for(auto p : iPoints) {
             double pPosition = pLine->isPointInLine(*p);
             int nElements = ceil(qtdElements * (pPosition - lastXPos));
             auto pList = fillBoundary(pLineList[lIndex], nElements, x, y, yValue);
-            for(int i = 1; i < pList.size(); i++) {
+            for(int i = 0; i < pList.size(); i++) {
                 auto v = pList[i];
                 v->*x = lastXPos + v->*x * (pPosition - lastXPos);
                 vList.push_back(v);
             }
+            auto v = new Vertex();
+            v->*x = pPosition;
+            v->*y = yValue;
+            vList.push_back(v);
             lIndex++;
             nGenElements += nElements;
             lastXPos = pPosition;
@@ -146,24 +144,20 @@ std::vector<Vertex*> fillBoundary(Line *line, int qtdElements, double Vertex::* 
 
         int nElements = qtdElements - nGenElements;
         auto pList = fillBoundary(pLineList[lIndex], nElements, x, y, yValue);
-        for(int i = 1; i < pList.size(); i++) {
+        for(int i = 0; i < pList.size(); i++) {
             auto v = pList[i];
             v->*x = lastXPos + v->*x * (1.0 - lastXPos);
             vList.push_back(v);
         }
     } else {
         double step = 1.0 / qtdElements;
-        for (int i = 0; i < qtdElements; i++) {
+        for (int i = 1; i < qtdElements; i++) {
             double pos = i * step;
             auto v = new Vertex();
             v->*x = pos;
             v->*y = yValue;
             vList.push_back(v);
         }
-        auto v = new Vertex();
-        v->*x = 1;
-        v->*y = yValue;
-        vList.push_back(v);
     }
 
     return vList;
@@ -172,17 +166,30 @@ std::vector<Vertex*> fillBoundary(Line *line, int qtdElements, double Vertex::* 
 MesheableBoundary generateMesheableBoundary(const AreaMesh &area) {
     MesheableBoundary boundary;
 
+    auto v1 = new Vertex(0, 0, 0);
+    auto v2 = new Vertex(1, 0, 0);
+    auto v3 = new Vertex(1, 1, 0);
+    auto v4 = new Vertex(0, 1, 0);
+
     auto southLine = area.south();
     boundary.south = fillBoundary(southLine.line, southLine.qtdElements, &Vertex::x, &Vertex::y, 0.0);
+    boundary.south.insert(boundary.south.begin(), v1);
+    boundary.south.push_back(v2);
 
     auto eastLine = area.east();
     boundary.east = fillBoundary(eastLine.line, eastLine.qtdElements, &Vertex::y, &Vertex::x, 1.0);
-
-    auto northLine = area.north();
-    boundary.north = fillBoundary(northLine.line, northLine.qtdElements, &Vertex::x, &Vertex::y, 1.0);
+    boundary.east.insert(boundary.east.begin(), v2);
+    boundary.east.push_back(v3);
 
     auto westLine = area.west();
     boundary.west = fillBoundary(westLine.line, westLine.qtdElements, &Vertex::y, &Vertex::x, 0.0);
+    boundary.west.insert(boundary.west.begin(), v1);
+    boundary.west.push_back(v4);
+
+    auto northLine = area.north();
+    boundary.north = fillBoundary(northLine.line, northLine.qtdElements, &Vertex::x, &Vertex::y, 1.0);
+    boundary.north.insert(boundary.north.begin(), v4);
+    boundary.north.push_back(v3);
 
     return boundary;
 }
