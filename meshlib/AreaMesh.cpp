@@ -16,12 +16,12 @@ Mesh AreaMesh::generateMesh() {
     if(loops[0]->lines.size() != 4) throw "AreaMesh: Only quadrilateral areas implemented";
 
     QuadArea qArea(loops[0]->lines);
-    qArea.determineLinesSubdivision(elementSize);
+    // qArea.determineLinesSubdivision(elementSize);
     auto shapeList = MeshShapes::generateShapeList(qArea);
     MeshShapesGenerator gen;
     auto regMesh = gen.genMesh(shapeList, *this);
     // return regMesh;
-    return transfiniteMapping(regMesh, *this);
+    return transfiniteMapping(regMesh, qArea);
 }
 
 } // namespace meshlib

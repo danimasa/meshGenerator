@@ -1,23 +1,29 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "Mesh.hpp"
 #include "Geometry.hpp"
-#include "AreaMesh.hpp"
+#include "GeometryList.hpp"
+
 
 namespace meshlib
 {
 
 class MeshGenerator {
 public:
-    MeshGenerator(double elementSize)
-        : elementSize(elementSize) {}
+    MeshGenerator(
+        geomlib::GeometryList* geomList, 
+        double elementSize
+    )   : elementSize(elementSize),
+        geomList(geomList) {}
 
-    void addGeometry(const geomlib::Geometry* geometry);
     Mesh generateMesh();
 
 private:
     double elementSize;
-    vector<AreaMesh*> geomList;
+    std::unordered_map<geomlib::Geometry*, Mesh> meshMap;
+    geomlib::GeometryList* geomList;
 };
     
 } // namespace meshlib

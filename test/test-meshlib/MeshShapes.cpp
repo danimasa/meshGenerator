@@ -35,23 +35,23 @@ TEST_CASE("MeshShapes.hpp") {
     }
 
     SECTION("Insufficient mesh size") {
-        AreaMesh area(a1, 1);
+        // AreaMesh area(a1, 1);
 
-        REQUIRE_THROWS_WITH( MeshShapes::generateShapeList(area), Catch::Contains("insuficient element size") );
+        // REQUIRE_THROWS_WITH( MeshShapes::generateShapeList(area), Catch::Contains("insuficient element size") );
     }
 
     SECTION("U Subdivision") {
-        AreaMesh area(a1, 0.2);
+        // AreaMesh area(a1, 0.2);
 
-        auto shapeList = MeshShapes::generateShapeList(area);
+        // auto shapeList = MeshShapes::generateShapeList(area);
 
-        REQUIRE( shapeList.size() == 6 );
-        REQUIRE( shapeList[0] == RShape::PPOO_270 );
-        REQUIRE( shapeList[1] == RShape::PPOO_270 );
-        REQUIRE( shapeList[2] == RShape::PPOO_270 );
-        REQUIRE( shapeList[3] == RShape::PPOO_270 );
-        REQUIRE( shapeList[4] == RShape::PPOO_270 );
-        REQUIRE( shapeList[5] == RShape::OOOO );
+        // REQUIRE( shapeList.size() == 6 );
+        // REQUIRE( shapeList[0] == RShape::PPOO_270 );
+        // REQUIRE( shapeList[1] == RShape::PPOO_270 );
+        // REQUIRE( shapeList[2] == RShape::PPOO_270 );
+        // REQUIRE( shapeList[3] == RShape::PPOO_270 );
+        // REQUIRE( shapeList[4] == RShape::PPOO_270 );
+        // REQUIRE( shapeList[5] == RShape::OOOO );
     }
 
     SECTION("L Subdivision") {
@@ -68,15 +68,15 @@ TEST_CASE("MeshShapes.hpp") {
         auto l7 = factory->createStraightLine(kp6, kp7);
         auto l8 = factory->createStraightLine(kp7, kp1);
 
-        std::vector<Line*> lsubLines { l5, l6, l7, l8 };
-        QuadArea a2(lsubLines);
-        AreaMesh area(a2, 0.25);
+        // std::vector<Line*> lsubLines { l5, l6, l7, l8 };
+        // QuadArea a2(lsubLines);
+        // AreaMesh area(a2, 0.25);
 
-        auto shapeList = MeshShapes::generateShapeList(area);
+        // auto shapeList = MeshShapes::generateShapeList(area);
 
-        REQUIRE( shapeList.size() == 2 );
-        REQUIRE( shapeList[0] == RShape::POOO_90 );
-        REQUIRE( shapeList[1] == RShape::OOOO );
+        // REQUIRE( shapeList.size() == 2 );
+        // REQUIRE( shapeList[0] == RShape::POOO_90 );
+        // REQUIRE( shapeList[1] == RShape::OOOO );
     }
 
     SECTION("Mixed Subdivision") {
@@ -85,13 +85,13 @@ TEST_CASE("MeshShapes.hpp") {
         a1.lines[2].qtdElements = 13;
         a1.lines[3].qtdElements = 10;
         
-        AreaMesh area(a1, 0.25);
-        auto shapeList = MeshShapes::generateShapeList(area);
+        // AreaMesh area(a1, 0.25);
+        // auto shapeList = MeshShapes::generateShapeList(area);
 
-        REQUIRE(shapeList.size() == 3);
-        REQUIRE( shapeList[0] == RShape::POOO_0 );
-        REQUIRE( shapeList[1] == RShape::PPOO_0 );
-        REQUIRE( shapeList[2] == RShape::OOOO );
+        // REQUIRE(shapeList.size() == 3);
+        // REQUIRE( shapeList[0] == RShape::POOO_0 );
+        // REQUIRE( shapeList[1] == RShape::PPOO_0 );
+        // REQUIRE( shapeList[2] == RShape::OOOO );
     }
 
     SECTION("With disposition constraint") {
@@ -116,13 +116,13 @@ TEST_CASE("MeshShapes.hpp") {
         a2.lines[2].qtdElements = 10;
         a2.lines[3].qtdElements = 10;
 
-        AreaMesh area(a2, 0.1);
-        auto shapeList = MeshShapes::generateShapeList(area);
+        // AreaMesh area(a2, 0.1);
+        // auto shapeList = MeshShapes::generateShapeList(area);
 
-        REQUIRE( shapeList.size() == 4 );
-        REQUIRE( shapeList[0] == RShape::POPO_90 );
-        REQUIRE( shapeList[1] == RShape::POPO_90 );
-        REQUIRE( shapeList[2] == RShape::PPOO_270 );
-        REQUIRE( shapeList[3] == RShape::OOOO );
+        // REQUIRE( shapeList.size() == 4 );
+        // REQUIRE( shapeList[0] == RShape::POPO_90 );
+        // REQUIRE( shapeList[1] == RShape::POPO_90 );
+        // REQUIRE( shapeList[2] == RShape::PPOO_270 );
+        // REQUIRE( shapeList[3] == RShape::OOOO );
     }
 }

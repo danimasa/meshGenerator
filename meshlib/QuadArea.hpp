@@ -1,7 +1,8 @@
 #pragma once
 
+#include "Line.hpp"
+#include "Point.hpp"
 #include <vector>
-#include "LineMesh.hpp"
 
 namespace meshlib
 {
@@ -13,15 +14,15 @@ using namespace geomlib;
 class QuadArea {
 public:
   struct TopologicalLine {
-    LineMesh* line;
+    Line* line;
     LineDirection direction;
     int qtdElements;
   };
 
-  QuadArea(vector<LineMesh*> lines);
-  QuadArea(vector<LineMesh*> lines, double attenuationAngleRatio);
-  vector<LineMesh*> getLines() const;
-  vector<Vertex*> getVertex() const;
+  QuadArea(vector<Line*> lines);
+  QuadArea(vector<Line*> lines, double attenuationAngleRatio);
+  vector<Line*> getLines() const;
+  vector<Point*> getVertex() const;
 
   TopologicalLine south() const { return lines[0]; }
   TopologicalLine east() const { return lines[1]; }
@@ -31,7 +32,7 @@ public:
   bool someQtdElementsZero() const;
   int sumQtdElements() const;
   bool isEvenElements() const;
-  void determineLinesSubdivision(double elementSize);
+  // void determineLinesSubdivision(double elementSize);
 
   vector<TopologicalLine> lines;
   double attenuationAngleRatio = 0.5;

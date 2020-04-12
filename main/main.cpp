@@ -14,6 +14,7 @@
 #include "AnsysMeshWriter.hpp"
 #include "AreaMesh.hpp"
 #include "MeshShapesGenerator.hpp"
+#include "MeshGenerator.hpp"
 
 using namespace std;
 
@@ -54,6 +55,7 @@ void print_Line(const Line *line) {
 
 void testMeshGeneration() {
     auto factory = GeometryFactory::getDefaultInstance();
+    GeometryList geometries;
 
     auto p1 = Point(0, 0, 0);
     auto p2 = Point(3, 2, 0);
@@ -69,6 +71,11 @@ void testMeshGeneration() {
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
+
+    geometries.add(kp1);
+    geometries.add(kp2);
+    geometries.add(kp3);
+    geometries.add(kp4);
     // auto kp5 = factory->createKeypoint(p5);
     // auto kp6 = factory->createKeypoint(p6);
 
@@ -88,11 +95,15 @@ void testMeshGeneration() {
     auto l4 = factory->createStraightLine(kp4, kp1);
     // auto l4 = factory->createArcLine(kp1, kp4, &p6, &v1, &v3);
 
-    std::vector<Line*> lines;
-    lines.push_back(l1);
-    lines.push_back(l2);
-    lines.push_back(l3);
-    lines.push_back(l4);
+    // std::vector<Line*> lines;
+    // lines.push_back(l1);
+    // lines.push_back(l2);
+    // lines.push_back(l3);
+    // lines.push_back(l4);
+    geometries.add(l1);
+    geometries.add(l2);
+    geometries.add(l3);
+    geometries.add(l4);
 
     // AreaMesh area(lines, 0.1);
     // area.lines[1].qtdElements = area.east().qtdElements + 1;
@@ -104,13 +115,15 @@ void testMeshGeneration() {
     // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
     // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
 
-    AreaMesh area(lines, 0.4);
+    // AreaMesh area(lines, 0.4);
     // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
+    MeshGenerator generator(&geometries, 0.2);
+    Mesh mesh = generator.generateMesh();
 
     // AreaMesh meshGenerator(0.5);
-    Mesh mesh = area.generateMesh();
+    // Mesh mesh = area.generateMesh();
 
     // gmshlib::MeshWriter writer(&mesh);
     ansyslib::MeshWriter writer(&mesh);
@@ -137,21 +150,21 @@ int main(int argc, char **argv) {
 void leitura(const string &arquivo) {
     cout << "Lendo arquivo de Keypoints " << arquivo << " ..." << endl;
 
-    ansyslib::AnsysFileReaderFactory factory {};
-    geomlib::FileReader *reader = factory.createReader();
-    GeometryList* geometry = reader->read(arquivo);
+    // ansyslib::AnsysFileReaderFactory factory {};
+    // geomlib::FileReader *reader = factory.createReader();
+    // GeometryList* geometry = reader->read(arquivo);
 
-    processlib::LineAnalysis analyser(geometry);
-    analyser.findSingularities();
-    double elementSize = 0.3;
+    // processlib::LineAnalysis analyser(geometry);
+    // analyser.findSingularities();
+    // double elementSize = 0.3;
 
-    auto areaList = geometry->getListOf(GeometryType::Area);
-    vector<AreaMesh*> quadAreas;
-    for(auto areaGeom : areaList) {
-        auto area = dynamic_cast<Area*>(areaGeom);
-        auto quadArea = new AreaMesh(area->loops[0]->lines, elementSize);
-        quadAreas.push_back(quadArea);
-    }
+    // auto areaList = geometry->getListOf(GeometryType::Area);
+    // vector<AreaMesh*> quadAreas;
+    // for(auto areaGeom : areaList) {
+    //     auto area = dynamic_cast<Area*>(areaGeom);
+    //     auto quadArea = new AreaMesh(area->loops[0]->lines, elementSize);
+    //     quadAreas.push_back(quadArea);
+    // }
 
 	// cout << "------------------------------" << endl;
 	// cout << "Before Analyser" << endl;

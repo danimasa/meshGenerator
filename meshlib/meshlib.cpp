@@ -47,7 +47,7 @@ Mesh generateRegGrid(int elements_x, int elements_y) {
     return mesh;
 }
 
-Mesh transfiniteMapping(Mesh &parametricMesh, geomlib::QuadArea &area) {
+Mesh transfiniteMapping(Mesh &parametricMesh, QuadArea &area) {
     Mesh mesh;
     mesh.elements = parametricMesh.elements;
 
@@ -113,6 +113,49 @@ Mesh transfiniteMapping(Mesh &parametricMesh, geomlib::QuadArea &area) {
     return mesh;
 }
 
+std::vector<Vertex*> subdivideLine(Line* line, int qtdElements, double lastXPos, double pPosition) {
+    std::vector<Vertex*> vList;
+
+    if(line->getLineType() == LineType::Polyline) {
+        auto pLine = dynamic_cast<Polyline*>(line);
+        auto pLineList = pLine->get_lines();
+        auto iPoints = pLine->intermidiaryPoints();
+        int lIndex = 0;
+        int nGenElements = 0;
+        double lastXPos = 0.0;
+
+        for(auto p : iPoints) {
+            double pPosition = pLine->isPointInLine(*p);
+            int nElements = ceil(qtdElements * (pPosition - lastXPos));
+            auto pList = subdivideLine(pLineList[lIndex], nElements, lastXPos, pPosition);
+            for(auto v : pList)
+                vList.push_back(v);
+
+            auto v = new Vertex(*p);
+            vList.push_back(v);
+            lIndex++;
+            nGenElements += nElements;
+            lastXPos = pPosition;
+        }
+
+        int nElements = qtdElements - nGenElements;
+        auto pList = subdivideLine(pLineList[lIndex], nElements, lastXPos);
+        for(auto v : pList)
+            vList.push_back(v);
+
+    } else {
+        double step = 1.0 / qtdElements;
+        for (int i = 1; i < qtdElements; i++) {
+            double pos = lastXPos + (i * step) * (pPosition - lastXPos);
+            auto p = line->pointAtPosition(pos);
+            auto v = new Vertex(p);
+            vList.push_back(v);
+        }
+    }
+
+    return vList;
+}
+
 std::vector<Vertex*> fillBoundary(Line *line, int qtdElements, double Vertex::* x, double Vertex::* y, double yValue) {
     std::vector<Vertex*> vList;
 
@@ -171,25 +214,25 @@ MesheableBoundary generateMesheableBoundary(const AreaMesh &area) {
     auto v3 = new Vertex(1, 1, 0);
     auto v4 = new Vertex(0, 1, 0);
 
-    auto southLine = area.south();
-    boundary.south = fillBoundary(southLine.line, southLine.qtdElements, &Vertex::x, &Vertex::y, 0.0);
-    boundary.south.insert(boundary.south.begin(), v1);
-    boundary.south.push_back(v2);
+    // auto southLine = area.south();
+    // boundary.south = fillBoundary(southLine.line, southLine.qtdElements, &Vertex::x, &Vertex::y, 0.0);
+    // boundary.south.insert(boundary.south.begin(), v1);
+    // boundary.south.push_back(v2);
 
-    auto eastLine = area.east();
-    boundary.east = fillBoundary(eastLine.line, eastLine.qtdElements, &Vertex::y, &Vertex::x, 1.0);
-    boundary.east.insert(boundary.east.begin(), v2);
-    boundary.east.push_back(v3);
+    // auto eastLine = area.east();
+    // boundary.east = fillBoundary(eastLine.line, eastLine.qtdElements, &Vertex::y, &Vertex::x, 1.0);
+    // boundary.east.insert(boundary.east.begin(), v2);
+    // boundary.east.push_back(v3);
 
-    auto westLine = area.west();
-    boundary.west = fillBoundary(westLine.line, westLine.qtdElements, &Vertex::y, &Vertex::x, 0.0);
-    boundary.west.insert(boundary.west.begin(), v1);
-    boundary.west.push_back(v4);
+    // auto westLine = area.west();
+    // boundary.west = fillBoundary(westLine.line, westLine.qtdElements, &Vertex::y, &Vertex::x, 0.0);
+    // boundary.west.insert(boundary.west.begin(), v1);
+    // boundary.west.push_back(v4);
 
-    auto northLine = area.north();
-    boundary.north = fillBoundary(northLine.line, northLine.qtdElements, &Vertex::x, &Vertex::y, 1.0);
-    boundary.north.insert(boundary.north.begin(), v4);
-    boundary.north.push_back(v3);
+    // auto northLine = area.north();
+    // boundary.north = fillBoundary(northLine.line, northLine.qtdElements, &Vertex::x, &Vertex::y, 1.0);
+    // boundary.north.insert(boundary.north.begin(), v4);
+    // boundary.north.push_back(v3);
 
     return boundary;
 }
