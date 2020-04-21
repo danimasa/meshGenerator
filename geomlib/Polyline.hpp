@@ -11,7 +11,13 @@ class Polyline : public Line {
 public:
     LineType getLineType() const { return LineType::Polyline; }
 
+    struct Line_in_Polyline {
+        Line* line;
+        LineDirection direction;
+    };
+
     std::vector<Line*> get_lines() const;
+    std::vector<Line_in_Polyline> getLinesWithDirection() const;
     double length() const;
     Point pointAtPosition(const double position);
     double isPointInLine(const Point &point);
@@ -20,11 +26,6 @@ public:
 
     Vector get_init_vector() const;
     Vector get_final_vector() const;
-
-    struct Line_in_Polyline {
-        Line* line;
-        LineDirection direction;
-    };
 
 private:
     Polyline(

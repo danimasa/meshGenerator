@@ -11,9 +11,13 @@ class Vertex : public Geometry, public Point {
 public:
     Vertex() : Geometry(GeometryType::Vertex), Point() {}
 
-    Vertex(Point &point) :
+    Vertex(const Point &point) :
         Geometry(GeometryType::Vertex),
         Point(point.x, point.y, point.z) {}
+    
+    Vertex(const Point *point) :
+        Geometry(GeometryType::Vertex),
+        Point(point->x, point->y, point->z) {}
 
     Vertex(double x, double y, double z) :
         Geometry(GeometryType::Vertex),

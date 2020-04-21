@@ -2,44 +2,37 @@
 #include "Area.hpp"
 #include "Vertex.hpp"
 #include "meshlib.hpp"
+#include "MeshManager.hpp"
 
 namespace meshlib {
 
 Mesh MeshGenerator::generateMesh() {
     Mesh mesh;
+    auto manager = MeshManager::getDefaultInstance();
 
     // Generate Points Nodes
     auto points = geomList->getListOf(geomlib::GeometryType::Keypoint);
     for(auto point : points) {
-        auto p = dynamic_cast<Point*>(point);
-        auto vertex = new Vertex(*p);
-        mesh.vertices.push_back(vertex);
-        Mesh pointMesh;
-        pointMesh.vertices.push_back(vertex);
-        meshMap[point] = pointMesh;
+        auto p = dynamic_cast<KeyPoint*>(point);
+        auto vertex = manager->meshVertex(p);
+        mesh.addVertex(vertex);
     }
 
     // Generate Lines Nodes
     auto lines = geomList->getListOf(geomlib::GeometryType::Line);
     for(auto gLine : lines) {
-        Mesh lineMesh;
         auto line = dynamic_cast<Line*>(gLine);
-        auto initVertex = meshMap[line->init_point].vertices[0];
-        auto finalVertex = meshMap[line->final_point].vertices[0];
-        lineMesh.vertices.push_back(initVertex);
-        double qtdElements = ceil(line->length() / elementSize);
-
-        auto lineVertices = subdivideLine(line, qtdElements);
-        for(auto v : lineVertices) {
-            mesh.vertices.push_back(v);
-            lineMesh.vertices.push_back(v);
-        }
-        lineMesh.vertices.push_back(finalVertex);
-
-        meshMap[line] = lineMesh;
+        auto vertices = manager->meshLine(line);
+        mesh.addVertices(vertices);
     }
 
-    // Generate Area Nodes
+    // Generate Area Elements
+    auto areas = geomList->getListOf(geomlib::GeometryType::Area);
+    for(auto gArea : areas) {
+        auto area = dynamic_cast<Area*>(gArea);
+        auto aMesh = manager->meshArea(area);
+        mesh.mergeMesh(aMesh.mesh);
+    }
 
     return mesh;
 }

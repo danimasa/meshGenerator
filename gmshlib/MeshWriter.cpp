@@ -8,14 +8,14 @@ namespace gmshlib {
 string MeshWriter::getMshFile() {
     // renumering vertices
     int id = 1;
-    for (auto v : mesh->vertices) {
+    for (auto v : mesh->getVertices()) {
         v->setID(id);
         id++;
     }
 
     GMshPrinter printer;
-    printer.printNodes(mesh->vertices);
-    printer.printElements(mesh->elements);
+    printer.printNodes(mesh->getVertices());
+    printer.printElements(mesh->getElements());
     return printer.getString();
 }
 

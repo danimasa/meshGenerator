@@ -97,8 +97,11 @@ double Polyline::isPointInLine(const Point &point) {
   double l = length();
   for(auto &n : lines) {
     double position = n.line->isPointInLine(point);
-    if(position != -1)
+    if(position != -1) {
+      if(n.direction == LineDirection::INVERSE)
+        position = 1.0 - position;
       return globalPosition + (position * n.line->length() / l);
+    }
     globalPosition += n.line->length() / l;
   }
 
@@ -143,6 +146,10 @@ vector<Line*> Polyline::get_lines() const {
   for(auto l : lines)
     lineList.push_back(l.line);
   return lineList;
+}
+
+vector<Polyline::Line_in_Polyline> Polyline::getLinesWithDirection() const {
+  return lines;
 }
 
 Box Polyline::outBox() {

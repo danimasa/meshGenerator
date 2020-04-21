@@ -58,75 +58,77 @@ void testMeshGeneration() {
     GeometryList geometries;
 
     auto p1 = Point(0, 0, 0);
-    auto p2 = Point(3, 2, 0);
-    auto p3 = Point(3, 4, 0);
-    auto p4 = Point(2, 5, 0);
-
-    // auto p5 = Point(1, 1, 0);
-    // auto p6 = Point(0.3, 0, 0);
-    // auto p5 = Point(1.9302474402, 2.8027895855, 0);
-    // auto p6 = Point(0.2616991886, 1.2254422329, 0);
+    auto p2 = Point(1, 0, 0);
+    auto p3 = Point(1, 2, 0);
+    auto p4 = Point(0, 2, 0);
+    auto p5 = Point(2, 0, 0);
+    auto p6 = Point(2, 1, 0);
+    auto p7 = Point(1, 1, 0);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
     auto kp3 = factory->createKeypoint(p3);
     auto kp4 = factory->createKeypoint(p4);
+    auto kp5 = factory->createKeypoint(p5);
+    auto kp6 = factory->createKeypoint(p6);
+    auto kp7 = factory->createKeypoint(p7);
 
     geometries.add(kp1);
     geometries.add(kp2);
     geometries.add(kp3);
     geometries.add(kp4);
-    // auto kp5 = factory->createKeypoint(p5);
-    // auto kp6 = factory->createKeypoint(p6);
-
-    // Vector v1(0, 1, 0);
-    // Vector v2(1, 0, 0);
-    // Vector v3(0.7456954357, 0.6662869631, 0);
-    // auto l5 = factory->createStraightLine(kp1, kp6);
-    // auto l6 = factory->createStraightLine(kp6, kp5);
-    // auto l7 = factory->createStraightLine(kp5, kp2);
-    // vector<Line*> pLines { l5, l6, l7 };
+    geometries.add(kp5);
+    geometries.add(kp6);
+    geometries.add(kp7);
 
     auto l1 = factory->createStraightLine(kp1, kp2);
-    // auto l1 = factory->createPolyline(kp1, kp2, pLines);
     auto l2 = factory->createStraightLine(kp2, kp3);
     auto l3 = factory->createStraightLine(kp3, kp4);
-    // auto l3 = factory->createArcLine(kp4, kp3, &p5, &v3, &v2);
     auto l4 = factory->createStraightLine(kp4, kp1);
-    // auto l4 = factory->createArcLine(kp1, kp4, &p6, &v1, &v3);
 
-    // std::vector<Line*> lines;
-    // lines.push_back(l1);
-    // lines.push_back(l2);
-    // lines.push_back(l3);
-    // lines.push_back(l4);
+    std::vector<Line*> lines ({l1, l2, l3, l4});
+
     geometries.add(l1);
     geometries.add(l2);
     geometries.add(l3);
     geometries.add(l4);
 
-    // AreaMesh area(lines, 0.1);
-    // area.lines[1].qtdElements = area.east().qtdElements + 1;
-    // area.lines[0].qtdElements = area.south().qtdElements + 1;
+    Area::Loop loop (lines);
+    std::vector<Area::Loop*> loops ({ &loop });
+    auto a1 = factory->createArea(loops);
+    geometries.add(a1);
 
-    // vector<MeshShapes::RelativeShapes> shapeList;
-    // shapeList.push_back(MeshShapes::RelativeShapes::PPOO_270);
-    // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
-    // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
-    // shapeList.push_back(MeshShapes::RelativeShapes::POPO_0);
+    auto l5 = factory->createStraightLine(kp2, kp5);
+    auto l6 = factory->createStraightLine(kp5, kp6);
+    auto l7 = factory->createStraightLine(kp6, kp7);
+    auto l8 = factory->createStraightLine(kp7, kp2);
+
+    geometries.add(l5);
+    geometries.add(l6);
+    geometries.add(l7);
+    geometries.add(l8);
+
+    std::vector<Line*> lines2 ({l5, l6, l7, l8});
+    Area::Loop loop2 (lines2);
+    std::vector<Area::Loop*> loops2 ({ &loop2 });
+    auto a2 = factory->createArea(loops2);
+    geometries.add(a2);
+
+    processlib::LineAnalysis analyser(&geometries);
+    analyser.findSingularities();
 
     // AreaMesh area(lines, 0.4);
     // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
-    MeshGenerator generator(&geometries, 0.2);
+    MeshGenerator generator(&geometries, 0.25);
     Mesh mesh = generator.generateMesh();
 
     // AreaMesh meshGenerator(0.5);
     // Mesh mesh = area.generateMesh();
 
-    // gmshlib::MeshWriter writer(&mesh);
-    ansyslib::MeshWriter writer(&mesh);
+    gmshlib::MeshWriter writer(&mesh);
+    // ansyslib::MeshWriter writer(&mesh);
     cout << writer.getMshFile() << endl;
 }
 

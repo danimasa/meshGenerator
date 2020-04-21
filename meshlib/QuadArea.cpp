@@ -2,6 +2,7 @@
 #include <stdexcept>
 
 #include "QuadArea.hpp"
+#include "MeshManager.hpp"
 
 namespace meshlib
 {
@@ -62,9 +63,12 @@ QuadArea::QuadArea(vector<Line*> lines) {
                 }
             }
         }
+        
+        auto manager = MeshManager::getDefaultInstance();
+        auto mLine = manager->meshLine(cLine);
 
         l.line = cLine;
-        l.qtdElements = 0;
+        l.qtdElements = mLine.size() - 1;
         lastLine = l;
 
         this->lines.push_back(l);

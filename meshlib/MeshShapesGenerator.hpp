@@ -5,13 +5,13 @@
 #include "Mesh.hpp"
 #include "MeshShapes.hpp"
 #include "MesheableBoundary.hpp"
-#include "AreaMesh.hpp"
+#include "QuadArea.hpp"
 
 namespace meshlib {
 
 class MeshShapesGenerator {
 public:
-    Mesh genMesh(std::vector<MeshShapes::RelativeShapes> shapeList, const AreaMesh &area);
+    Mesh genMesh(std::vector<MeshShapes::RelativeShapes> shapeList, const QuadArea &area);
 
 private:
     MesheableBoundary cBoundary;
@@ -37,6 +37,8 @@ private:
 
     void gen_PPPP();
     void gen_OOOO();
+
+    void generateElements (vector<Vertex*> lastVLine, vector<Vertex*> currVLine);
 };
 
 } // namespace meshlib

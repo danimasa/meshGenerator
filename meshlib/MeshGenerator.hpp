@@ -1,11 +1,8 @@
 #pragma once
 
-#include <unordered_map>
-
 #include "Mesh.hpp"
-#include "Geometry.hpp"
 #include "GeometryList.hpp"
-
+#include "MeshFactory.hpp"
 
 namespace meshlib
 {
@@ -16,13 +13,16 @@ public:
         geomlib::GeometryList* geomList, 
         double elementSize
     )   : elementSize(elementSize),
-        geomList(geomList) {}
+        geomList(geomList) {
+        
+        auto factory = MeshFactory::getDefaultInstance();
+        factory->setElementSize(elementSize);
+    }
 
     Mesh generateMesh();
 
 private:
     double elementSize;
-    std::unordered_map<geomlib::Geometry*, Mesh> meshMap;
     geomlib::GeometryList* geomList;
 };
     

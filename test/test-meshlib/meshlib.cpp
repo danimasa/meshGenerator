@@ -8,10 +8,10 @@ using namespace meshlib;
 using namespace geomlib;
 
 TEST_CASE("meshlib") {
-    Mesh regMesh = generateRegGrid(5, 2);
+    Mesh* regMesh = generateRegGrid(5, 2);
 
-    REQUIRE( regMesh.vertices.size() == 18 );
-    REQUIRE( regMesh.elements.size() == 10 );
+    REQUIRE( regMesh->getVertices().size() == 18 );
+    REQUIRE( regMesh->getElements().size() == 10 );
 
     SECTION("Transfinite mapping") {
         auto factory = GeometryFactory::getDefaultInstance();
@@ -39,9 +39,9 @@ TEST_CASE("meshlib") {
 
         QuadArea area(lines);
 
-        auto transfMesh = transfiniteMapping(regMesh, area);
+        auto transfMesh = transfiniteMapping(*regMesh, area);
 
-        REQUIRE( transfMesh.vertices.size() == 18 );
-        REQUIRE( transfMesh.elements.size() == 10 );
+        REQUIRE( transfMesh->getVertices().size() == 18 );
+        REQUIRE( transfMesh->getElements().size() == 10 );
     }
 }
