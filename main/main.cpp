@@ -64,6 +64,7 @@ void testMeshGeneration() {
     auto p5 = Point(2, 0, 0);
     auto p6 = Point(2, 1, 0);
     auto p7 = Point(1, 1, 0);
+    auto p8 = Point(2.4, 0.3, 0);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
@@ -72,6 +73,7 @@ void testMeshGeneration() {
     auto kp5 = factory->createKeypoint(p5);
     auto kp6 = factory->createKeypoint(p6);
     auto kp7 = factory->createKeypoint(p7);
+    auto kp8 = factory->createKeypoint(p8);
 
     geometries.add(kp1);
     geometries.add(kp2);
@@ -80,6 +82,7 @@ void testMeshGeneration() {
     geometries.add(kp5);
     geometries.add(kp6);
     geometries.add(kp7);
+    geometries.add(kp8);
 
     auto l1 = factory->createStraightLine(kp1, kp2);
     auto l2 = factory->createStraightLine(kp2, kp3);
@@ -98,8 +101,12 @@ void testMeshGeneration() {
     auto a1 = factory->createArea(loops);
     geometries.add(a1);
 
+    auto l9 = factory->createStraightLine(kp5, kp8);
+    auto l10 = factory->createStraightLine(kp8, kp6);
+    std::vector<Line*> pLine ({ l9, l10 });
+
     auto l5 = factory->createStraightLine(kp2, kp5);
-    auto l6 = factory->createStraightLine(kp5, kp6);
+    auto l6 = factory->createPolyline(kp5, kp6, pLine);
     auto l7 = factory->createStraightLine(kp6, kp7);
     auto l8 = factory->createStraightLine(kp7, kp2);
 

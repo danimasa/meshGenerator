@@ -44,4 +44,17 @@ TEST_CASE("meshlib") {
         REQUIRE( transfMesh->getVertices().size() == 18 );
         REQUIRE( transfMesh->getElements().size() == 10 );
     }
+
+    SECTION("lessErrorApproximation") {
+        std::vector<std::pair<int, double>> values ({
+            {5, 5.885}, {8, 7.87}, {3, 3.25}, {4, 3.25}
+        });
+        auto result = lessErrorApproximation(values, APROX_DIRECTION::BOTH);
+        REQUIRE( result.first == 0 );
+        REQUIRE( result.second == 6 );
+
+        result = lessErrorApproximation(values, APROX_DIRECTION::DOWN);
+        REQUIRE( result.first == 3 );
+        REQUIRE( result.second == 3 );
+    }
 }

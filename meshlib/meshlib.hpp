@@ -21,4 +21,19 @@ MesheableBoundary generateMesheableBoundary(const QuadArea &area);
 
 double angleBetweenLines(const Line &l1, const Line &l2);
 
+enum class APROX_DIRECTION { BOTH, UP, DOWN };
+
+/* receives a int approximation and find the index and 
+ *   value of the less error approximation change value
+ *
+ * values: pair of approximated values and original values
+ * range: the range to variate the value for approximation
+ * 
+ * returns: index and new lessError approximation value
+ */
+std::pair<int, int> lessErrorApproximation(
+    std::vector<std::pair<int, double>> values,
+    APROX_DIRECTION direction
+);
+
 }

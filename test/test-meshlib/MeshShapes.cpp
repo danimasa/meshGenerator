@@ -29,21 +29,23 @@ TEST_CASE("MeshShapes.hpp") {
     auto l4 = factory->createStraightLine(kp4, kp1);
 
     std::vector<Line*> lines { l1, l2, l3, l4 };
-    QuadArea a1(lines);
 
     SECTION("Throw error if without elements quantity") {
-        REQUIRE_THROWS( MeshShapes::generateShapeList(a1) );
+        REQUIRE_THROWS( QuadArea(lines) );
+        // REQUIRE_THROWS( MeshShapes::generateShapeList(a1) );
     }
 
     auto meshFactory = MeshFactory::getDefaultInstance();
 
     SECTION("Insufficient mesh size") {
         meshFactory->setElementSize(1.0);
+        QuadArea a1(lines);
         REQUIRE_THROWS_WITH( MeshShapes::generateShapeList(a1), Catch::Contains("insuficient element size") );
     }
 
     SECTION("U Subdivision") {
         meshFactory->setElementSize(0.2);
+        QuadArea a1(lines);
 
         auto shapeList = MeshShapes::generateShapeList(a1);
 
@@ -82,12 +84,14 @@ TEST_CASE("MeshShapes.hpp") {
     }
 
     SECTION("Mixed Subdivision") {
+        meshFactory->setElementSize(0.25);
+        QuadArea a1(lines);
+
         a1.lines[0].qtdElements = 10;
         a1.lines[1].qtdElements = 11;
         a1.lines[2].qtdElements = 13;
         a1.lines[3].qtdElements = 10;
         
-        meshFactory->setElementSize(0.25);
         auto shapeList = MeshShapes::generateShapeList(a1);
 
         REQUIRE(shapeList.size() == 3);
