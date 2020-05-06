@@ -959,7 +959,7 @@ cMesh.addVertex(ref3Vert);
 
 double sElementSize = getElementSize(
     ref1Vert,
-    ref2Vert,
+    ref3Vert,
     VertexLineDirection::Horizontal,
     sLine.size() + 1
 );
