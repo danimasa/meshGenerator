@@ -690,13 +690,13 @@ double sElementSize = getElementSize(
     ref2Vert,
     ref1Vert,
     VertexLineDirection::Horizontal,
-    sLine.size() + 1
+    sLine.size()
 );
 double eElementSize = getElementSize(
     ref1Vert,
     ref3Vert,
     VertexLineDirection::Vertical,
-    eLine.size() + 1
+    eLine.size()
 );
 double wElementSize = getElementSize(
     ref2Vert,
@@ -740,7 +740,7 @@ double nElementSize = getElementSize(
     ref3Vert,
     rVertex,
     VertexLineDirection::Horizontal,
-    nLine.size()
+    nLine.size() - 1
 );
 VertexLineParams nLineParams {
     rVertex,
@@ -787,13 +787,13 @@ double eElementSize = getElementSize(
     ref2Vert,
     ref1Vert,
     VertexLineDirection::Vertical,
-    eLine.size() + 1
+    eLine.size()
 );
 double nElementSize = getElementSize(
     ref1Vert,
     ref3Vert,
     VertexLineDirection::Horizontal,
-    nLine.size() + 1
+    nLine.size()
 );
 
 VertexLineParams Line1Params { 
@@ -831,7 +831,7 @@ double wElementSize = getElementSize(
     ref3Vert,
     rVertex,
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 1
 );
 VertexLineParams Line4Params {
     rVertex,
@@ -877,13 +877,13 @@ double nElementSize = getElementSize(
     ref2Vert,
     ref1Vert,
     VertexLineDirection::Horizontal,
-    nLine.size() + 1
+    nLine.size()
 );
 double wElementSize = getElementSize(
     ref1Vert,
     ref3Vert,
     VertexLineDirection::Vertical,
-    wLine.size() + 1
+    wLine.size()
 );
 
 VertexLineParams Line1Params { 
@@ -921,7 +921,7 @@ double sElementSize = getElementSize(
     rVertex,
     ref3Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    sLine.size() - 1
 );
 VertexLineParams Line4Params {
     ref3Vert,
