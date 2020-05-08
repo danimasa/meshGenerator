@@ -14,8 +14,8 @@ using namespace geomlib;
 Polyline* LineAnalysis::brokeStraightLine(StraightLine *line, KeyPoint *pointInLine) {
   auto factory = GeometryFactory::getDefaultInstance();
 
-  auto line1 = factory->createStraightLine(line->init_point, pointInLine);
-  auto line2 = factory->createStraightLine(pointInLine, line->final_point);
+  auto line1 = geomList->findOrGenerateStraightLine(line->init_point, pointInLine);
+  auto line2 = geomList->findOrGenerateStraightLine(pointInLine, line->final_point);
 
   geomList->add(line1);
   geomList->add(line2);
@@ -125,10 +125,9 @@ void LineAnalysis::findSingularities()
           auto innerFinalPoint = initPosition < finalPosition
             ? line->final_point : line->init_point;
 
-          auto l1 = factory->createStraightLine(innerLine->init_point, innerInitPoint);
-		  geomList->add(l1);
-          auto l2 = factory->createStraightLine(innerFinalPoint, innerLine->final_point);
-		  geomList->add(l2);
+          // auto l1 = factory->createStraightLine(innerLine->init_point, innerInitPoint);
+          auto l1 = geomList->findOrGenerateStraightLine(innerLine->init_point, innerInitPoint);
+          auto l2 = geomList->findOrGenerateStraightLine(innerFinalPoint, innerLine->final_point);
           vector<Line*> lines { l1, line, l2 };
           auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
           polyline->setID(innerLine->getID());
@@ -153,8 +152,7 @@ void LineAnalysis::findSingularities()
                 ? line->final_point : innerLine->final_point;
             }
 
-            auto l1 = factory->createStraightLine(innerInitPoint, innerFinalPoint);
-			geomList->add(l1);
+            auto l1 = geomList->findOrGenerateStraightLine(innerInitPoint, innerFinalPoint);
             vector<Line*> lines { line, l1 };
             auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
             polyline->setID(innerLine->getID());

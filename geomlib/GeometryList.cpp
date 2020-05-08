@@ -2,7 +2,9 @@
 #include <stdexcept>
 #include <iterator>
 #include "GeometryList.hpp"
+#include "GeometryFactory.hpp"
 #include "Area.hpp"
+#include "Line.hpp"
 
 namespace geomlib {
 
@@ -71,7 +73,7 @@ void GeometryList::remove(Geometry* geometry) {
 	}
 }
 
-std::vector<Geometry*> GeometryList::getListOf(GeometryType geometryType) {
+std::vector<Geometry*> GeometryList::getListOf(GeometryType geometryType) const {
     std::vector<Geometry*> result;
     for(auto i = 0; i < objects.size(); i++) {
         auto obj = objects.at(i);
@@ -82,7 +84,7 @@ std::vector<Geometry*> GeometryList::getListOf(GeometryType geometryType) {
     return result;
 }
 
-Geometry* GeometryList::getByID(GeometryType geometryType, int id) {
+Geometry* GeometryList::getByID(GeometryType geometryType, int id) const {
     auto findId = std::find(ids.begin(), ids.end(), id);
     while (findId != ids.end()) {
       int pos = std::distance(ids.begin(), findId);
@@ -92,6 +94,21 @@ Geometry* GeometryList::getByID(GeometryType geometryType, int id) {
       findId = std::find(std::next(findId), ids.end(), id);
     }
     return NULL;
+}
+
+Line* GeometryList::findOrGenerateStraightLine(KeyPoint* init_point, KeyPoint* final_point) {
+  auto listLines = getListOf(GeometryType::Line);
+  for(auto lgeometry : listLines) {
+    auto line = static_cast<Line*>(lgeometry);
+    if(line->getLineType() != LineType::StraightLine) continue;
+    if(line->init_point == init_point && line->final_point == final_point
+      || line->final_point == init_point && line->init_point == final_point) return line;
+  }
+
+  auto factory = GeometryFactory::getDefaultInstance();
+  auto line = factory->createStraightLine(init_point, final_point);
+  add(line);
+  return line;
 }
 
 } // geomlib

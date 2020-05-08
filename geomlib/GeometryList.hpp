@@ -18,8 +18,10 @@ namespace geomlib {
         int capacity() const;
         int size() const;
 
-        std::vector<Geometry*> getListOf(GeometryType geometryType);
-        Geometry* getByID(GeometryType geometryType, int id);
+        Line* findOrGenerateStraightLine(KeyPoint* init_point, KeyPoint* final_point);
+
+        std::vector<Geometry*> getListOf(GeometryType geometryType) const;
+        Geometry* getByID(GeometryType geometryType, int id) const;
 
     private:
         std::vector<Geometry*> objects;
