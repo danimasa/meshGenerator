@@ -1054,25 +1054,25 @@ double sElementSize = getElementSize(
     ref2Vert,
     ref1Vert,
     VertexLineDirection::Horizontal,
-    sLine.size() + 1
+    sLine.size()
 );
 double eElementSize = getElementSize(
     ref3Vert,
     ref2Vert,
     VertexLineDirection::Vertical,
-    eLine.size() + 1
+    eLine.size()
 );
 double nElementSize = getElementSize(
     ref3Vert,
     ref4Vert,
     VertexLineDirection::Horizontal,
-    nLine.size() + 1
+    nLine.size()
 );
 double wElementSize = getElementSize(
     ref4Vert,
     ref1Vert,
     VertexLineDirection::Vertical,
-    wLine.size() + 1
+    wLine.size()
 );
 
 VertexLineParams Line1Params { 

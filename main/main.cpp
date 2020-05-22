@@ -64,7 +64,7 @@ void testMeshGeneration() {
     auto p5 = Point(2, 0, 0);
     auto p6 = Point(2, 1, 0);
     auto p7 = Point(1, 1, 0);
-    auto p8 = Point(2.4, 0.7, 0);
+    auto p8 = Point(2.4, 0.5, 0);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
@@ -128,7 +128,7 @@ void testMeshGeneration() {
     // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
-    MeshGenerator generator(&geometries, 0.25);
+    MeshGenerator generator(&geometries, 0.18);
     Mesh mesh = generator.generateMesh();
 
     // AreaMesh meshGenerator(0.5);
