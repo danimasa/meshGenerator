@@ -51,7 +51,7 @@ std::vector<Vertex*> MeshManager::meshLine(Line* line) {
             iPindex++;
         }
     } else {
-        innerVertices = factory->subdivideLine(line);
+        innerVertices = factory->generateLineElements(line);
     }
 
     for(auto v : innerVertices)

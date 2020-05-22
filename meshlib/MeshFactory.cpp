@@ -14,14 +14,44 @@ MeshFactory* MeshFactory::getDefaultInstance()
     return &instance;
 }
 
-vector<Vertex*> MeshFactory::generateLineVertices(
+vector<Vertex*> MeshFactory::m_generateLineElements(
     Line* line,
-    int qtdElements,
-    double lastXPos,
     double pPosition,
     bool direct
 ) const {
     vector<Vertex*> vList;
+
+    if(line->getLineType() == LineType::Polyline) {
+        auto pLine = static_cast<Polyline*>(line);
+        auto lines = pLine->getLinesWithDirection();
+        for(int i = 0; i < lines.size(); i++) {
+            auto l = lines[i];
+            double pPosition = line->isPointInLine(*l.line->final_point);
+            bool direct = l.direction == LineDirection::DIRECT;
+            auto pList = m_generateLineElements(l.line, pPosition, direct);
+            vList.insert(vList.end(), pList.begin(), pList.end());
+        }
+    } else {
+        int qtdElements = line->getElementsQty();
+
+        if (qtdElements <= 0.0)
+            throw "MeshFactory generateLineElements, necessary set elements quantity first.";
+
+        double step = 1.0 / qtdElements;
+        for (int i = 1; i < qtdElements; i++) {
+            double pos = (i * step) * pPosition;
+            if (!direct) pos = 1.0 - pos;
+            auto p = line->pointAtPosition(pos);
+            auto v = genVertex(&p);
+            vList.push_back(v);
+        }
+    }
+
+    return vList;
+}
+
+void MeshFactory::m_fillLineElementsQty(Line* line) const {
+    int qtdElements = ceil(line->length() / elementSize);
 
     if(line->getLineType() == LineType::Polyline) {
         auto totalLenght = line->length();
@@ -48,10 +78,7 @@ vector<Vertex*> MeshFactory::generateLineVertices(
         for(int i = 0; i < lines.size(); i++) {
             int elements = aproxValues[i].first;
             auto l = lines[i];
-            double pPosition = line->isPointInLine(*l.line->final_point);
-            bool direct = l.direction == LineDirection::DIRECT;
-            auto pList = generateLineVertices(l.line, elements, lXPos, pPosition, direct);
-            vList.insert(vList.end(), pList.begin(), pList.end());
+            l.line->setElementsQty(elements);
         }
 
         // auto pLine = dynamic_cast<Polyline*>(line);
@@ -84,18 +111,9 @@ vector<Vertex*> MeshFactory::generateLineVertices(
         // for(auto v : pList)
         //     vList.push_back(v);
 
-    } else {
-        double step = 1.0 / qtdElements;
-        for (int i = 1; i < qtdElements; i++) {
-            double pos = lastXPos + (i * step) * (pPosition - lastXPos);
-            if (!direct) pos = 1.0 - pos;
-            auto p = line->pointAtPosition(pos);
-            auto v = genVertex(&p);
-            vList.push_back(v);
-        }
-    }
+    } 
 
-    return vList;
+    line->setElementsQty(qtdElements);
 }
 
 void MeshFactory::setElementSize(double elementSize) {
@@ -112,16 +130,15 @@ Vertex* MeshFactory::genVertex(double x, double y, double z) const {
     return vertex;
 }
 
-vector<Vertex*> MeshFactory::subdivideLine(Line *line, int qtdElements) const {
-    return generateLineVertices(line, qtdElements);
+void MeshFactory::fillLineElementsQty(Line *line) const {
+    if (elementSize <= 0.0)
+        throw "MeshFactory fillLineElementsQty, necessary set elementSize first";
+
+    return m_fillLineElementsQty(line);
 }
 
-vector<Vertex*> MeshFactory::subdivideLine(Line *line) const {
-    if (elementSize <= 0.0)
-        throw "MeshFactory subdivideLine, necessary set elementSize first";
-
-    int qtdElements = ceil(line->length() / elementSize);
-    return subdivideLine(line, qtdElements);
+vector<Vertex*> MeshFactory::generateLineElements(Line *line) const {
+    return m_generateLineElements(line);
 }
 
 Mesh* MeshFactory::genSurfaceMesh(QuadArea *area) const {

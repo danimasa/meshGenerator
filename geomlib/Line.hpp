@@ -31,10 +31,16 @@ namespace geomlib {
         virtual Vector get_init_vector() const = 0;
         virtual Vector get_final_vector() const = 0;
 
+        inline int getElementsQty() { return elementsQty; }
+        inline void setElementsQty(int elements) { elementsQty = elements; }
+
     protected:
         Line(KeyPoint* init_point, KeyPoint* final_point) :
             Geometry(GeometryType::Line),
             init_point(init_point), final_point(final_point) {}
+
+    private:
+        int elementsQty;
     };
 }
 
