@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Vertex.hpp"
-#include "Point.hpp"
-#include "Line.hpp"
-#include "QuadArea.hpp"
 #include "Area.hpp"
+#include "GeometryList.hpp"
+#include "Line.hpp"
 #include "Mesh.hpp"
+#include "Point.hpp"
+#include "QuadArea.hpp"
+#include "Vertex.hpp"
 
 namespace meshlib {
 
@@ -27,6 +28,7 @@ public:
     Mesh* genSurfaceMesh(QuadArea *area) const;
 
     QuadArea* subdivideArea(Area *area) const;
+    void evenElementsInArea(GeometryList* geomList);
 
     MeshFactory(MeshFactory const&) = delete;
     void operator=(MeshFactory const&) = delete;
@@ -39,6 +41,7 @@ private:
         bool direct = true) const;
 
     void m_fillLineElementsQty(Line* line) const;
+    void m_evenElementsByNumberOfContacts(vector<Line*> &okLines, int nContacts, GeometryList* geomList);
 
     double elementSize = 0.0;
 };

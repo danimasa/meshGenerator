@@ -2,6 +2,9 @@
 
 #include <vector>
 #include <string>
+#include <map>
+
+#include "Area.hpp"
 #include "Geometry.hpp"
 #include "Line.hpp"
 
@@ -23,9 +26,12 @@ namespace geomlib {
         std::vector<Geometry*> getListOf(GeometryType geometryType) const;
         Geometry* getByID(GeometryType geometryType, int id) const;
 
+        vector<Area*> areasFromLine(Line* line);
+
     private:
         std::vector<Geometry*> objects;
         std::vector<int> ids;
+        std::map<Line*, vector<Area*>> mapLinesToArea;
 
         void substituteInAreas(Line *line);
     };

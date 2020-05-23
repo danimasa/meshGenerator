@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+
 #include "Vector.hpp"
 #include "KeyPoint.hpp"
 #include "Geometry.hpp"

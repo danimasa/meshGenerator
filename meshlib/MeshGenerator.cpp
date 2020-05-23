@@ -19,6 +19,9 @@ Mesh MeshGenerator::generateMesh() {
         factory->fillLineElementsQty(line);
     }
 
+    // make areas with sum even elements
+    factory->evenElementsInArea(geomList);
+
     // Generate Points Nodes
     auto points = geomList->getListOf(geomlib::GeometryType::Keypoint);
     for(auto point : points) {

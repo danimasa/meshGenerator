@@ -1,5 +1,6 @@
 #include <unordered_map>
 
+#include "GeometryList.hpp"
 #include "MeshFactory.hpp"
 #include "meshlib.hpp"
 #include "MeshShapes.hpp"
@@ -115,6 +116,49 @@ void MeshFactory::m_fillLineElementsQty(Line* line) const {
 
     line->setElementsQty(qtdElements);
 }
+
+void MeshFactory::m_evenElementsByNumberOfContacts(vector<Line*> &okLines, int nContacts, GeometryList* geomList) {
+   auto areas = geomList->getListOf(GeometryType::Area);
+   for (int i = 0; i < areas.size(); i++) {
+        auto area = static_cast<Area*>(areas[i]);
+        auto eLoop = area->loops[0];
+        int nContact = 0;
+        int totalElements = 0;
+        for(auto loopline : eLoop->lines) {
+            auto nAreas = geomList->areasFromLine(loopline).size();
+            totalElements += loopline->getElementsQty();
+            if(nAreas > 1) nContact++;
+        }
+        if (nContact > 4) throw "evenElementsInArea: only allowed quadrilaterals";
+        if (nContact == nContacts && totalElements % 2 != 0) {
+            std::vector<std::pair<int, double>> aproxValues;
+
+            vector<Line*> notOkLines;
+            for(auto l : eLoop->lines) {
+                auto findOk = std::find(okLines.begin(), okLines.end(), l);
+                if (findOk != okLines.end()) continue;
+
+                double eOriginal = l->length() / elementSize;
+                int eApprox = l->getElementsQty();
+                aproxValues.push_back({ eApprox, eOriginal });
+                notOkLines.push_back(l);
+            }
+
+            auto pair = lessErrorApproximation(aproxValues, APROX_DIRECTION::BOTH);
+            auto editedLine = notOkLines[pair.first];
+            editedLine->setElementsQty(pair.second);
+            okLines.push_back(editedLine);
+        }
+   }
+}
+
+void MeshFactory::evenElementsInArea(GeometryList* geomList) {
+    vector<Line*> okLines;
+    for (int i = 4; i > 0; i--) {
+        m_evenElementsByNumberOfContacts(okLines, i, geomList);
+    }
+}
+
 
 void MeshFactory::setElementSize(double elementSize) {
     this->elementSize = elementSize;

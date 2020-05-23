@@ -62,9 +62,9 @@ void testMeshGeneration() {
     auto p3 = Point(1, 2, 0);
     auto p4 = Point(0, 2, 0);
     auto p5 = Point(2, 0, 0);
-    auto p6 = Point(2, 1, 0);
+    auto p6 = Point(2, 1.5, 0);
     auto p7 = Point(1, 1, 0);
-    auto p8 = Point(2.4, 0.5, 0);
+    auto p8 = Point(2.4, 0.4, 0);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);

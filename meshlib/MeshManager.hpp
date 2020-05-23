@@ -2,13 +2,14 @@
 
 #include <unordered_map>
 
+#include "Area.hpp"
+#include "AreaMesh.hpp"
 #include "Geometry.hpp"
+#include "GeometryList.hpp"
 #include "KeyPoint.hpp"
 #include "Line.hpp"
-#include "Area.hpp"
 #include "Mesh.hpp"
 #include "MeshFactory.hpp"
-#include "AreaMesh.hpp"
 
 namespace meshlib {
 
