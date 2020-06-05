@@ -180,4 +180,21 @@ Vector Polyline::get_final_vector() const {
   return lastLine->line->get_final_vector();
 }
 
+vector<Area*> Polyline::getAttachedAreas() const {
+  vector<Area*> result;
+  for(auto l : lines) {
+    auto lAttached = l.line->getAttachedAreas();
+    result.insert(result.begin(), lAttached.begin(), lAttached.end());
+  }
+  result.insert(result.begin(), attachedAreas.begin(), attachedAreas.end());
+  return result;
+}
+
+void Polyline::setAttachedAreas(vector<Area*> areas) {
+  attachedAreas = areas;
+  for(auto area : areas)
+    for(auto l : lines)
+      l.line->attachedAreas.push_back(area);
+}
+
 }

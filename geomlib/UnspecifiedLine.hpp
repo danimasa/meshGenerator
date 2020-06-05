@@ -21,6 +21,8 @@ public:
     Vector get_init_vector() const { return *tangent_init_vector; }
     Vector get_final_vector() const { return *tangent_final_vector; }
 
+    inline vector<Area*> getAttachedAreas() const { return attachedAreas; }
+
 private:
     UnspecifiedLine(
         KeyPoint* init_point,

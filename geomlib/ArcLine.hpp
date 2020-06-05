@@ -21,6 +21,8 @@ public:
     Vector get_final_vector() const;
     Vector get_init_vector() const;
 
+    inline vector<Area*> getAttachedAreas() const { return attachedAreas; }
+
 private:
     ArcLine(
         Plane* plane,

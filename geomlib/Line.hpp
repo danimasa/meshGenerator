@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "Vector.hpp"
 #include "KeyPoint.hpp"
@@ -17,6 +18,9 @@ namespace geomlib {
         DIRECT,
         INVERSE
     };
+
+    class Area;
+    class Polyline;
 
     class Line : public Geometry {
     public:
@@ -35,13 +39,20 @@ namespace geomlib {
         inline int getElementsQty() { return elementsQty; }
         inline void setElementsQty(int elements) { elementsQty = elements; }
 
+        virtual vector<Area*> getAttachedAreas() const = 0;
+
     protected:
         Line(KeyPoint* init_point, KeyPoint* final_point) :
             Geometry(GeometryType::Line),
             init_point(init_point), final_point(final_point) {}
 
+        vector<Area*> attachedAreas;
+
     private:
         int elementsQty;
+
+        friend class Area;
+        friend class Polyline;
     };
 }
 

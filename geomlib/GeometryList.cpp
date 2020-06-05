@@ -5,7 +5,6 @@
 #include "GeometryFactory.hpp"
 #include "Area.hpp"
 #include "Line.hpp"
-#include "Polyline.hpp"
 
 namespace geomlib {
 
@@ -46,33 +45,12 @@ void GeometryList::add(Geometry* geometry) {
       int pos = std::distance(ids.begin(), findId);
       if (objects[pos]->getGeometryType() == geometry->getGeometryType()) {
         ids[pos] = geometry->getID();
-        auto oldObj = objects[pos];
         objects[pos] = geometry;
-        if (geometry->getGeometryType() == GeometryType::Line) {
-          auto oldLine = static_cast<Line*>(oldObj);
-          auto newLine = static_cast<Line*>(geometry);
-          auto mappedAreas = mapLinesToArea[oldLine];
-          mapLinesToArea[newLine] = mappedAreas;
-          substituteInAreas(newLine);
-        }
+        if (geometry->getGeometryType() == GeometryType::Line)
+          substituteInAreas(dynamic_cast<Line*>(geometry));
         return;
       }
       findId = std::find(std::next(findId), ids.end(), geometry->getID());
-    }
-
-    if (geometry->getGeometryType() == GeometryType::Area) {
-      auto area = static_cast<Area*>(geometry);
-      auto loops = area->loops;
-      for (auto loop : loops) {
-        auto lpLines = loop->lines;
-        for (auto l : lpLines) {
-          auto cAreas = mapLinesToArea[l];
-          auto findArea = std::find(cAreas.begin(), cAreas.end(), area);
-          if (findArea == cAreas.end())
-            cAreas.push_back(area);
-          mapLinesToArea[l] = cAreas;
-        }
-      }
     }
 
     ids.push_back(geometry->getID());
@@ -93,15 +71,6 @@ void GeometryList::remove(Geometry* geometry) {
 		}
 		findId = std::find(std::next(findId), ids.end(), geometry->getID());
 	}
-
-  if(geometry->getGeometryType() == GeometryType::Area) {
-    for(auto lineArea : mapLinesToArea) {
-      auto areas = lineArea.second;
-      auto findArea = std::find(areas.begin(), areas.end(), geometry);
-      if (findArea != areas.end())
-        areas.erase(findArea);
-    }
-  }
 }
 
 std::vector<Geometry*> GeometryList::getListOf(GeometryType geometryType) const {
@@ -132,26 +101,14 @@ Line* GeometryList::findOrGenerateStraightLine(KeyPoint* init_point, KeyPoint* f
   for(auto lgeometry : listLines) {
     auto line = static_cast<Line*>(lgeometry);
     if(line->getLineType() != LineType::StraightLine) continue;
-    if(line->init_point == init_point && line->final_point == final_point
-      || line->final_point == init_point && line->init_point == final_point) return line;
+    if((line->init_point == init_point && line->final_point == final_point)
+      || (line->final_point == init_point && line->init_point == final_point)) return line;
   }
 
   auto factory = GeometryFactory::getDefaultInstance();
   auto line = factory->createStraightLine(init_point, final_point);
   add(line);
   return line;
-}
-
-vector<Area*> GeometryList::areasFromLine(Line* line) {
-  vector<Area*> result = mapLinesToArea[line];
-  if (line->getLineType() == LineType::Polyline) {
-    auto pLine = static_cast<Polyline*>(line);
-    for(auto l : pLine->get_lines()) {
-      auto pAreas = areasFromLine(l);
-      result.insert(result.begin(), pAreas.begin(), pAreas.end());
-    }
-  }
-  return result;
 }
 
 } // geomlib

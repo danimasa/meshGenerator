@@ -125,29 +125,33 @@ void MeshFactory::m_evenElementsByNumberOfContacts(vector<Line*> &okLines, int n
         int nContact = 0;
         int totalElements = 0;
         for(auto loopline : eLoop->lines) {
-            auto nAreas = geomList->areasFromLine(loopline).size();
+            auto nAreas = loopline->getAttachedAreas().size();
             totalElements += loopline->getElementsQty();
             if(nAreas > 1) nContact++;
         }
         if (nContact > 4) throw "evenElementsInArea: only allowed quadrilaterals";
-        if (nContact == nContacts && totalElements % 2 != 0) {
-            std::vector<std::pair<int, double>> aproxValues;
+        if (nContact == nContacts) {
+            if(totalElements % 2 != 0) {
+                std::vector<std::pair<int, double>> aproxValues;
 
-            vector<Line*> notOkLines;
-            for(auto l : eLoop->lines) {
-                auto findOk = std::find(okLines.begin(), okLines.end(), l);
-                if (findOk != okLines.end()) continue;
+                vector<Line*> notOkLines;
+                for(auto l : eLoop->lines) {
+                    auto findOk = std::find(okLines.begin(), okLines.end(), l);
+                    if (findOk != okLines.end()) continue;
 
-                double eOriginal = l->length() / elementSize;
-                int eApprox = l->getElementsQty();
-                aproxValues.push_back({ eApprox, eOriginal });
-                notOkLines.push_back(l);
+                    double eOriginal = l->length() / elementSize;
+                    int eApprox = l->getElementsQty();
+                    aproxValues.push_back({ eApprox, eOriginal });
+                    notOkLines.push_back(l);
+                }
+
+                auto pair = lessErrorApproximation(aproxValues, APROX_DIRECTION::BOTH);
+                auto editedLine = notOkLines[pair.first];
+                editedLine->setElementsQty(pair.second);
             }
 
-            auto pair = lessErrorApproximation(aproxValues, APROX_DIRECTION::BOTH);
-            auto editedLine = notOkLines[pair.first];
-            editedLine->setElementsQty(pair.second);
-            okLines.push_back(editedLine);
+            for(auto loopline : eLoop->lines)
+                okLines.push_back(loopline);
         }
    }
 }
