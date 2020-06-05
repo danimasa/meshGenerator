@@ -101,8 +101,8 @@ Line* GeometryList::findOrGenerateStraightLine(KeyPoint* init_point, KeyPoint* f
   for(auto lgeometry : listLines) {
     auto line = static_cast<Line*>(lgeometry);
     if(line->getLineType() != LineType::StraightLine) continue;
-    if(line->init_point == init_point && line->final_point == final_point
-      || line->final_point == init_point && line->init_point == final_point) return line;
+    if((line->init_point == init_point && line->final_point == final_point)
+      || (line->final_point == init_point && line->init_point == final_point)) return line;
   }
 
   auto factory = GeometryFactory::getDefaultInstance();
