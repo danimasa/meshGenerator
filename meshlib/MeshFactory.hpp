@@ -21,8 +21,8 @@ public:
     Vertex* genVertex(Point *point) const;
     Vertex* genVertex(double x, double y, double z) const;
 
-    vector<Vertex*> subdivideLine(Line *line) const;
-    vector<Vertex*> subdivideLine(Line *line, int qtdElements) const;
+    void fillLineElementsQty(Line *line) const;
+    vector<Vertex*> generateLineElements(Line *line) const;
 
     Mesh* genSurfaceMesh(QuadArea *area) const;
 
@@ -33,12 +33,12 @@ public:
 private:
     MeshFactory() {}
 
-    vector<Vertex*> generateLineVertices(
+    vector<Vertex*> m_generateLineElements(
         Line* line,
-        int qtdElements,
-        double lastXPos = 0.0,
         double pPosition = 1.0,
         bool direct = true) const;
+
+    void m_fillLineElementsQty(Line* line) const;
 
     double elementSize = 0.0;
 };
