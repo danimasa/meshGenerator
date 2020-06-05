@@ -62,9 +62,10 @@ void testMeshGeneration() {
     auto p3 = Point(1, 2, 0);
     auto p4 = Point(0, 2, 0);
     auto p5 = Point(2, 0, 0);
-    auto p6 = Point(2, 1, 0);
+    auto p6 = Point(2, 1.3, 0);
     auto p7 = Point(1, 1, 0);
-    auto p8 = Point(2.4, 0.5, 0);
+    auto p8 = Point(3, 0, 0);
+    auto p9 = Point(3, 0.5, 0);
 
     auto kp1 = factory->createKeypoint(p1);
     auto kp2 = factory->createKeypoint(p2);
@@ -74,6 +75,7 @@ void testMeshGeneration() {
     auto kp6 = factory->createKeypoint(p6);
     auto kp7 = factory->createKeypoint(p7);
     auto kp8 = factory->createKeypoint(p8);
+    auto kp9 = factory->createKeypoint(p9);
 
     geometries.add(kp1);
     geometries.add(kp2);
@@ -83,6 +85,7 @@ void testMeshGeneration() {
     geometries.add(kp6);
     geometries.add(kp7);
     geometries.add(kp8);
+    geometries.add(kp9);
 
     auto l1 = factory->createStraightLine(kp1, kp2);
     auto l2 = factory->createStraightLine(kp2, kp3);
@@ -101,12 +104,8 @@ void testMeshGeneration() {
     auto a1 = factory->createArea(loops);
     geometries.add(a1);
 
-    auto l9 = factory->createStraightLine(kp5, kp8);
-    auto l10 = factory->createStraightLine(kp8, kp6);
-    std::vector<Line*> pLine ({ l9, l10 });
-
     auto l5 = factory->createStraightLine(kp2, kp5);
-    auto l6 = factory->createPolyline(kp5, kp6, pLine);
+    auto l6 = factory->createStraightLine(kp5, kp6);
     auto l7 = factory->createStraightLine(kp6, kp7);
     auto l8 = factory->createStraightLine(kp7, kp2);
 
@@ -121,6 +120,20 @@ void testMeshGeneration() {
     auto a2 = factory->createArea(loops2);
     geometries.add(a2);
 
+    auto l9 = factory->createStraightLine(kp5, kp8);
+    auto l10 = factory->createStraightLine(kp8, kp9);
+    auto l11 = factory->createStraightLine(kp9, kp6);
+
+    geometries.add(l9);
+    geometries.add(l10);
+    geometries.add(l11);
+
+    std::vector<Line*> lines3 ({ l9, l10, l11, l6 });
+    Area::Loop loop3 (lines3);
+    std::vector<Area::Loop*> loops3 ({ &loop3 });
+    auto a3 = factory->createArea(loops3);
+    geometries.add(a3);
+
     processlib::LineAnalysis analyser(&geometries);
     analyser.findSingularities();
 
@@ -128,7 +141,7 @@ void testMeshGeneration() {
     // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
-    MeshGenerator generator(&geometries, 0.18);
+    MeshGenerator generator(&geometries, 0.15);
     Mesh mesh = generator.generateMesh();
 
     // AreaMesh meshGenerator(0.5);

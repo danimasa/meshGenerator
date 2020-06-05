@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <vector>
+#include <algorithm>
 
 #include "LineAnalysis.hpp"
 #include "GeometryFactory.hpp"
@@ -22,6 +23,7 @@ Polyline* LineAnalysis::brokeStraightLine(StraightLine *line, KeyPoint *pointInL
 
   vector<Line*> lines {line1, line2};
   auto polyline = factory->createPolyline(line->init_point, line->final_point, lines);
+  polyline->setAttachedAreas(line->getAttachedAreas());
   return polyline;
 }
 
@@ -38,6 +40,7 @@ Polyline* LineAnalysis::brokeArcLine(ArcLine *line, KeyPoint *pointInLine) {
 
   vector<Line*> lines {line1, line2};
   auto polyline = factory->createPolyline(line->init_point, line->final_point, lines);
+  polyline->setAttachedAreas(line->getAttachedAreas());
   return polyline;
 }
 
@@ -91,6 +94,7 @@ void LineAnalysis::brokeAndSubstitute(Line *line, Line *innerLine, KeyPoint *bro
     auto refPolyline = brokeInPolyline(line, secBrokePoint);
     auto newLines = substituteCommomLine(refPolyline->get_lines(), polyline);
     auto secPolyline = factory->createPolyline(line->init_point, line->final_point, newLines);
+    secPolyline->setAttachedAreas(line->getAttachedAreas());
     secPolyline->setID(line->getID());
     geomList->add(secPolyline);
     processedLinePoint[line->getID()] = secBrokePoint->getID();
@@ -130,6 +134,7 @@ void LineAnalysis::findSingularities()
           auto l2 = geomList->findOrGenerateStraightLine(innerFinalPoint, innerLine->final_point);
           vector<Line*> lines { l1, line, l2 };
           auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
+          polyline->setAttachedAreas(innerLine->getAttachedAreas());
           polyline->setID(innerLine->getID());
           geomList->add(polyline);
         }
@@ -155,6 +160,7 @@ void LineAnalysis::findSingularities()
             auto l1 = geomList->findOrGenerateStraightLine(innerInitPoint, innerFinalPoint);
             vector<Line*> lines { line, l1 };
             auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
+            polyline->setAttachedAreas(innerLine->getAttachedAreas());
             polyline->setID(innerLine->getID());
             geomList->add(polyline);
         }

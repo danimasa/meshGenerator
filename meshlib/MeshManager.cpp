@@ -1,4 +1,6 @@
 #include "MeshManager.hpp"
+
+#include "meshlib.hpp"
 #include "Polyline.hpp"
 
 namespace meshlib {

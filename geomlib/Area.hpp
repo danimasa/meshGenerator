@@ -24,9 +24,8 @@ public:
   GeometryType getGeometryType() const { return GeometryType::Area; }
 
 private:
-  Area(vector<Loop*> loops) :
-    Geometry(GeometryType::Area),
-     loops(loops) {}
+  Area(vector<Loop*> loops);
+  ~Area();
 
   friend class GeometryFactory;
 }; // Area

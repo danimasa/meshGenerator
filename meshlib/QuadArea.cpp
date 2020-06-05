@@ -114,20 +114,24 @@ vector<Line*> QuadArea::getLines() const {
 vector<Point*> QuadArea::getVertex() const {
     std::vector<Point*> result;
 
-    Point* lastPoint = nullptr;
-    for(auto l : lines) {
-        if (lastPoint == nullptr) {
-            lastPoint = l.line->init_point;
-            result.push_back(l.line->init_point);
-            continue;
-        }
-
-        if (lastPoint == l.line->init_point) {
-            result.push_back(l.line->final_point);
-            lastPoint = l.line->final_point;
-        } else {
-            result.push_back(l.line->init_point);
-            lastPoint = l.line->init_point;
+    for(int i = 0; i < lines.size(); i++) {
+        auto l = lines[i];
+        switch (i)
+        {
+        case 0:
+        case 1:
+            if(l.direction == LineDirection::DIRECT)
+                result.push_back(l.line->init_point);
+            else
+                result.push_back(l.line->final_point);
+            break;
+        case 2:
+        case 3:
+            if(l.direction == LineDirection::DIRECT)
+                result.push_back(l.line->final_point);
+            else
+                result.push_back(l.line->init_point);
+            break;
         }
     }
 

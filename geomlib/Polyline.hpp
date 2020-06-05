@@ -27,6 +27,9 @@ public:
     Vector get_init_vector() const;
     Vector get_final_vector() const;
 
+    vector<Area*> getAttachedAreas() const;
+    void setAttachedAreas(vector<Area*> areas);
+
 private:
     Polyline(
         KeyPoint* init_point,

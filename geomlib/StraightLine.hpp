@@ -17,6 +17,8 @@ public:
     Vector get_init_vector() const;
     Vector get_final_vector() const;
 
+    inline vector<Area*> getAttachedAreas() const { return attachedAreas; }
+
 private:
     StraightLine(KeyPoint* init_point, KeyPoint* final_point) :
         Line(init_point, final_point) {}
