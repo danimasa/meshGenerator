@@ -25,4 +25,8 @@ Area::~Area() {
                 ), line->attachedAreas.end());
 }
 
+void Area::addChild(Area* area) {
+    children.push_back(area);
+}
+
 } // namespace geomlib

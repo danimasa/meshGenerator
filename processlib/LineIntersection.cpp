@@ -7,6 +7,7 @@
 #include <CGAL/Arr_segment_traits_2.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Segment_3.h>
+#include <CGAL/Line_3.h>
 #include <CGAL/Sweep_line_2_algorithms.h>
 #include <CGAL/box_intersection_d.h>
 #include <CGAL/intersections.h>
@@ -14,10 +15,12 @@
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::Point_2                                     Point_2;
 typedef Kernel::Point_3                                     Point_3;
+typedef Kernel::Vector_3                                    Vector_3;
 typedef CGAL::Arr_segment_traits_2<Kernel>                  Traits_2;
 typedef Traits_2::Curve_2                                   Segment_2;
 typedef Kernel::Segment_3                                   Segment_3;
 typedef Kernel::Intersect_3                                 Intersect_3;
+typedef Kernel::Line_3                                      Line_3;
 
 namespace processlib
 {
@@ -41,9 +44,6 @@ Segments generateCGALCurveList(vector<Line*> segments) {
 
         Point_3 p(l->init_point->x, l->init_point->y, l->init_point->z);
         Point_3 q(l->final_point->x, l->final_point->y, l->final_point->z);
-        // Point_2 p1(l->init_point->x, l->init_point->y);
-        // Point_2 p2(l->final_point->x, l->final_point->y);
-        // Segment_2 curve(p1, p2);
         Segment_3 curve(p, q);
         Segment_Cgal seg {l, curve};
         list.push_back(seg);
@@ -52,8 +52,9 @@ Segments generateCGALCurveList(vector<Line*> segments) {
     return list;
 }
 
-vector<Point_Ints> LineIntersection::findIntersections() {
-    Segments curves = generateCGALCurveList(m_segments);
+vector<Point_Ints> LineIntersection::findIntersections(vector<Line*> &lines) {
+    Segments curves = generateCGALCurveList(lines);
+    vector<Point_Ints> m_intersections;
 
     std::vector<CgalBox> boxes;
     for (Iterator i = curves.begin(); i != curves.end(); ++i)
@@ -63,7 +64,7 @@ vector<Point_Ints> LineIntersection::findIntersections() {
     for (std::vector<CgalBox>::iterator i = boxes.begin(); i != boxes.end(); ++i)
         ptr.push_back(&*i);
 
-    CGAL::box_self_intersection_d(ptr.begin(), ptr.end(), [this](const CgalBox *a, const CgalBox *b){
+    CGAL::box_self_intersection_d(ptr.begin(), ptr.end(), [&](const CgalBox *a, const CgalBox *b){
        if(!a->handle()->segment.is_degenerate() && !b->handle()->segment.is_degenerate() &&
             CGAL::do_intersect(a->handle()->segment, b->handle()->segment)) {
         
@@ -96,11 +97,26 @@ vector<Point_Ints> LineIntersection::findIntersections() {
        }
     });
 
-    // std::list<Point_2> pts;
-    // CGAL::compute_intersection_points(curves.begin(), curves.end(),
-    //     std::back_inserter(pts));
-
     return m_intersections;
+}
+
+Point LineIntersection::findIntersection(const ContinuousLine &l1, const ContinuousLine &l2) {
+    Point_3 p1(l1.point->x, l1.point->y, l1.point->z);
+    Vector_3 v1(l1.direction->x, l1.direction->y, l1.direction->z);
+    Line_3 line1 (p1, v1);
+
+    Point_3 p2(l2.point->x, l2.point->y, l2.point->z);
+    Vector_3 v2(l2.direction->x, l2.direction->y, l2.direction->z);
+    Line_3 line2 (p2, v2);
+
+    auto result = CGAL::intersection(line1, line2);
+    if (result) {
+        if (const Point_3* s = boost::get<Point_3>(&*result)) {
+            return Point(s->x(), s->y(), s->z());
+        }
+    }
+
+    throw "Lines Intersections not found.";
 }
 
 } // namespace processlib

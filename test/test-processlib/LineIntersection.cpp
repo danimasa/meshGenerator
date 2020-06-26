@@ -27,9 +27,8 @@ TEST_CASE("LineIntersection.hpp") {
         std::vector<Line*> lines;
         lines.push_back(l1);
         lines.push_back(l2);
-        LineIntersection intersect_job(lines);
 
-        auto intersections = intersect_job.findIntersections();
+        auto intersections = LineIntersection::findIntersections(lines);
         
         REQUIRE( intersections.size() == 1 );
         auto inters = intersections[0];
@@ -59,9 +58,8 @@ TEST_CASE("LineIntersection.hpp") {
         std::vector<Line*> lines;
         lines.push_back(l1);
         lines.push_back(l2);
-        LineIntersection intersect_job(lines);
 
-        auto intersections = intersect_job.findIntersections();
+        auto intersections = LineIntersection::findIntersections(lines);
         
         REQUIRE( intersections.size() == 1 );
         auto inters = intersections[0];
@@ -91,9 +89,8 @@ TEST_CASE("LineIntersection.hpp") {
         std::vector<Line*> lines;
         lines.push_back(l1);
         lines.push_back(l2);
-        LineIntersection intersect_job(lines);
 
-        auto intersections = intersect_job.findIntersections();
+        auto intersections = LineIntersection::findIntersections(lines);
         
         REQUIRE( intersections.size() == 0 );
     }

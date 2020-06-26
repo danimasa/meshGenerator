@@ -70,4 +70,15 @@ Vector operator*(const Vector &v1, double value) {
     double z = v1.z * value;
     return Vector(x, y, z);
 }
+
+Vector Vector::bissector(const Vector &v1, const Vector &v2) {
+    Vector norm1 {v1};
+    Vector norm2 {v2};
+
+    norm1.normalise();
+    norm2.normalise();
+
+    return norm1 + norm2;
+}
+
 }

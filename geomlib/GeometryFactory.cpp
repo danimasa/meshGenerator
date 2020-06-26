@@ -147,4 +147,12 @@ Area* GeometryFactory::createArea(vector<Area::Loop*> loops) const {
     return new Area(loops);
 }
 
+Area* GeometryFactory::createArea(vector<Line*> outerLoop) const {
+    auto loop = new Area::Loop(outerLoop);
+    verifyAreaLoop(loop);
+
+    vector<Area::Loop*> loops = {loop};
+    return new Area(loops);
+}
+
 }

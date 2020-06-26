@@ -20,15 +20,16 @@ public:
   };
 
   vector<Loop*> loops;
-
+  vector<Area*> getChildren() const { return children; }
+  void addChild(Area* area);
+  
   GeometryType getGeometryType() const { return GeometryType::Area; }
-
-protected:
-  vector<Area*> children;
 
 private:
   Area(vector<Loop*> loops);
   ~Area();
+
+  vector<Area*> children;
 
   friend class GeometryFactory;
 }; // Area

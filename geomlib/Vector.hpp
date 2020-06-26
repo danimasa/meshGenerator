@@ -35,6 +35,9 @@ namespace geomlib {
         // Vetor inverso
         Vector invert();
 
+        // Bissetriz entre os vetores
+        static Vector bissector(const Vector &v1, const Vector &v2);
+
         friend Vector operator+(const Vector &v1, const Vector &v2);
         friend Vector operator-(const Vector &v1, const Vector &v2);
         friend Vector operator*(const Vector &v1, double value);

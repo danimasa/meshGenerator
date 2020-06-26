@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <Line.hpp>
+#include "Line.hpp"
+#include "Vector.hpp"
 
 namespace processlib
 {
@@ -10,20 +11,19 @@ using namespace geomlib;
 
 struct Point_Ints {
     Point intersection;
-    vector<Line*> segments;
+    std::vector<Line*> segments;
 };
  
 class LineIntersection {
 public:
-    LineIntersection(vector<Line*> &lines)
-        : m_segments(lines),
-        m_intersections(vector<Point_Ints>()) {}
+    struct ContinuousLine {
+        KeyPoint* point;
+        Vector* direction;
+    };
 
-    vector<Point_Ints> findIntersections();
+    static std::vector<Point_Ints> findIntersections(std::vector<Line*> &lines);
+    static Point findIntersection(const ContinuousLine &l1, const ContinuousLine &l2);
 
-private:
-    vector<Line*> m_segments;
-    vector<Point_Ints> m_intersections;
 };
 
 } // namespace processlib

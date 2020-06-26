@@ -2,6 +2,7 @@
 #include <catch.hpp>
 
 #include "Vector.hpp"
+#include "mathUtils.hpp"
 
 using namespace geomlib;
 
@@ -54,5 +55,14 @@ TEST_CASE("Vector") {
         Vector v1_inverted(-1, -1, -1);
 
         REQUIRE( v1.invert() == v1_inverted );
+    }
+
+    SECTION("Bissector") {
+        Vector v1(1, 0, 0);
+        Vector v2(0, 1, 0);
+
+        auto v3 = Vector::bissector(v1, v2);
+
+        REQUIRE( double_equals(v3.angleWith(v1), M_PI / 4) );
     }
 }
