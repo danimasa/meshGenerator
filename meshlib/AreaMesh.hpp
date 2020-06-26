@@ -1,15 +1,17 @@
 #pragma once
 
+#include "Area.hpp"
 #include "QuadArea.hpp"
 #include "Mesh.hpp"
 
 namespace meshlib {
 
-class AreaMesh {
+class AreaMesh : public geomlib::Area {
 public:
-    void addMesh(QuadArea *area, Mesh *mesh);
+    Mesh* generateMesh();
 
-    QuadArea* subareas;
+private:
+    vector<QuadArea*> subareas;
     Mesh* mesh;
 }; // class AreaMesh
 

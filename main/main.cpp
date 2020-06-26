@@ -134,6 +134,18 @@ void testMeshGeneration() {
     auto a3 = factory->createArea(loops3);
     geometries.add(a3);
 
+    auto l12 = factory->createStraightLine(kp6, kp3);
+    auto l13 = factory->createStraightLine(kp3, kp7);
+
+    geometries.add(l12);
+    geometries.add(l13);
+
+    std::vector<Line*> lines4 ({ l7, l12, l13 });
+    Area::Loop loop4 (lines4);
+    std::vector<Area::Loop*> loops4 ({ &loop4 });
+    auto a4 = factory->createArea(loops4);
+    geometries.add(a4);
+
     processlib::LineAnalysis analyser(&geometries);
     analyser.findSingularities();
 

@@ -23,6 +23,9 @@ public:
 
   GeometryType getGeometryType() const { return GeometryType::Area; }
 
+protected:
+  vector<Area*> children;
+
 private:
   Area(vector<Loop*> loops);
   ~Area();
