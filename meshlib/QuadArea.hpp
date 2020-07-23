@@ -22,7 +22,7 @@ public:
   QuadArea(vector<Line*> lines);
   QuadArea(vector<Line*> lines, double attenuationAngleRatio);
   vector<Line*> getLines() const;
-  vector<Point*> getVertex() const;
+  vector<KeyPoint*> getVertex() const;
 
   TopologicalLine south() const { return lines[0]; }
   TopologicalLine east() const { return lines[1]; }

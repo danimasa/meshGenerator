@@ -40,6 +40,13 @@ geomlib::Geometry* KeypointInterpreter::interpret() {
         Point p (x, y, z);
         auto kp = _factory->createKeypoint(p);
         kp->setID(id);
+
+        string type = strs[4];
+        if (type == "O")
+            kp->type = VertexType::ORTHOGONAL;
+        if (type == "P")
+            kp->type = VertexType::POLAR;
+
         return kp;
     } catch( boost::bad_lexical_cast const& ) {
         std::cout << "Erro: Problema de sintaxe na linha: " << block << std::endl;

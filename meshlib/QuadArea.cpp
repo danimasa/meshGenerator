@@ -111,8 +111,8 @@ vector<Line*> QuadArea::getLines() const {
     return result;
 }
 
-vector<Point*> QuadArea::getVertex() const {
-    std::vector<Point*> result;
+vector<KeyPoint*> QuadArea::getVertex() const {
+    std::vector<KeyPoint*> result;
 
     for(int i = 0; i < lines.size(); i++) {
         auto l = lines[i];

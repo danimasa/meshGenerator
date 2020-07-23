@@ -7,7 +7,7 @@
         {
             "name": "meshGenerator",
             "request": "launch",
-            "type": "cppdbg",
+            "type": "cppvsdbg",
             "program": "${command:cmake.launchTargetPath}",
             "args": [ "data/GEOM.DAT" ],
             "cwd": "${workspaceFolder}",

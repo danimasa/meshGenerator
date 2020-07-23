@@ -113,14 +113,12 @@ Polyline* findPolyline(UnspecifiedLine* line, vector<Line*> lineList) {
 
 bool AreaInterpreter::belongToCurrentGeometry(const std::string &line) {
   if(accumulatedLinesCount == 0) return true;
+  string oldLines = line;
   int dotsNumber = std::count(
-    accumulatedLines.begin(),
-    accumulatedLines.end(),
+    oldLines.begin(),
+    oldLines.end(),
     '.');
-
-  auto cleanLine = line;
-  trim(cleanLine);
-  return dotsNumber < 3 || cleanLine != "-9876";
+  return dotsNumber < 3;
 }
 
 geomlib::Geometry* AreaInterpreter::interpret() {

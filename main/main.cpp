@@ -10,11 +10,11 @@
 #include "LineAnalysis.hpp"
 #include "GeometryFactory.hpp"
 #include "meshlib.hpp"
-#include "MeshWriter.hpp"
 #include "AnsysMeshWriter.hpp"
 #include "AreaMesh.hpp"
 #include "MeshShapesGenerator.hpp"
 #include "MeshGenerator.hpp"
+#include "AnsysMeshWriter.hpp"
 
 using namespace std;
 
@@ -53,8 +53,8 @@ void print_Line(const Line *line) {
 //     cout << endl;
 // }
 
-void testMeshGeneration() {
-    auto factory = GeometryFactory::getDefaultInstance();
+void testMeshGeneration(const string &arquivo) {
+    /* auto factory = GeometryFactory::getDefaultInstance();
     GeometryList geometries;
 
     auto p1 = Point(0, 0, 0);
@@ -132,24 +132,26 @@ void testMeshGeneration() {
     Area::Loop loop3 (lines3);
     std::vector<Area::Loop*> loops3 ({ &loop3 });
     auto a3 = factory->createArea(loops3);
-    geometries.add(a3);
+    geometries.add(a3);*/
 
-    processlib::LineAnalysis analyser(&geometries);
-    analyser.findSingularities();
+    ansyslib::AnsysFileReaderFactory factory {};
+    geomlib::FileReader *reader = factory.createReader();
+    GeometryList* geometry = reader->read(arquivo);
+
+    double elementSize = 0.3;
 
     // AreaMesh area(lines, 0.4);
     // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
-    MeshGenerator generator(&geometries, 0.15);
+    MeshGenerator generator(geometry, 0.15);
     Mesh mesh = generator.generateMesh();
 
     // AreaMesh meshGenerator(0.5);
     // Mesh mesh = area.generateMesh();
 
-    gmshlib::MeshWriter writer(&mesh);
-    // ansyslib::MeshWriter writer(&mesh);
-    cout << writer.getMshFile() << endl;
+    ansyslib::MeshWriter mWriter(&mesh);
+    cout << mWriter.getMshFile() << endl;
 }
 
 int main(int argc, char **argv) {
@@ -158,10 +160,10 @@ int main(int argc, char **argv) {
     //     return 1;
     // }
 
-    // string filepath = argv[1];
+    string filepath = argv[1];
     // leitura(filepath);
     try {
-        testMeshGeneration();
+        testMeshGeneration(filepath);
     } catch(std::exception& e) {
         cerr << "Exception: " << e.what();
     }

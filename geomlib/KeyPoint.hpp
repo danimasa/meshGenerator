@@ -7,6 +7,11 @@ namespace geomlib {
 
 class GeometryFactory;
 
+enum class VertexType {
+    ORTHOGONAL,
+    POLAR
+};
+
 class KeyPoint : public Geometry, public Point {
 public:
     GeometryType getGeometryType() const { return GeometryType::Keypoint; }
@@ -18,6 +23,8 @@ public:
     bool operator!=(const KeyPoint &that) const {
         return that.getID() != getID();
     }
+
+    VertexType type;
 
 private:
     KeyPoint() : Geometry(GeometryType::Keypoint), Point() {}
