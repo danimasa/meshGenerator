@@ -20,9 +20,9 @@ struct ElementVertexShapes {
     VShape v4s;
 };
 
-VShape getVertexShape(double angle, KeyPoint* kp) {
-    if (kp->type == VertexType::ORTHOGONAL) return VShape::ORTHOGONAL;
-    if (kp->type == VertexType::POLAR) return VShape::POLAR;
+VShape getVertexShape(double angle, KeyPoint* kp, bool first) {
+    if (kp->type == VertexType::ORTHOGONAL && first) return VShape::ORTHOGONAL;
+    if (kp->type == VertexType::POLAR && first) return VShape::POLAR;
     if (angle < (M_PI / 3)) return VShape::ORTHOGONAL;
     if (angle > (2 * M_PI / 3)) return VShape::POLAR;
     return VShape::ANY;
@@ -154,11 +154,14 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
     auto v3 = vertices[2];
     auto v4 = vertices[3];
 
+    bool first = true;
+
     while(n > 1 && s > 1 && l > 1 && o > 1) {
-        auto v1s = getVertexShape(angle1, v1);
-        auto v2s = getVertexShape(angle2, v2);
-        auto v3s = getVertexShape(angle3, v3);
-        auto v4s = getVertexShape(angle4, v4);
+        auto v1s = getVertexShape(angle1, v1, first);
+        auto v2s = getVertexShape(angle2, v2, first);
+        auto v3s = getVertexShape(angle3, v3, first);
+        auto v4s = getVertexShape(angle4, v4, first);
+        first = false;
 
         if (v1s == O) angle1 += 10.0 * area.attenuationAngleRatio / (s + o);
         if (v2s == O) angle2 += 10.0 * area.attenuationAngleRatio / (s + l);
