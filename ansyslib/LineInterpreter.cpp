@@ -60,11 +60,7 @@ geomlib::Geometry* LineInterpreter::interpret() {
             throw std::invalid_argument("init_point and final_point must be defined: " + init_point_str + " - " + final_point_str);
         }
 
-        // Leitura segunda linha
-        line = lines.at(1);
-        lineData = splitLine(line);
-
-        double lineLength = boost::lexical_cast<double>(lineData[0]);
+        double lineLength = boost::lexical_cast<double>(lineData[3]);
         double distance = init_point->distance(final_point);
         // Linha Reta
         if (equal(distance, lineLength)) {
@@ -73,10 +69,14 @@ geomlib::Geometry* LineInterpreter::interpret() {
             return straightLine;
         }
 
+        // Leitura segunda linha
+        line = lines.at(1);
+        lineData = splitLine(line);
+
         // Criando ponto médio
-        double mid_point_x = boost::lexical_cast<double>(lineData[1]);
-        double mid_point_y = boost::lexical_cast<double>(lineData[2]);
-        double mid_point_z = boost::lexical_cast<double>(lineData[3]);
+        double mid_point_x = boost::lexical_cast<double>(lineData[0]);
+        double mid_point_y = boost::lexical_cast<double>(lineData[1]);
+        double mid_point_z = boost::lexical_cast<double>(lineData[2]);
         auto mid_point = new Point(mid_point_x, mid_point_y, mid_point_z);
 
         // Leitura terceira linha
