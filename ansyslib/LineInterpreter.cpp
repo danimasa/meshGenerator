@@ -62,12 +62,16 @@ geomlib::Geometry* LineInterpreter::interpret() {
 
         double lineLength = boost::lexical_cast<double>(lineData[3]);
         double distance = init_point->distance(final_point);
+        int qtdElements = boost::lexical_cast<int>(lineData[4]);
+
         // Linha Reta
         if (equal(distance, lineLength)) {
             auto straightLine = _factory->createStraightLine(init_point, final_point);
             straightLine->setID(id);
+            straightLine->setElementsQty(qtdElements);
             return straightLine;
         }
+
 
         // Leitura segunda linha
         line = lines.at(1);

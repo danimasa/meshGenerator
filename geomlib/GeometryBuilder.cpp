@@ -21,9 +21,7 @@ void GeometryBuilder::readFileLine(const std::string &line) {
     }
 
     if (l_line == "-9876.") {
-        if (currentInterpreter->getLines() == 1) {
-            writeGeometry();
-        }
+        writeGeometry();
 
         reading_state = READING_TYPES::NOTHING;
         return;

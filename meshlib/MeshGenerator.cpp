@@ -14,10 +14,10 @@ Mesh MeshGenerator::generateMesh() {
     // fill line elements qty
     auto factory = MeshFactory::getDefaultInstance();
     auto lines = geomList->getListOf(geomlib::GeometryType::Line);
-    for(auto gLine : lines) {
+    /* for(auto gLine : lines) {
         auto line = dynamic_cast<Line*>(gLine);
         factory->fillLineElementsQty(line);
-    }
+    } */
 
     // make areas with sum even elements
     factory->evenElementsInArea(geomList);
