@@ -200,32 +200,32 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     list.add(kp9);
 
     LineInterpreter lineInterpreter(&list);
-    std::string line2Content = "        2.        5.       6.\n"
-        "        1.0000000000E+00    0.5000000000E+00    0.0000000000E+00    0.0000000000E+00\n"
+    std::string line2Content = "        2.        5.       6.       1.0000000000E+00\n"
+        "        0.5000000000E+00    0.0000000000E+00    0.0000000000E+00\n"
         "        1.0000000000E+00    0.0000000000E+00    0.0000000000E+00\n"
         "        1.0000000000E+00    0.0000000000E+00    0.0000000000E+00\n";
     lineInterpreter.setAccumulatedLines(line2Content);
     auto line2 = lineInterpreter.interpret();
     list.add(line2);
 
-    std::string line3Content = "        3.        6.       7.\n"
-        "        1.0000000000E+00    1.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
+    std::string line3Content = "        3.        6.       7.       1.0000000000E+00\n"
+        "        1.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    1.0000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    1.0000000000E+00    0.0000000000E+00\n";
     lineInterpreter.setAccumulatedLines(line3Content);
     auto line3 = lineInterpreter.interpret();
     list.add(line3);
 
-    std::string line5Content = "        5.        7.       9.\n"
-        "        1.1661903790E+00    0.5000000000E+00    1.3000000000E+00    0.0000000000E+00\n"
+    std::string line5Content = "        5.        7.       9.       1.1661903790E+00\n"
+        "        0.5000000000E+00    1.3000000000E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n";
     lineInterpreter.setAccumulatedLines(line5Content);
     auto line5 = lineInterpreter.interpret();
     list.add(line5);
 
-    std::string line8Content = "        8.        9.       5.\n"
-        "        1.0000000000E+00    0.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
+    std::string line8Content = "        8.        9.       5.       1.0000000000E+00\n"
+        "        0.0000000000E+00    0.5000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    -1.0000000000E+00    0.0000000000E+00\n"
         "        0.0000000000E+00    -1.0000000000E+00    0.0000000000E+00\n";
     lineInterpreter.setAccumulatedLines(line8Content);
@@ -233,16 +233,16 @@ TEST_CASE("AreaInterpreter", "[interpreter]") {
     list.add(line8);
 
     // Lines of concatenated
-    std::string line9Content = "        9.        7.       8.\n"
-        "        0.5830951895E+00    0.7500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
+    std::string line9Content = "        9.        7.       8.       0.5830951895E+00\n"
+        "        0.7500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    0.5144957554E+00    0.0000000000E+00\n";
     lineInterpreter.setAccumulatedLines(line9Content);
     auto line9 = lineInterpreter.interpret();
     list.add(line9);
 
-    std::string line10Content = "        10.        8.       9.\n"
-        "        0.5830951895E+00    0.2500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
+    std::string line10Content = "        10.        8.       9.       0.5830951895E+00\n"
+        "        0.2500000000E+00    1.1500000000E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n"
         "        -0.8574929257E+00    -0.5144957554E+00    0.0000000000E+00\n";
     lineInterpreter.setAccumulatedLines(line10Content);
