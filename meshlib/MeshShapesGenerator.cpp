@@ -844,7 +844,7 @@ auto newWLine = generateVertexLine(Line4Params, cMesh);
 wLine.erase(wLine.begin());
 generateElements(wLine, newWLine);
 
-newSLine.erase(newSLine.end() - 1);
+newSLine.erase(newSLine.begin());
 cBoundary.west = newWLine;
 cBoundary.south = newSLine;
 cBoundary.east = newELine;
