@@ -113,6 +113,8 @@ RShape computeRalativeShape(ElementVertexShapes& vertexShapes, vector<int> &face
     }
     else if (v1s == P && v2s == P && v3s == P && v4s == P)
         cShape = RShape::PPPP;
+    else if (n != s || l != o)
+        cShape = RShape::OOOO_C;
     else {
        n -= n - 1;
        s -= s - 1;
@@ -154,14 +156,16 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
     auto v3 = vertices[2];
     auto v4 = vertices[3];
 
-    bool first = true;
+    bool firstV1 = true;
+    bool firstV2 = true;
+    bool firstV3 = true;
+    bool firstV4 = true;
 
     while(n > 1 && s > 1 && l > 1 && o > 1) {
-        auto v1s = getVertexShape(angle1, v1, first);
-        auto v2s = getVertexShape(angle2, v2, first);
-        auto v3s = getVertexShape(angle3, v3, first);
-        auto v4s = getVertexShape(angle4, v4, first);
-        first = false;
+        auto v1s = getVertexShape(angle1, v1, firstV1);
+        auto v2s = getVertexShape(angle2, v2, firstV2);
+        auto v3s = getVertexShape(angle3, v3, firstV3);
+        auto v4s = getVertexShape(angle4, v4, firstV4);
 
         if (v1s == O) angle1 += 10.0 * area.attenuationAngleRatio / (s + o);
         if (v2s == O) angle2 += 10.0 * area.attenuationAngleRatio / (s + l);
@@ -217,6 +221,35 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
 
         ElementVertexShapes vShapes {v1s, v2s, v3s, v4s};
         auto cShape = computeRalativeShape(vShapes, facesElementsQtd);
+        switch (cShape)
+        {
+        case RShape::POOO_0:
+            firstV1 = false;
+            firstV2 = false;
+            firstV4 = false;
+            break;
+        case RShape::POOO_90:
+            firstV1 = false;
+            firstV2 = false;
+            firstV3 = false;
+            break;
+        case RShape::POOO_180:
+            firstV2 = false;
+            firstV3 = false;
+            firstV4 = false;
+            break;
+        case RShape::POOO_270:
+            firstV1 = false;
+            firstV3 = false;
+            firstV4 = false;
+            break;
+        default:
+            firstV1 = false;
+            firstV2 = false;
+            firstV3 = false;
+            firstV4 = false;
+            break;
+        }
         result.push_back(cShape);
     }
 

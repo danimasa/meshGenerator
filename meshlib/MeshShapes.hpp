@@ -15,7 +15,7 @@ public:
         POPO_0, POPO_90,
         POPP_0, POPP_90, POPP_180, POPP_270,
         PPPP,
-        OOOO,
+        OOOO, OOOO_C
     };
 
     enum class VertexShape {

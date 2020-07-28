@@ -37,6 +37,7 @@ private:
 
     void gen_PPPP();
     void gen_OOOO();
+    void gen_OOOO_C();
 
     void generateElements (vector<Vertex*> lastVLine, vector<Vertex*> currVLine);
 };
