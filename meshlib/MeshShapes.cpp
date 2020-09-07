@@ -167,14 +167,14 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
         auto v3s = getVertexShape(angle3, v3, firstV3);
         auto v4s = getVertexShape(angle4, v4, firstV4);
 
-        if (v1s == O) angle1 += 10.0 * area.attenuationAngleRatio / (s + o);
-        if (v2s == O) angle2 += 10.0 * area.attenuationAngleRatio / (s + l);
-        if (v3s == O) angle3 += 10.0 * area.attenuationAngleRatio / (l + n);
-        if (v4s == O) angle4 += 10.0 * area.attenuationAngleRatio / (n + o);
-        if (v1s == P) angle1 -= 10.0 * area.attenuationAngleRatio / (s + o);
-        if (v2s == P) angle2 -= 10.0 * area.attenuationAngleRatio / (s + l);
-        if (v3s == P) angle3 -= 10.0 * area.attenuationAngleRatio / (l + n);
-        if (v4s == P) angle4 -= 10.0 * area.attenuationAngleRatio / (n + o);
+        // if (v1s == O) angle1 += 10.0 * area.attenuationAngleRatio / (s + o);
+        // if (v2s == O) angle2 += 10.0 * area.attenuationAngleRatio / (s + l);
+        // if (v3s == O) angle3 += 10.0 * area.attenuationAngleRatio / (l + n);
+        // if (v4s == O) angle4 += 10.0 * area.attenuationAngleRatio / (n + o);
+        // if (v1s == P) angle1 -= 10.0 * area.attenuationAngleRatio / (s + o);
+        // if (v2s == P) angle2 -= 10.0 * area.attenuationAngleRatio / (s + l);
+        // if (v3s == P) angle3 -= 10.0 * area.attenuationAngleRatio / (l + n);
+        // if (v4s == P) angle4 -= 10.0 * area.attenuationAngleRatio / (n + o);
 
         // Verify U shape
         int nsDiff = std::abs(n - s);
@@ -205,16 +205,16 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
         // Verify L Shape
         else if (nsDiff > 0 && loDiff > 0) {
             if (n > s) {
-                if (l > o && v1s != O) {
-                    v1s = P;
-                } else if (v2s != O) {
-                    v2s = P;
+                if (l > o) {
+                    if (v1s != O) v1s = P;
+                } else {
+                    if (v2s != O) v2s = P;
                 }
             } else {
-                if (o > l && v3s != O) {
-                    v3s = P;
-                } else if (v4s != O) {
-                    v4s = P;
+                if (o > l) {
+                    if (v3s != O) v3s = P;
+                } else {
+                    if (v4s != O) v4s = P;
                 }
             }
         }
@@ -255,6 +255,37 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
 
     if (n != 1 || s != 1 || l != 1 || o != 1)
         throw std::invalid_argument("insuficient element size for geometry");
+
+    return adjustShapeList(result);
+}
+
+std::vector<RShape> MeshShapes::adjustShapeList(std::vector<RShape> &shapes) {
+    std::vector<RShape> result;
+
+    for(int i=0; i < shapes.size(); i++) {
+        auto shape = shapes[i];
+        if (shape == RShape::OOOO_C) {
+            auto nxtShape = shapes[i + 1];
+            if (nxtShape == RShape::POOO_0)
+                result.push_back(RShape::OOOO_L_0);
+            else if (nxtShape == RShape::POOO_90)
+                result.push_back(RShape::OOOO_L_90);
+            else if (nxtShape == RShape::POOO_180)
+                result.push_back(RShape::OOOO_L_180);
+            else if (nxtShape == RShape::POOO_270)
+                result.push_back(RShape::OOOO_L_270);
+            else if (nxtShape == RShape::PPOO_0)
+                result.push_back(RShape::OOOO_L_0);
+            else if (nxtShape == RShape::PPOO_90)
+                result.push_back(RShape::OOOO_L_90);
+            else if (nxtShape == RShape::PPOO_180)
+                result.push_back(RShape::OOOO_L_180);
+            else if (nxtShape == RShape::PPOO_270)
+                result.push_back(RShape::OOOO_L_270);
+            else
+                result.push_back(shape);
+        } else result.push_back(shape);
+    }
 
     return result;
 }

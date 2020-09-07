@@ -15,7 +15,8 @@ public:
         POPO_0, POPO_90,
         POPP_0, POPP_90, POPP_180, POPP_270,
         PPPP,
-        OOOO, OOOO_C
+        OOOO, OOOO_C,
+        OOOO_L_0, OOOO_L_90, OOOO_L_180, OOOO_L_270
     };
 
     enum class VertexShape {
@@ -28,6 +29,8 @@ public:
 
 private:
     MeshShapes () {}
+
+    static std::vector<RelativeShapes> adjustShapeList(std::vector<RelativeShapes> &shapes);
 
 }; // class MeshShapes
 

@@ -39,6 +39,11 @@ private:
     void gen_OOOO();
     void gen_OOOO_C();
 
+    void gen_OOOO_L_0();
+    void gen_OOOO_L_90();
+    void gen_OOOO_L_180();
+    void gen_OOOO_L_270();
+
     void generateElements (vector<Vertex*> lastVLine, vector<Vertex*> currVLine);
 };
 
