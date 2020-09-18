@@ -262,29 +262,31 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
 std::vector<RShape> MeshShapes::adjustShapeList(std::vector<RShape> &shapes) {
     std::vector<RShape> result;
 
-    for(int i=0; i < shapes.size(); i++) {
-        auto shape = shapes[i];
-        if (shape == RShape::OOOO_C) {
-            auto nxtShape = shapes[i + 1];
-            if (nxtShape == RShape::POOO_0)
-                result.push_back(RShape::OOOO_L_0);
-            else if (nxtShape == RShape::POOO_90)
-                result.push_back(RShape::OOOO_L_90);
-            else if (nxtShape == RShape::POOO_180)
-                result.push_back(RShape::OOOO_L_180);
-            else if (nxtShape == RShape::POOO_270)
-                result.push_back(RShape::OOOO_L_270);
-            else if (nxtShape == RShape::PPOO_0)
-                result.push_back(RShape::OOOO_L_0);
-            else if (nxtShape == RShape::PPOO_90)
-                result.push_back(RShape::OOOO_L_90);
-            else if (nxtShape == RShape::PPOO_180)
-                result.push_back(RShape::OOOO_L_180);
-            else if (nxtShape == RShape::PPOO_270)
-                result.push_back(RShape::OOOO_L_270);
-            else
-                result.push_back(shape);
-        } else result.push_back(shape);
+    std::vector<RShape>::iterator shape = shapes.begin();
+    while (shape != shapes.end()) {
+        auto nxtShape = std::next(shape);
+        if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_0) ||
+            (*shape == RShape::POOO_0 && *nxtShape == RShape::OOOO_C)) {
+            result.push_back(RShape::AOOOP_0);
+            ++shape;
+        }
+        else if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_90) ||
+            (*shape == RShape::POOO_90 && *nxtShape == RShape::OOOO_C)) {
+            result.push_back(RShape::AOOOP_90);
+            ++shape;
+        }
+        else if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_180) ||
+            (*shape == RShape::POOO_180 && *nxtShape == RShape::OOOO_C)) {
+            result.push_back(RShape::AOOOP_180);
+            ++shape;
+        }
+        else if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_270) ||
+            (*shape == RShape::POOO_270 && *nxtShape == RShape::OOOO_C)) {
+            result.push_back(RShape::AOOOP_270);
+            ++shape;
+        }
+        else result.push_back(*shape);
+        ++shape;
     }
 
     return result;

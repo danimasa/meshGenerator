@@ -209,17 +209,17 @@ Mesh MeshShapesGenerator::genMesh(std::vector<RShapes> shapeList
         case RShapes::OOOO_C:
             gen_OOOO_C();
             break;
-        case RShapes::OOOO_L_0:
-            gen_OOOO_L_0();
+        case RShapes::AOOOP_0:
+            gen_AOOOP_0();
             break;
-        case RShapes::OOOO_L_90:
-            gen_OOOO_L_90();
+        case RShapes::AOOOP_90:
+            gen_AOOOP_90();
             break;
-        case RShapes::OOOO_L_180:
-            gen_OOOO_L_180();
+        case RShapes::AOOOP_180:
+            gen_AOOOP_180();
             break;
-        case RShapes::OOOO_L_270:
-            gen_OOOO_L_270();
+        case RShapes::AOOOP_270:
+            gen_AOOOP_270();
             break;
         case RShapes::OOOO:
             gen_OOOO();
@@ -1466,203 +1466,419 @@ cBoundary.east = newELine;
 cBoundary.north = newNLine;
 }
 
-void MeshShapesGenerator::gen_OOOO_L_0() {
+void MeshShapesGenerator::gen_AOOOP_0() {
 
 auto sLine = cBoundary.south;
 auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+auto ref1Vert = getRefVertex(sLine, wLine);
+cMesh.addVertex(ref1Vert);
+
+SimpleLine l1(sLine[sLine.size() - 2], nLine[nLine.size() - 2]);
+SimpleLine l2(wLine[wLine.size() - 2], eLine[eLine.size() - 2]);
+auto ref2Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref2Vert);
+
+SimpleLine l3(ref1Vert, eLine[1]);
+auto ref3Vert = findIntersection(l3, l1);
+cMesh.addVertex(ref3Vert);
+
+SimpleLine l4(ref1Vert, nLine[1]);
+auto ref4Vert = findIntersection(l4, l2);
+cMesh.addVertex(ref4Vert);
+
 double sElementSize = getElementSize(
-    eLine[1],
-    wLine[1],
+    ref1Vert,
+    ref3Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    sLine.size() - 1
 );
 double wElementSize = getElementSize(
-    nLine[1],
-    sLine[1],
+    ref1Vert,
+    ref4Vert,
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 1
 );
-
-VertexLineParams Line1Params { 
-    wLine[1],
-    eLine[1],
-    sLine.size(),
-    sElementSize,
-    VertexLineDirection::Horizontal
-};
-auto newSLine = generateVertexLine(Line1Params, cMesh);
-generateElements(sLine, newSLine);
-
-VertexLineParams Line2Params {
-    newSLine[1],
-    nLine[1],
-    wLine.size() - 1,
-    wElementSize,
-    VertexLineDirection::Vertical
-};
-auto newWLine = generateVertexLine(Line2Params, cMesh);
-wLine.erase(wLine.begin());
-generateElements(wLine, newWLine);
-
-newSLine.erase(newSLine.begin());
-nLine.erase(nLine.begin());
-eLine.erase(eLine.begin());
-cBoundary.west = newWLine;
-cBoundary.south = newSLine;
-cBoundary.east = eLine;
-cBoundary.north = nLine;
-}
-
-void MeshShapesGenerator::gen_OOOO_L_90() {
-
-auto sLine = cBoundary.south;
-auto wLine = cBoundary.west;
-auto eLine = cBoundary.east;
-auto nLine = cBoundary.north;
-
-double sElementSize = getElementSize(
-    eLine[1],
-    wLine[1],
+double nElementSize = getElementSize(
+    ref4Vert,
+    ref2Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    nLine.size() - 2
 );
 double eElementSize = getElementSize(
-    nLine[nLine.size() - 2],
-    sLine[sLine.size() - 2],
+    ref3Vert,
+    ref2Vert,
     VertexLineDirection::Vertical,
-    eLine.size()
+    eLine.size() - 2
 );
 
 VertexLineParams Line1Params { 
-    wLine[1],
-    eLine[1],
-    sLine.size(),
+    ref1Vert,
+    ref3Vert,
+    sLine.size() - 1,
     sElementSize,
     VertexLineDirection::Horizontal
 };
 auto newSLine = generateVertexLine(Line1Params, cMesh);
+newSLine.push_back(eLine[1]);
 generateElements(sLine, newSLine);
 
 VertexLineParams Line2Params {
-    newSLine[newSLine.size() - 2],
-    nLine[nLine.size() - 2],
-    eLine.size() - 1,
+    ref3Vert,
+    ref2Vert,
+    eLine.size() - 2,
     eElementSize,
     VertexLineDirection::Vertical
 };
 auto newELine = generateVertexLine(Line2Params, cMesh);
 eLine.erase(eLine.begin());
+newELine.push_back(nLine[nLine.size() - 2]);
 generateElements(eLine, newELine);
 
-nLine.erase(nLine.end() - 1);
-newSLine.erase(newSLine.end() - 1);
-wLine.erase(wLine.begin());
-cBoundary.west = wLine;
-cBoundary.south = newSLine;
-cBoundary.east = newELine;
-cBoundary.north = nLine;
-}
-
-void MeshShapesGenerator::gen_OOOO_L_180() {
-
-auto sLine = cBoundary.south;
-auto wLine = cBoundary.west;
-auto eLine = cBoundary.east;
-auto nLine = cBoundary.north;
-
-double eElementSize = getElementSize(
-    nLine[nLine.size() - 2],
-    sLine[sLine.size() - 2],
-    VertexLineDirection::Vertical,
-    eLine.size()
-);
-double nElementSize = getElementSize(
-    eLine[eLine.size() - 2],
-    wLine[wLine.size() - 2],
-    VertexLineDirection::Horizontal,
-    nLine.size()
-);
-
-VertexLineParams Line1Params {
-    wLine[wLine.size() - 2],
-    eLine[eLine.size() - 2],
-    nLine.size(),
+VertexLineParams Line3Params {
+    ref4Vert,
+    ref2Vert,
+    nLine.size() - 2,
     nElementSize,
     VertexLineDirection::Horizontal
 };
-auto newNLine = generateVertexLine(Line1Params, cMesh);
+auto newNLine = generateVertexLine(Line3Params, cMesh);
+nLine.erase(nLine.end() - 1);
+newNLine.insert(newNLine.begin(), wLine[wLine.size() - 2]);
 generateElements(nLine, newNLine);
 
-VertexLineParams Line3Params {
-    sLine[sLine.size() - 2],
-    newNLine[newNLine.size() - 2],
-    eLine.size() - 1,
-    eElementSize,
+VertexLineParams Line4Params {
+    ref1Vert,
+    ref4Vert,
+    wLine.size() - 1,
+    wElementSize,
     VertexLineDirection::Vertical
 };
-auto newELine = generateVertexLine(Line3Params, cMesh);
-eLine.erase(eLine.end() - 1);
-generateElements(eLine, newELine);
+auto newWLine = generateVertexLine(Line4Params, cMesh);
+newWLine.push_back(nLine[1]);
+generateElements(wLine, newWLine);
 
-newNLine.erase(newNLine.end() - 1);
-sLine.erase(sLine.end() - 1);
-wLine.erase(wLine.end() - 1);
-cBoundary.west = wLine;
-cBoundary.south = sLine;
+newSLine.erase(newSLine.end() - 1);
+newELine.erase(newELine.end() - 1);
+newNLine.erase(newNLine.begin());
+newWLine.erase(newWLine.end() - 1);
+cBoundary.west = newWLine;
+cBoundary.south = newSLine;
 cBoundary.east = newELine;
 cBoundary.north = newNLine;
 }
 
-void MeshShapesGenerator::gen_OOOO_L_270() {
+void MeshShapesGenerator::gen_AOOOP_90() {
 
 auto sLine = cBoundary.south;
 auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
-double nElementSize = getElementSize(
-    eLine[eLine.size() - 2],
-    wLine[wLine.size() - 2],
+auto ref1Vert = getRefVertex(sLine, eLine);
+cMesh.addVertex(ref1Vert);
+
+SimpleLine l1(sLine[1], nLine[1]);
+SimpleLine l2(wLine[wLine.size() - 2], eLine[eLine.size() - 2]);
+auto ref2Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref2Vert);
+
+SimpleLine l3(ref1Vert, nLine[nLine.size() - 2]);
+auto ref3Vert = findIntersection(l3, l2);
+cMesh.addVertex(ref3Vert);
+
+SimpleLine l4(ref1Vert, wLine[1]);
+auto ref4Vert = findIntersection(l4, l1);
+cMesh.addVertex(ref4Vert);
+
+double sElementSize = getElementSize(
+    ref4Vert,
+    ref1Vert,
     VertexLineDirection::Horizontal,
-    nLine.size()
+    sLine.size() - 1
 );
 double wElementSize = getElementSize(
-    nLine[1],
-    sLine[1],
+    ref4Vert,
+    ref2Vert,
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 2
+);
+double nElementSize = getElementSize(
+    ref2Vert,
+    ref3Vert,
+    VertexLineDirection::Horizontal,
+    nLine.size() - 2
+);
+double eElementSize = getElementSize(
+    ref1Vert,
+    ref3Vert,
+    VertexLineDirection::Vertical,
+    eLine.size() - 1
 );
 
-VertexLineParams Line1Params {
-    wLine[wLine.size() - 2],
-    eLine[eLine.size() - 2],
-    nLine.size(),
+VertexLineParams Line1Params { 
+    ref1Vert,
+    ref3Vert,
+    eLine.size() - 1,
+    eElementSize,
+    VertexLineDirection::Vertical
+};
+auto newELine = generateVertexLine(Line1Params, cMesh);
+newELine.push_back(nLine[nLine.size() - 2]);
+generateElements(eLine, newELine);
+
+VertexLineParams Line2Params {
+    ref2Vert,
+    ref3Vert,
+    nLine.size() - 2,
+    nElementSize,
+    VertexLineDirection::Horizontal
+};
+auto newNLine = generateVertexLine(Line2Params, cMesh);
+nLine.erase(nLine.end() - 1);
+newNLine.insert(newNLine.begin(), wLine[wLine.size() - 2]);
+generateElements(nLine, newNLine);
+
+VertexLineParams Line3Params {
+    ref4Vert,
+    ref2Vert,
+    wLine.size() - 2,
+    wElementSize,
+    VertexLineDirection::Vertical
+};
+auto newWLine = generateVertexLine(Line3Params, cMesh);
+wLine.erase(wLine.end() - 1);
+newWLine.insert(newWLine.begin(), sLine[1]);
+generateElements(wLine, newWLine);
+
+VertexLineParams Line4Params {
+    ref4Vert,
+    ref1Vert,
+    sLine.size() - 1,
+    sElementSize,
+    VertexLineDirection::Horizontal
+};
+auto newSLine = generateVertexLine(Line4Params, cMesh);
+newSLine.insert(newSLine.begin(), wLine[1]);
+generateElements(sLine, newSLine);
+
+newSLine.erase(newSLine.begin());
+newELine.erase(newELine.end() - 1);
+newNLine.erase(newNLine.begin());
+newWLine.erase(newWLine.begin());
+cBoundary.west = newWLine;
+cBoundary.south = newSLine;
+cBoundary.east = newELine;
+cBoundary.north = newNLine;
+}
+
+void MeshShapesGenerator::gen_AOOOP_180() {
+
+auto sLine = cBoundary.south;
+auto wLine = cBoundary.west;
+auto eLine = cBoundary.east;
+auto nLine = cBoundary.north;
+
+auto ref1Vert = getRefVertex(nLine, eLine);
+cMesh.addVertex(ref1Vert);
+
+SimpleLine l1(wLine[1], eLine[1]);
+SimpleLine l2(sLine[1], nLine[1]);
+auto ref2Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref2Vert);
+
+SimpleLine l3(ref1Vert, wLine[wLine.size() - 2]);
+auto ref3Vert = findIntersection(l3, l2);
+cMesh.addVertex(ref3Vert);
+
+SimpleLine l4(ref1Vert, sLine[sLine.size() - 2]);
+auto ref4Vert = findIntersection(l4, l1);
+cMesh.addVertex(ref4Vert);
+
+double sElementSize = getElementSize(
+    ref2Vert,
+    ref4Vert,
+    VertexLineDirection::Horizontal,
+    sLine.size() - 2
+);
+double wElementSize = getElementSize(
+    ref2Vert,
+    ref3Vert,
+    VertexLineDirection::Vertical,
+    wLine.size() - 2
+);
+double nElementSize = getElementSize(
+    ref3Vert,
+    ref1Vert,
+    VertexLineDirection::Horizontal,
+    nLine.size() - 1
+);
+double eElementSize = getElementSize(
+    ref4Vert,
+    ref1Vert,
+    VertexLineDirection::Vertical,
+    eLine.size() - 1
+);
+
+VertexLineParams Line1Params { 
+    ref3Vert,
+    ref1Vert,
+    nLine.size() - 1,
     nElementSize,
     VertexLineDirection::Horizontal
 };
 auto newNLine = generateVertexLine(Line1Params, cMesh);
+newNLine.insert(newNLine.begin(), wLine[wLine.size() - 2]);
 generateElements(nLine, newNLine);
 
 VertexLineParams Line2Params {
-    sLine[1],
-    newNLine[1],
-    wLine.size() - 1,
+    ref2Vert,
+    ref3Vert,
+    wLine.size() - 2,
     wElementSize,
     VertexLineDirection::Vertical
 };
 auto newWLine = generateVertexLine(Line2Params, cMesh);
 wLine.erase(wLine.end() - 1);
+newWLine.insert(newWLine.begin(), sLine[1]);
 generateElements(wLine, newWLine);
 
-newNLine.erase(newNLine.begin());
+VertexLineParams Line3Params {
+    ref2Vert,
+    ref4Vert,
+    sLine.size() - 2,
+    sElementSize,
+    VertexLineDirection::Horizontal
+};
+auto newSLine = generateVertexLine(Line3Params, cMesh);
 sLine.erase(sLine.begin());
-eLine.erase(eLine.end() - 1);
+newSLine.push_back(eLine[1]);
+generateElements(sLine, newSLine);
+
+VertexLineParams Line4Params {
+    ref4Vert,
+    ref1Vert,
+    eLine.size() - 1,
+    eElementSize,
+    VertexLineDirection::Vertical
+};
+auto newELine = generateVertexLine(Line4Params, cMesh);
+newELine.insert(newELine.begin(), sLine[sLine.size() - 2]);
+generateElements(eLine, newELine);
+
+newSLine.erase(newSLine.end() - 1);
+newELine.erase(newELine.begin());
+newNLine.erase(newNLine.begin());
+newWLine.erase(newWLine.begin());
 cBoundary.west = newWLine;
-cBoundary.south = sLine;
-cBoundary.east = eLine;
+cBoundary.south = newSLine;
+cBoundary.east = newELine;
+cBoundary.north = newNLine;
+}
+
+void MeshShapesGenerator::gen_AOOOP_270() {
+
+auto sLine = cBoundary.south;
+auto wLine = cBoundary.west;
+auto eLine = cBoundary.east;
+auto nLine = cBoundary.north;
+
+auto ref1Vert = getRefVertex(nLine, wLine);
+cMesh.addVertex(ref1Vert);
+
+SimpleLine l1(wLine[1], eLine[1]);
+SimpleLine l2(sLine[sLine.size() - 2], nLine[nLine.size() - 2]);
+auto ref2Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref2Vert);
+
+SimpleLine l3(ref1Vert, sLine[1]);
+auto ref3Vert = findIntersection(l3, l1);
+cMesh.addVertex(ref3Vert);
+
+SimpleLine l4(ref1Vert, eLine[eLine.size() - 2]);
+auto ref4Vert = findIntersection(l4, l2);
+cMesh.addVertex(ref4Vert);
+
+double sElementSize = getElementSize(
+    ref3Vert,
+    ref2Vert,
+    VertexLineDirection::Horizontal,
+    sLine.size() - 2
+);
+double wElementSize = getElementSize(
+    ref3Vert,
+    ref1Vert,
+    VertexLineDirection::Vertical,
+    wLine.size() - 1
+);
+double nElementSize = getElementSize(
+    ref1Vert,
+    ref4Vert,
+    VertexLineDirection::Horizontal,
+    nLine.size() - 1
+);
+double eElementSize = getElementSize(
+    ref2Vert,
+    ref4Vert,
+    VertexLineDirection::Vertical,
+    eLine.size() - 2
+);
+
+VertexLineParams Line1Params { 
+    ref3Vert,
+    ref1Vert,
+    wLine.size() - 1,
+    wElementSize,
+    VertexLineDirection::Vertical
+};
+auto newWLine = generateVertexLine(Line1Params, cMesh);
+newWLine.insert(newWLine.begin(), sLine[1]);
+generateElements(wLine, newWLine);
+
+VertexLineParams Line2Params {
+    ref3Vert,
+    ref2Vert,
+    sLine.size() - 2,
+    sElementSize,
+    VertexLineDirection::Horizontal
+};
+auto newSLine = generateVertexLine(Line2Params, cMesh);
+sLine.erase(sLine.begin());
+newSLine.push_back(eLine[1]);
+generateElements(sLine, newSLine);
+
+VertexLineParams Line3Params {
+    ref2Vert,
+    ref4Vert,
+    eLine.size() - 2,
+    eElementSize,
+    VertexLineDirection::Vertical
+};
+auto newELine = generateVertexLine(Line3Params, cMesh);
+eLine.erase(eLine.begin());
+newELine.push_back(nLine[nLine.size() - 2]);
+generateElements(eLine, newELine);
+
+VertexLineParams Line4Params {
+    ref1Vert,
+    ref4Vert,
+    nLine.size() - 1,
+    nElementSize,
+    VertexLineDirection::Horizontal
+};
+auto newNLine = generateVertexLine(Line4Params, cMesh);
+newNLine.push_back(eLine[eLine.size() - 2]);
+generateElements(nLine, newNLine);
+
+newSLine.erase(newSLine.end() - 1);
+newELine.erase(newELine.end() - 1);
+newNLine.erase(newNLine.end() - 1);
+newWLine.erase(newWLine.begin());
+cBoundary.west = newWLine;
+cBoundary.south = newSLine;
+cBoundary.east = newELine;
 cBoundary.north = newNLine;
 }
 
