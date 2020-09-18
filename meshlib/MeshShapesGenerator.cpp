@@ -734,27 +734,27 @@ cMesh.addVertex(ref4Vert);
 
 double sElementSize = getElementSize(
     ref1Vert,
-    eLine[1],
+    ref3Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    sLine.size() - 1
 );
 double eElementSize = getElementSize(
-    sLine[sLine.size() - 2],
+    ref3Vert,
     ref2Vert,
     VertexLineDirection::Vertical,
-    eLine.size()
+    eLine.size() - 1
 );
 double wElementSize = getElementSize(
     ref1Vert,
-    nLine[1],
+    ref4Vert,
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 1
 );
 double nElementSize = getElementSize(
-    wLine[wLine.size() - 2],
+    ref4Vert,
     ref2Vert,
     VertexLineDirection::Horizontal,
-    nLine.size()
+    nLine.size() - 1
 );
 
 VertexLineParams Line1Params { 
@@ -833,28 +833,28 @@ auto ref4Vert = findIntersection(l3, l4);
 cMesh.addVertex(ref4Vert);
 
 double sElementSize = getElementSize(
-    wLine[1],
+    ref4Vert,
     ref1Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    sLine.size() - 1
 );
 double eElementSize = getElementSize(
     ref1Vert,
-    nLine[nLine.size() - 2],
+    ref3Vert,
     VertexLineDirection::Vertical,
-    eLine.size()
+    eLine.size() - 1
 );
 double wElementSize = getElementSize(
-    sLine[1],
+    ref4Vert,
     ref2Vert,
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 1
 );
 double nElementSize = getElementSize(
     ref2Vert,
-    eLine[eLine.size() - 2],
+    ref3Vert,
     VertexLineDirection::Horizontal,
-    nLine.size()
+    nLine.size() - 1
 );
 
 VertexLineParams Line1Params { 
@@ -944,9 +944,9 @@ double eElementSize = getElementSize(
 );
 double wElementSize = getElementSize(
     ref2Vert,
-    nLine[1],
+    ref4Vert,
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 1
 );
 
 VertexLineParams Line1Params { 
@@ -1028,9 +1028,9 @@ cMesh.addVertex(ref4Vert);
 
 double sElementSize = getElementSize(
     ref2Vert,
-    wLine[1],
+    ref4Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    sLine.size() - 1
 );
 double eElementSize = getElementSize(
     ref2Vert,
@@ -1123,9 +1123,9 @@ cMesh.addVertex(ref4Vert);
 
 double eElementSize = getElementSize(
     ref2Vert,
-    sLine[sLine.size() - 2],
+    ref4Vert,
     VertexLineDirection::Vertical,
-    eLine.size()
+    eLine.size() - 1
 );
 double nElementSize = getElementSize(
     ref2Vert,
@@ -1223,10 +1223,10 @@ double sElementSize = getElementSize(
     sLine.size()
 );
 double nElementSize = getElementSize(
-    eLine[eLine.size() - 2],
+    ref4Vert,
     ref2Vert,
     VertexLineDirection::Horizontal,
-    nLine.size()
+    nLine.size() - 1
 );
 double wElementSize = getElementSize(
     ref2Vert,
