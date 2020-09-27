@@ -8,17 +8,11 @@ namespace meshlib {
 using namespace std;
 using VShape = MeshShapes::VertexShape;
 using RShape = MeshShapes::RelativeShapes;
+using ElemShape = MeshShapes::ElementVertexShapes;
 
 constexpr VShape O = VShape::ORTHOGONAL;
 constexpr VShape P = VShape::POLAR;
 constexpr VShape A = VShape::ANY;
-
-struct ElementVertexShapes {
-    VShape v1s;
-    VShape v2s;
-    VShape v3s;
-    VShape v4s;
-};
 
 VShape getVertexShape(double angle, KeyPoint* kp, bool first) {
     if (kp->type == VertexType::ORTHOGONAL && first) return VShape::ORTHOGONAL;
@@ -28,7 +22,7 @@ VShape getVertexShape(double angle, KeyPoint* kp, bool first) {
     return VShape::ANY;
 }
 
-RShape computeRalativeShape(ElementVertexShapes& vertexShapes, vector<int> &facesElementsQtd) {
+RShape computeRalativeShape(ElemShape& vertexShapes, vector<int> &facesElementsQtd) {
     auto v1s = vertexShapes.v1s;
     auto v2s = vertexShapes.v2s;
     auto v3s = vertexShapes.v3s;
@@ -143,8 +137,6 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
     int &l = facesElementsQtd[2];
     int &o = facesElementsQtd[3];
 
-    RShape cShape;
-
     double angle1 = angleBetweenLines(*area.west().line, *area.south().line);
     double angle2 = angleBetweenLines(*area.south().line, *area.east().line);
     double angle3 = angleBetweenLines(*area.east().line, *area.north().line);
@@ -219,7 +211,7 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
             }
         }
 
-        ElementVertexShapes vShapes {v1s, v2s, v3s, v4s};
+        ElemShape vShapes {v1s, v2s, v3s, v4s};
         auto cShape = computeRalativeShape(vShapes, facesElementsQtd);
         switch (cShape)
         {
@@ -265,23 +257,27 @@ std::vector<RShape> MeshShapes::adjustShapeList(std::vector<RShape> &shapes) {
     std::vector<RShape>::iterator shape = shapes.begin();
     while (shape != shapes.end()) {
         auto nxtShape = std::next(shape);
-        if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_0) ||
-            (*shape == RShape::POOO_0 && *nxtShape == RShape::OOOO_C)) {
+        if (*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_0)
+            result.push_back(RShape::OOOO_L_0);
+        else if (*shape == RShape::POOO_0 && *nxtShape == RShape::OOOO_C) {
             result.push_back(RShape::AOOOP_0);
             ++shape;
         }
-        else if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_90) ||
-            (*shape == RShape::POOO_90 && *nxtShape == RShape::OOOO_C)) {
+        else if (*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_90)
+            result.push_back(RShape::OOOO_L_90);
+        else if (*shape == RShape::POOO_90 && *nxtShape == RShape::OOOO_C) {
             result.push_back(RShape::AOOOP_90);
             ++shape;
         }
-        else if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_180) ||
-            (*shape == RShape::POOO_180 && *nxtShape == RShape::OOOO_C)) {
+        else if (*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_180)
+            result.push_back(RShape::OOOO_L_180);
+        else if (*shape == RShape::POOO_180 && *nxtShape == RShape::OOOO_C) {
             result.push_back(RShape::AOOOP_180);
             ++shape;
         }
-        else if ((*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_270) ||
-            (*shape == RShape::POOO_270 && *nxtShape == RShape::OOOO_C)) {
+        else if (*shape == RShape::OOOO_C && *nxtShape == RShape::POOO_270)
+            result.push_back(RShape::OOOO_L_270);
+        else if (*shape == RShape::POOO_270 && *nxtShape == RShape::OOOO_C) {
             result.push_back(RShape::AOOOP_270);
             ++shape;
         }

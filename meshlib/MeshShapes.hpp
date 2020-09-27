@@ -16,6 +16,7 @@ public:
         POPP_0, POPP_90, POPP_180, POPP_270,
         PPPP,
         OOOO, OOOO_C,
+        OOOO_L_0, OOOO_L_90, OOOO_L_180, OOOO_L_270,
         AOOOP_0, AOOOP_90, AOOOP_180, AOOOP_270
     };
 
@@ -23,6 +24,13 @@ public:
         ANY,
         ORTHOGONAL,
         POLAR
+    };
+
+    struct ElementVertexShapes {
+        VertexShape v1s;
+        VertexShape v2s;
+        VertexShape v3s;
+        VertexShape v4s;
     };
 
     static std::vector<RelativeShapes> generateShapeList(const QuadArea& area);
