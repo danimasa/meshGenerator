@@ -1901,31 +1901,37 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+SimpleLine l1(wLine[1], eLine[1]);
+SimpleLine l2(sLine[1], nLine[1]);
+auto ref1Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref1Vert);
+
 double sElementSize = getElementSize(
     eLine[1],
-    wLine[1],
+    ref1Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    sLine.size() - 1
 );
 double wElementSize = getElementSize(
     nLine[1],
-    sLine[1],
+    ref1Vert,
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 1
 );
 
 VertexLineParams Line1Params { 
-    wLine[1],
+    ref1Vert,
     eLine[1],
-    sLine.size(),
+    sLine.size() - 1,
     sElementSize,
     VertexLineDirection::Horizontal
 };
 auto newSLine = generateVertexLine(Line1Params, cMesh);
+newSLine.insert(newSLine.begin(), wLine[1]);
 generateElements(sLine, newSLine);
 
 VertexLineParams Line2Params {
-    newSLine[1],
+    ref1Vert,
     nLine[1],
     wLine.size() - 1,
     wElementSize,
@@ -1951,31 +1957,37 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+SimpleLine l1(wLine[1], eLine[1]);
+SimpleLine l2(sLine[sLine.size() - 2], nLine[nLine.size() - 2]);
+auto ref1Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref1Vert);
+
 double sElementSize = getElementSize(
     eLine[1],
-    wLine[1],
+    ref1Vert,
     VertexLineDirection::Horizontal,
-    sLine.size()
+    sLine.size() - 1
 );
 double eElementSize = getElementSize(
     nLine[nLine.size() - 2],
-    sLine[sLine.size() - 2],
+    ref1Vert,
     VertexLineDirection::Vertical,
-    eLine.size()
+    eLine.size() - 1
 );
 
 VertexLineParams Line1Params { 
     wLine[1],
-    eLine[1],
-    sLine.size(),
+    ref1Vert,
+    sLine.size() - 1,
     sElementSize,
     VertexLineDirection::Horizontal
 };
 auto newSLine = generateVertexLine(Line1Params, cMesh);
+newSLine.push_back(eLine[1]);
 generateElements(sLine, newSLine);
 
 VertexLineParams Line2Params {
-    newSLine[newSLine.size() - 2],
+    ref1Vert,
     nLine[nLine.size() - 2],
     eLine.size() - 1,
     eElementSize,
@@ -2001,32 +2013,38 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+SimpleLine l1(wLine[wLine.size() - 2], eLine[eLine.size() - 2]);
+SimpleLine l2(sLine[sLine.size() - 2], nLine[nLine.size() - 2]);
+auto ref1Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref1Vert);
+
 double eElementSize = getElementSize(
-    nLine[nLine.size() - 2],
+    ref1Vert,
     sLine[sLine.size() - 2],
     VertexLineDirection::Vertical,
-    eLine.size()
+    eLine.size() - 1
 );
 double nElementSize = getElementSize(
-    eLine[eLine.size() - 2],
+    ref1Vert,
     wLine[wLine.size() - 2],
     VertexLineDirection::Horizontal,
-    nLine.size()
+    nLine.size() - 1
 );
 
 VertexLineParams Line1Params {
     wLine[wLine.size() - 2],
-    eLine[eLine.size() - 2],
-    nLine.size(),
+    ref1Vert,
+    nLine.size() - 1,
     nElementSize,
     VertexLineDirection::Horizontal
 };
 auto newNLine = generateVertexLine(Line1Params, cMesh);
+newNLine.push_back(eLine[eLine.size() - 2]);
 generateElements(nLine, newNLine);
 
 VertexLineParams Line3Params {
     sLine[sLine.size() - 2],
-    newNLine[newNLine.size() - 2],
+    ref1Vert,
     eLine.size() - 1,
     eElementSize,
     VertexLineDirection::Vertical
@@ -2051,32 +2069,38 @@ auto wLine = cBoundary.west;
 auto eLine = cBoundary.east;
 auto nLine = cBoundary.north;
 
+SimpleLine l1(wLine[wLine.size() - 2], eLine[eLine.size() - 2]);
+SimpleLine l2(sLine[1], nLine[1]);
+auto ref1Vert = findIntersection(l1, l2);
+cMesh.addVertex(ref1Vert);
+
 double nElementSize = getElementSize(
     eLine[eLine.size() - 2],
-    wLine[wLine.size() - 2],
+    ref1Vert,
     VertexLineDirection::Horizontal,
-    nLine.size()
+    nLine.size() - 1
 );
 double wElementSize = getElementSize(
-    nLine[1],
+    ref1Vert,
     sLine[1],
     VertexLineDirection::Vertical,
-    wLine.size()
+    wLine.size() - 1
 );
 
 VertexLineParams Line1Params {
-    wLine[wLine.size() - 2],
+    ref1Vert,
     eLine[eLine.size() - 2],
-    nLine.size(),
+    nLine.size() - 1,
     nElementSize,
     VertexLineDirection::Horizontal
 };
 auto newNLine = generateVertexLine(Line1Params, cMesh);
+newNLine.insert(newNLine.begin(), wLine[wLine.size() - 2]);
 generateElements(nLine, newNLine);
 
 VertexLineParams Line2Params {
     sLine[1],
-    newNLine[1],
+    ref1Vert,
     wLine.size() - 1,
     wElementSize,
     VertexLineDirection::Vertical
