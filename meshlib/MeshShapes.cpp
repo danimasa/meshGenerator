@@ -159,14 +159,14 @@ vector<RShape> MeshShapes::generateShapeList(const QuadArea& area) {
         auto v3s = getVertexShape(angle3, v3, firstV3);
         auto v4s = getVertexShape(angle4, v4, firstV4);
 
-        // if (v1s == O) angle1 += 10.0 * area.attenuationAngleRatio / (s + o);
-        // if (v2s == O) angle2 += 10.0 * area.attenuationAngleRatio / (s + l);
-        // if (v3s == O) angle3 += 10.0 * area.attenuationAngleRatio / (l + n);
-        // if (v4s == O) angle4 += 10.0 * area.attenuationAngleRatio / (n + o);
-        // if (v1s == P) angle1 -= 10.0 * area.attenuationAngleRatio / (s + o);
-        // if (v2s == P) angle2 -= 10.0 * area.attenuationAngleRatio / (s + l);
-        // if (v3s == P) angle3 -= 10.0 * area.attenuationAngleRatio / (l + n);
-        // if (v4s == P) angle4 -= 10.0 * area.attenuationAngleRatio / (n + o);
+        if (v1s == O) angle1 += 10.0 * area.attenuationAngleRatio / (s + o);
+        if (v2s == O) angle2 += 10.0 * area.attenuationAngleRatio / (s + l);
+        if (v3s == O) angle3 += 10.0 * area.attenuationAngleRatio / (l + n);
+        if (v4s == O) angle4 += 10.0 * area.attenuationAngleRatio / (n + o);
+        if (v1s == P) angle1 -= 10.0 * area.attenuationAngleRatio / (s + o);
+        if (v2s == P) angle2 -= 10.0 * area.attenuationAngleRatio / (s + l);
+        if (v3s == P) angle3 -= 10.0 * area.attenuationAngleRatio / (l + n);
+        if (v4s == P) angle4 -= 10.0 * area.attenuationAngleRatio / (n + o);
 
         // Verify U shape
         int nsDiff = std::abs(n - s);

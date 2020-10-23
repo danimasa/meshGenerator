@@ -9,7 +9,8 @@ class GeometryFactory;
 
 enum class VertexType {
     ORTHOGONAL,
-    POLAR
+    POLAR,
+    ANY
 };
 
 class KeyPoint : public Geometry, public Point {
@@ -24,7 +25,7 @@ public:
         return that.getID() != getID();
     }
 
-    VertexType type;
+    VertexType type = VertexType::ANY;
 
 private:
     KeyPoint() : Geometry(GeometryType::Keypoint), Point() {}
