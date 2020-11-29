@@ -2,6 +2,7 @@
 
 #include "Line.hpp"
 #include "Plane.hpp"
+#include "Vector.hpp"
 
 namespace geomlib {
 
@@ -30,16 +31,16 @@ private:
         KeyPoint* final_point,
         double radius,
         Point* center,
-        bool inverted_direction) :
-        Line(init_point, final_point),
-        plane(plane),
-        radius(radius),
-        center(center),
-        inverted_direction(inverted_direction) {}
+        Point* mid_point,
+        bool inverted_direction);
 
     Plane* plane;
     double radius;
     Point* center;
+    Point midPoint;
+    double angle;
+    Vector v90;
+    Vector vCI; // vector from center to init_point
     bool inverted_direction;
 
     friend class GeometryFactory;

@@ -158,7 +158,7 @@ void MeshFactory::m_evenElementsByNumberOfContacts(vector<Line*> &okLines, int n
 
 void MeshFactory::evenElementsInArea(GeometryList* geomList) {
     vector<Line*> okLines;
-    for (int i = 4; i > 0; i--) {
+    for (int i = 4; i >= 0; i--) {
         m_evenElementsByNumberOfContacts(okLines, i, geomList);
     }
 }

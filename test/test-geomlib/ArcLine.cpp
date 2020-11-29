@@ -52,7 +52,59 @@ TEST_CASE("ArcLine") {
 
         REQUIRE( arco->pointAtPosition(0) == initPoint );
         REQUIRE( arco->pointAtPosition(1) == finalPoint );
-        REQUIRE( arco->pointAtPosition(0.5) == midPoint );
+        auto mypoint = arco->pointAtPosition(0.5);
+        REQUIRE( double_equals(mypoint.x, midPoint.x) );
+        REQUIRE( double_equals(mypoint.y, midPoint.y) );
+        REQUIRE( double_equals(mypoint.z, midPoint.z) );
+    }
+    
+    SECTION("Point in line multiple angles") {
+        Point pinit (2, 0, 0);
+        Point pfinal (1.9590536134908, -0.4026275443494, 0);
+        Point midpoint (-1.9897370714471, 0.2023521349263, 0);
+
+        Vector initvec (0, 1, 0);
+        Vector finalvec (0.2013137721747, 0.9795268067454, 0);
+
+        auto kp1 = factory->createKeypoint(pinit);
+        auto kp2 = factory->createKeypoint(pfinal);
+
+        auto arc = factory->createArcLine(kp1, kp2, &midpoint, &initvec, &finalvec);
+
+        // between 0 and 90 degrees
+        auto ipoint = arc->pointAtPosition(0.15);
+        REQUIRE( double_equals(ipoint.x, 1.2242156590063) );
+        REQUIRE( double_equals(ipoint.y, 1.5815486145686) );
+
+        // between 90 and 180 degrees
+        ipoint = arc->pointAtPosition(0.4);
+        REQUIRE( double_equals(ipoint.x, -1.5175081314194) );
+        REQUIRE( double_equals(ipoint.y, 1.3027544170242) );
+
+        // between 180 and 270 degrees
+        ipoint = arc->pointAtPosition(0.65);
+        REQUIRE( double_equals(ipoint.x, -1.3779485094093) );
+        REQUIRE( double_equals(ipoint.y, -1.4495716282464) );
+
+        // between 270 and 360 degrees
+        ipoint = arc->pointAtPosition(0.9);
+        REQUIRE( double_equals(ipoint.x, 1.377913523869) );
+        REQUIRE( double_equals(ipoint.y, -1.4496048843526) );
+
+        // 90 degrees
+        ipoint = arc->pointAtPosition(0.2583339948706425);
+        REQUIRE( double_equals(ipoint.x, 0) );
+        REQUIRE( double_equals(ipoint.y, 2) );
+
+        // 180 degress
+        ipoint = arc->pointAtPosition(0.51666798974128925);
+        REQUIRE( double_equals(ipoint.x, -2) );
+        REQUIRE( double_equals(ipoint.y, 0) );
+
+        // 270 degress
+        ipoint = arc->pointAtPosition(0.77500198461197434);
+        REQUIRE( double_equals(ipoint.x, 0) );
+        REQUIRE( double_equals(ipoint.y, -2) );
     }
 
     SECTION("is Point in Line") {
@@ -68,7 +120,7 @@ TEST_CASE("ArcLine") {
 
         Point pinit (0, 0, 0);
         Point pfinal (-2, 3, 2.5);
-        Point pmid (0.648873897, 1.8891278602, 2.5717897355);
+        Point pmid (0.7844639004, 1.707733393, 2.4282910487);
         Point pinline (1, 1.25, 2);
 
         Vector init_vec (0.8208931472, 0.1109315064, 0.5602041072);

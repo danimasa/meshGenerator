@@ -29,11 +29,14 @@ Polyline* LineAnalysis::brokeStraightLine(StraightLine *line, KeyPoint *pointInL
 
 Polyline* LineAnalysis::brokeArcLine(ArcLine *line, KeyPoint *pointInLine) {
   auto factory = GeometryFactory::getDefaultInstance();
+  auto position = line->isPointInLine(*pointInLine);
+  auto mid1 = line->pointAtPosition(position / 2);
+  auto mid2 = line->pointAtPosition(position * 1.5);
 
   auto line1 = factory->createArcLine(line->init_point, pointInLine, line->get_plane(),
-    line->get_radius(), line->get_center());
+    line->get_radius(), line->get_center(), &mid1);
   auto line2 = factory->createArcLine(pointInLine, line->final_point, line->get_plane(),
-    line->get_radius(), line->get_center());
+    line->get_radius(), line->get_center(), &mid2);
 
   geomList->add(line1);
   geomList->add(line2);

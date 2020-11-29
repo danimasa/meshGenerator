@@ -21,7 +21,7 @@ namespace geomlib {
         ArcLine* createArcLine(KeyPoint* init_point, KeyPoint* final_point, Point* mid_point,
             Vector* init_tangent_vector, Vector* final_tangent_vector) const;
         ArcLine* createArcLine(KeyPoint* init_point, KeyPoint* final_point, Plane* plane,
-            double radius, Point* center) const;
+            double radius, Point* center, Point* mid_point) const;
 
         UnspecifiedLine* createUnspecifiedLine(
             KeyPoint* init_point,

@@ -50,20 +50,6 @@ Vector Vector::invert() {
     return Vector(nX, nY, nZ);
 }
 
-Vector operator+(const Vector &v1, const Vector &v2) {
-    double x = v1.x + v2.x;
-    double y = v1.y + v2.y;
-    double z = v1.z + v2.z;
-    return Vector(x, y, z);
-}
-
-Vector operator-(const Vector &v1, const Vector &v2) {
-    double x = v1.x - v2.x;
-    double y = v1.y - v2.y;
-    double z = v1.z - v2.z;
-    return Vector(x, y, z);
-}
-
 Vector operator*(const Vector &v1, double value) {
     double x = v1.x * value;
     double y = v1.y * value;

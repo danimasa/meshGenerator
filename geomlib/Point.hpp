@@ -22,6 +22,9 @@ namespace geomlib {
         bool operator!=(const Point &that) const {
             return !isEqualPoint(that);
         }
+
+        friend Point operator+(const Point &p1, const Point &p2);
+        friend Point operator-(const Point &p1, const Point &p2);
     private:
         bool isEqualPoint(const Point &that) const {
             bool isEqual = false;

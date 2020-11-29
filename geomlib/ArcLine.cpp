@@ -1,6 +1,5 @@
 #define _USE_MATH_DEFINES
 #include "ArcLine.hpp"
-#include "Vector.hpp"
 #include "mathUtils.hpp"
 #include "GeometryFactory.hpp"
 
@@ -10,12 +9,35 @@
 namespace geomlib
 {
 
+ArcLine::ArcLine(
+    Plane* plane,
+    KeyPoint* init_point,
+    KeyPoint* final_point,
+    double radius,
+    Point* center,
+    Point* mid_point,
+    bool inverted_direction) :
+    Line(init_point, final_point),
+    plane(plane),
+    radius(radius),
+    center(center),
+    inverted_direction(inverted_direction)
+{
+    Vector v1(center, init_point);
+    Vector v2(center, mid_point);
+    auto dot = v1.x*v2.x + v1.y*v2.y + v1.z*v2.z;
+    auto lenSq1 = v1.x*v1.x + v1.y*v1.y + v1.z*v1.z;
+    angle = acos(dot/lenSq1) * 2;
+    
+    auto n = plane->normalVector();
+    v90 = v1.vectorProduct(n);
+    v90 = (radius / v90.norm()) * v90;
+    vCI = v1;
+    midPoint = *mid_point;
+}
+
 double ArcLine::length() const
 {
-    Vector toInitPoint(center, init_point);
-    Vector toFinalPoint(center, final_point);
-
-    double angle = toInitPoint.angleWith(toFinalPoint);
     return radius * angle;
 }
 
@@ -31,20 +53,19 @@ double ArcLine::isPointInLine(const Point &point) {
                    + pow(point.z - center->z, 2);
     
     Vector v1(center, init_point);
-    Vector v2(center, final_point);
+    Vector v2(center, &midPoint);
     Vector v3(center, &point);
 
-    double a_v1_v2 = plane->angleBetween(v2, v1);
-    double a_v1_v3 = plane->angleBetween(v3, v1);
+    double a_v1_v2 = plane->angleBetween(v1, v2) * 2;
+    double a_v1_v3 = plane->angleBetween(v1, v3);
 
-    if (a_v1_v2 < 0) {
-        a_v1_v2 = plane->angleBetween(v1, v2);
-        a_v1_v3 = plane->angleBetween(v1, v3);
+    if(a_v1_v2 < 0) {
+        a_v1_v2 = a_v1_v2 * -1;
+        a_v1_v3 = a_v1_v3 * -1;
     }
 
-    if(a_v1_v3 < 0) {
+    if(a_v1_v3 < 0)
         a_v1_v3 = 2 * M_PI + a_v1_v3;
-    }
 
     if( double_equals(radical, pow(radius, 2)) &&
         a_v1_v3 < a_v1_v2) {
@@ -72,41 +93,42 @@ Point ArcLine::pointAtPosition(const double position)
         return *final_point;
     }
 
-    Vector toInitPoint(init_point, center);
-    Vector toFinalPoint(final_point, center);
-    double alfa = toInitPoint.angleWith(toFinalPoint);
-    double beta = alfa * position;
+    auto beta = angle * position;
+    auto vP = vCI * cos(beta) + v90 * sin(beta);
+    return *center + vP;
 
-    double w = radius * std::cos(beta);
-    double k = radius * std::sin(beta);
+    // double alfa = toInitPoint.angleWith(toFinalPoint);
+    // double beta = alfa * position;
 
-    Vector normalVector = plane->normalVector();
-    Vector orthoVector = normalVector.vectorProduct(toInitPoint);
+    // double w = radius * std::cos(beta);
+    // double k = radius * std::sin(beta);
 
-    orthoVector.normalise();
-    toFinalPoint.normalise();
-    normalVector.normalise();
+    // Vector orthoVector = normalVector.vectorProduct(toInitPoint);
 
-    arma::mat A;
-    A << orthoVector.x << toFinalPoint.x << normalVector.x << arma::endr
-      << orthoVector.y << toFinalPoint.y << normalVector.y << arma::endr
-      << orthoVector.z << toFinalPoint.z << normalVector.z << arma::endr;
+    // orthoVector.normalise();
+    // toFinalPoint.normalise();
+    // normalVector.normalise();
 
-    arma::vec vec(3);
-    vec(0) = k;
-    vec(1) = w;
-    vec(2) = 0;
+    // arma::mat A;
+    // A << orthoVector.x << toFinalPoint.x << normalVector.x << arma::endr
+    //   << orthoVector.y << toFinalPoint.y << normalVector.y << arma::endr
+    //   << orthoVector.z << toFinalPoint.z << normalVector.z << arma::endr;
+
+    // arma::vec vec(3);
+    // vec(0) = k;
+    // vec(1) = w;
+    // vec(2) = 0;
     
-    auto resultVector = A * vec;
+    // auto resultVector = A * vec;
 
-    arma::vec centerVector(3);
-    centerVector(0) = center->x;
-    centerVector(1) = center->y;
-    centerVector(2) = center->z;
+    // arma::vec centerVector(3);
+    // centerVector(0) = center->x;
+    // centerVector(1) = center->y;
+    // centerVector(2) = center->z;
 
-    arma::vec otherVector = resultVector + centerVector;
+    // arma::vec otherVector = resultVector + centerVector;
 
-    return Point(otherVector(0), otherVector(1), otherVector(2));
+    // return Point(otherVector(0), otherVector(1), otherVector(2));
 }
 
 Box ArcLine::outBox() {

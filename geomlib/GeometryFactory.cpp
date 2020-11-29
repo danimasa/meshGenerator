@@ -35,8 +35,8 @@ StraightLine* GeometryFactory::createStraightLine(KeyPoint* init_point, KeyPoint
 }
 
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Plane* plane,
-        double radius, Point* center) const {
-    return new ArcLine(plane, init_point, final_point, radius, center, false);
+        double radius, Point* center, Point* mid_point) const {
+    return new ArcLine(plane, init_point, final_point, radius, center, mid_point, false);
 }
 
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Point* mid_point,
@@ -69,7 +69,7 @@ ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_po
         inverted = true;
     }
 
-    return new ArcLine(plane, arcInitPoint, arcFinalPoint, radius, center, inverted);
+    return new ArcLine(plane, arcInitPoint, arcFinalPoint, radius, center, mid_point, inverted);
 }
 
 UnspecifiedLine* GeometryFactory::createUnspecifiedLine(

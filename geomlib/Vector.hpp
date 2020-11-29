@@ -35,8 +35,6 @@ namespace geomlib {
         // Vetor inverso
         Vector invert();
 
-        friend Vector operator+(const Vector &v1, const Vector &v2);
-        friend Vector operator-(const Vector &v1, const Vector &v2);
         friend Vector operator*(const Vector &v1, double value);
         friend Vector operator*(double value, const Vector &v1) { return v1 * value; }
     };
