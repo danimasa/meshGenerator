@@ -54,7 +54,7 @@ void AnsysMacroPrinter::printElement(const Quadrilateral* element) {
 }
 
 void AnsysMacroPrinter::printElements(const vector<Quadrilateral*> elements) {
-	out << "ET,1,PLANE42" << endl;
+	out << "ET,1,SHELL181" << endl;
 
 	for (auto element : elements) printElement(element);
 }
