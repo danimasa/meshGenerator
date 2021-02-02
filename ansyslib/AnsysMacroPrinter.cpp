@@ -50,7 +50,8 @@ void AnsysMacroPrinter::printElement(const Quadrilateral* element) {
 	out << "E," << element->v1->getID() << ","
 		<< element->v2->getID() << ","
 		<< element->v3->getID() << ","
-		<< element->v4->getID() << endl;
+		<< element->v4->getID() << "    !E"
+		<< element->getID() << endl;
 }
 
 void AnsysMacroPrinter::printElements(const vector<Quadrilateral*> elements) {
