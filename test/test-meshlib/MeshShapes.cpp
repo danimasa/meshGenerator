@@ -11,6 +11,8 @@ using namespace geomlib;
 using RShape = MeshShapes::RelativeShapes;
 
 TEST_CASE("MeshShapes.hpp") {
+    AppParams params{0};
+    GeometryFactory::init(params);
     auto factory = GeometryFactory::getDefaultInstance();
 
     auto p1 = Point(0, 0, 0);
@@ -32,19 +34,18 @@ TEST_CASE("MeshShapes.hpp") {
 
     SECTION("Throw error if without elements quantity") {
         REQUIRE_THROWS( QuadArea(lines) );
-        // REQUIRE_THROWS( MeshShapes::generateShapeList(a1) );
     }
 
     auto meshFactory = MeshFactory::getDefaultInstance();
 
     SECTION("Insufficient mesh size") {
-        meshFactory->setElementSize(1.0);
+        params.globalElementSize = 1.0;
         QuadArea a1(lines);
         REQUIRE_THROWS_WITH( MeshShapes::generateShapeList(a1), Catch::Contains("insuficient element size") );
     }
 
     SECTION("U Subdivision") {
-        meshFactory->setElementSize(0.2);
+        params.globalElementSize = 0.2;
         QuadArea a1(lines);
 
         auto shapeList = MeshShapes::generateShapeList(a1);
@@ -74,7 +75,7 @@ TEST_CASE("MeshShapes.hpp") {
 
         std::vector<Line*> lsubLines { l5, l6, l7, l8 };
         QuadArea a2(lsubLines);
-        meshFactory->setElementSize(0.25);
+        params.globalElementSize = 0.25;
 
         auto shapeList = MeshShapes::generateShapeList(a2);
 
@@ -84,7 +85,7 @@ TEST_CASE("MeshShapes.hpp") {
     }
 
     SECTION("Mixed Subdivision") {
-        meshFactory->setElementSize(0.25);
+        params.globalElementSize = 0.25;
         QuadArea a1(lines);
 
         a1.lines[0].qtdElements = 10;
@@ -122,7 +123,7 @@ TEST_CASE("MeshShapes.hpp") {
         a2.lines[2].qtdElements = 10;
         a2.lines[3].qtdElements = 10;
 
-        meshFactory->setElementSize(0.1);
+        params.globalElementSize = 0.1;
         auto shapeList = MeshShapes::generateShapeList(a2);
 
         REQUIRE( shapeList.size() == 4 );

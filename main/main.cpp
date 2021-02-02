@@ -134,17 +134,22 @@ void testMeshGeneration(const string &arquivo) {
     auto a3 = factory->createArea(loops3);
     geometries.add(a3);*/
 
+    double elementSize = 0.15;
+    AppParams params {elementSize};
+    GeometryFactory::init(params);
+
     ansyslib::AnsysFileReaderFactory factory {};
     geomlib::FileReader *reader = factory.createReader();
     GeometryList* geometry = reader->read(arquivo);
 
-    double elementSize = 0.3;
+    processlib::LineAnalysis analyser(geometry);
+    analyser.findSingularities();
 
     // AreaMesh area(lines, 0.4);
     // area.lines[2].qtdElements = 12;
     // MeshShapesGenerator gen;
     // auto mesh = gen.genMesh(shapeList, area);
-    MeshGenerator generator(geometry, 0.15);
+    MeshGenerator generator(geometry, params);
     Mesh mesh = generator.generateMesh();
 
     // AreaMesh meshGenerator(0.5);

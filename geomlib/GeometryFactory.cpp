@@ -16,10 +16,20 @@ typedef Kernel::Point_3                                     Point_3;
 
 namespace geomlib {
 
+GeometryFactory* GeometryFactory::getInstanceImpl(AppParams& params = AppParams{})
+{
+    static GeometryFactory instance { params };
+    return &instance;
+}
+
 const GeometryFactory* GeometryFactory::getDefaultInstance()
 {
-    static GeometryFactory instance;
-    return &instance;
+    return getInstanceImpl();
+}
+
+void GeometryFactory::init(AppParams& params)
+{
+    getInstanceImpl(params);
 }
 
 KeyPoint* GeometryFactory::createKeypoint() const {
@@ -31,12 +41,12 @@ KeyPoint* GeometryFactory::createKeypoint(Point &point) const {
 }
 
 StraightLine* GeometryFactory::createStraightLine(KeyPoint* init_point, KeyPoint* final_point) const {
-    return new StraightLine(init_point, final_point);
+    return withElementsQty(new StraightLine(init_point, final_point));
 }
 
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Plane* plane,
         double radius, Point* center, Point* mid_point) const {
-    return new ArcLine(plane, init_point, final_point, radius, center, mid_point, false);
+    return withElementsQty(new ArcLine(plane, init_point, final_point, radius, center, mid_point, false));
 }
 
 ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_point, Point* mid_point,
@@ -69,7 +79,7 @@ ArcLine* GeometryFactory::createArcLine(KeyPoint* init_point, KeyPoint* final_po
         inverted = true;
     }
 
-    return new ArcLine(plane, arcInitPoint, arcFinalPoint, radius, center, mid_point, inverted);
+    return withElementsQty(new ArcLine(plane, arcInitPoint, arcFinalPoint, radius, center, mid_point, inverted));
 }
 
 UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
@@ -80,7 +90,7 @@ UnspecifiedLine* GeometryFactory::createUnspecifiedLine(
     Vector* tangent_final_vector,
     double length) const {
     
-    return new UnspecifiedLine(init_point, final_point, mid_point, tangent_init_vector, tangent_final_vector, length);
+    return withElementsQty(new UnspecifiedLine(init_point, final_point, mid_point, tangent_init_vector, tangent_final_vector, length));
 }
 
 Polyline* GeometryFactory::createPolyline(
@@ -89,6 +99,23 @@ Polyline* GeometryFactory::createPolyline(
     std::vector<Line*> lines) const {
     
     return new Polyline(init_point, final_point, lines);
+}
+
+void GeometryFactory::lineElementsQtyCorrection(
+    vector<Line*> &lines,
+    const APROX_DIRECTION direction
+    ) const
+{
+   std::vector<std::pair<int, double>> aproxValues;
+
+   for(auto l : lines) {
+       double eOriginal = l->length() / _appParams.globalElementSize;
+       double eApprox = l->getElementsQty();
+       aproxValues.push_back({ eApprox, eOriginal });
+   }
+
+   auto result = lessErrorApproximation(aproxValues, direction);
+   lines[result.first]->setElementsQty(result.second);
 }
 
 Plane* GeometryFactory::createPlane(Point* p1, Vector* v1, Vector* v2) const {

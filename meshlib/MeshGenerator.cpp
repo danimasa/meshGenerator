@@ -11,15 +11,8 @@ Mesh MeshGenerator::generateMesh() {
     Mesh mesh;
     auto manager = MeshManager::getDefaultInstance();
 
-    // fill line elements qty
-    auto factory = MeshFactory::getDefaultInstance();
-    auto lines = geomList->getListOf(geomlib::GeometryType::Line);
-    for(auto gLine : lines) {
-        auto line = dynamic_cast<Line*>(gLine);
-        factory->fillLineElementsQty(line);
-    }
-
     // make areas with sum even elements
+    auto factory = MeshFactory::getDefaultInstance();
     factory->evenElementsInArea(geomList);
 
     // Generate Points Nodes
@@ -31,6 +24,7 @@ Mesh MeshGenerator::generateMesh() {
     }
 
     // Generate Lines Nodes
+    auto lines = geomList->getListOf(geomlib::GeometryType::Line);
     for(auto gLine : lines) {
         auto line = dynamic_cast<Line*>(gLine);
         auto vertices = manager->meshLine(line);

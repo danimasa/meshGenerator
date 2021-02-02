@@ -27,6 +27,9 @@ public:
     Vector get_init_vector() const;
     Vector get_final_vector() const;
 
+    int getElementsQty();
+    void setElementsQty(int elements);
+
     vector<Area*> getAttachedAreas() const;
     void setAttachedAreas(vector<Area*> areas);
 

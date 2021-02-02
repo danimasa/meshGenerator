@@ -23,6 +23,9 @@ public:
 
     inline vector<Area*> getAttachedAreas() const { return attachedAreas; }
 
+    int getElementsQty() { return elementsQty; }
+    void setElementsQty(int elements) { elementsQty = elements; }
+
 private:
     UnspecifiedLine(
         KeyPoint* init_point,

@@ -1,5 +1,6 @@
 #include <stdexcept>
 #include "Polyline.hpp"
+#include "GeometryFactory.hpp"
 
 using namespace std;
 
@@ -146,6 +147,22 @@ vector<Line*> Polyline::get_lines() const {
   for(auto l : lines)
     lineList.push_back(l.line);
   return lineList;
+}
+
+int Polyline::getElementsQty() {
+  int qty = 0;
+  for(auto l : lines)
+    qty += l.line->getElementsQty();
+  return qty;
+}
+
+void Polyline::setElementsQty(int elements) {
+  auto factory = GeometryFactory::getDefaultInstance();
+  auto actElements = getElementsQty();
+  if (elements == actElements) return;
+  auto lines = get_lines();
+  auto direction = elements < actElements ? APROX_DIRECTION::DOWN : APROX_DIRECTION::UP;
+  factory->lineElementsQtyCorrection(lines, direction);
 }
 
 vector<Polyline::Line_in_Polyline> Polyline::getLinesWithDirection() const {

@@ -36,8 +36,8 @@ namespace geomlib {
         virtual Vector get_init_vector() const = 0;
         virtual Vector get_final_vector() const = 0;
 
-        inline int getElementsQty() { return elementsQty; }
-        inline void setElementsQty(int elements) { elementsQty = elements; }
+        virtual int getElementsQty() = 0;
+        virtual void setElementsQty(int elements) = 0;
 
         virtual vector<Area*> getAttachedAreas() const = 0;
 
@@ -47,10 +47,9 @@ namespace geomlib {
             init_point(init_point), final_point(final_point) {}
 
         vector<Area*> attachedAreas;
-
-    private:
         int elementsQty;
 
+    private:
         friend class Area;
         friend class Polyline;
     };

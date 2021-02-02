@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 #include "Geometry.hpp"
 #include "KeyPoint.hpp"
 #include "StraightLine.hpp"
@@ -8,11 +10,14 @@
 #include "Polyline.hpp"
 #include "Plane.hpp"
 #include "Area.hpp"
+#include "AppParams.hpp"
+#include "mathUtils.hpp"
 
 namespace geomlib {
     class GeometryFactory {
     public:
         static const GeometryFactory* getDefaultInstance();
+        static void init(AppParams& params);
 
         KeyPoint* createKeypoint() const;
         KeyPoint* createKeypoint(Point &point) const;
@@ -37,6 +42,19 @@ namespace geomlib {
             vector<Line*> lines
         ) const;
 
+        /** 
+         * Corrige a quantidade de elementos em uma unidade
+         * na linha que apresentar o menor erro na direção
+         * especificada.
+         * 
+         * @param lines Lista de linhas a serem avaliadas
+         * @param direction Direções de correção (UP|DOWN|BOTH)
+         */
+        void lineElementsQtyCorrection(
+            vector<Line*> &lines,
+            const APROX_DIRECTION direction
+            ) const;
+
         Plane* createPlane(Point* p1, Point* p2, Point* p3) const;
         Plane* createPlane(Point* p1, Vector* v1, Vector* v2) const;
 
@@ -45,6 +63,23 @@ namespace geomlib {
         GeometryFactory(GeometryFactory const&) = delete;
         void operator=(GeometryFactory const&) = delete;
     private:
-        GeometryFactory() {}
+        AppParams _appParams;
+
+        static GeometryFactory* getInstanceImpl(AppParams& params);
+        GeometryFactory(AppParams& params)
+            : _appParams{move(params)}
+        {
+            if(params.globalElementSize <= 0)
+                throw std::runtime_error{ "globalElementSize must be greater than 0" };
+        }
+
+        template<typename T>
+        T* withElementsQty(T* line) const
+        {
+            static_assert(std::is_base_of<Line, T>::value, "T not derived from Line");
+            int qtdElements = ceil(line->length() / _appParams.globalElementSize);
+            line->setElementsQty(qtdElements);
+            return line;
+        }
     };
 }
