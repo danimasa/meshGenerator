@@ -1963,7 +1963,7 @@ auto ref1Vert = findIntersection(l1, l2);
 cMesh.addVertex(ref1Vert);
 
 double sElementSize = getElementSize(
-    eLine[1],
+    wLine[1],
     ref1Vert,
     VertexLineDirection::Horizontal,
     sLine.size() - 1
