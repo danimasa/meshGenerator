@@ -1,8 +1,10 @@
+#include <stdexcept>
+#include <algorithm>
+
 #include "meshlib.hpp"
 #include "ArcLine.hpp"
 #include "Polyline.hpp"
 #include "MeshManager.hpp"
-#include <stdexcept>
 
 namespace meshlib {
 
@@ -118,49 +120,6 @@ Mesh* transfiniteMapping(Mesh &parametricMesh, QuadArea &area) {
     return mesh;
 }
 
-// std::vector<Vertex*> subdivideLine(Line* line, int qtdElements, double lastXPos, double pPosition) {
-//     std::vector<Vertex*> vList;
-
-//     if(line->getLineType() == LineType::Polyline) {
-//         auto pLine = dynamic_cast<Polyline*>(line);
-//         auto pLineList = pLine->get_lines();
-//         auto iPoints = pLine->intermidiaryPoints();
-//         int lIndex = 0;
-//         int nGenElements = 0;
-//         double lastXPos = 0.0;
-
-//         for(auto p : iPoints) {
-//             double pPosition = pLine->isPointInLine(*p);
-//             int nElements = ceil(qtdElements * (pPosition - lastXPos));
-//             auto pList = subdivideLine(pLineList[lIndex], nElements, lastXPos, pPosition);
-//             for(auto v : pList)
-//                 vList.push_back(v);
-
-//             auto v = new Vertex(*p);
-//             vList.push_back(v);
-//             lIndex++;
-//             nGenElements += nElements;
-//             lastXPos = pPosition;
-//         }
-
-//         int nElements = qtdElements - nGenElements;
-//         auto pList = subdivideLine(pLineList[lIndex], nElements, lastXPos);
-//         for(auto v : pList)
-//             vList.push_back(v);
-
-//     } else {
-//         double step = 1.0 / qtdElements;
-//         for (int i = 1; i < qtdElements; i++) {
-//             double pos = lastXPos + (i * step) * (pPosition - lastXPos);
-//             auto p = line->pointAtPosition(pos);
-//             auto v = new Vertex(p);
-//             vList.push_back(v);
-//         }
-//     }
-
-//     return vList;
-// }
-
 std::vector<Vertex*> fillBoundary(QuadArea::TopologicalLine &tLine, double Vertex::* x, double Vertex::* y, double yValue) {
     std::vector<Vertex*> vList;
     auto line = tLine.line;
@@ -170,59 +129,19 @@ std::vector<Vertex*> fillBoundary(QuadArea::TopologicalLine &tLine, double Verte
     auto euclidianVertices = manager->meshLine(line);
     for(auto eucV : euclidianVertices) {
         auto v = new Vertex();
-        v->*x = line->isPointInLine(*eucV);
+        double position = line->isPointInLine(*eucV);
+        v->*x = direct ? position : 1 - position;
         v->*y = yValue;
         vList.push_back(v);
     }
 
     for(int i = 0; i < euclidianVertices.size(); i++) {
-        int lIndex = direct ? i : vList.size() - (i + 1);
-        manager->vinculateTopologicalVertex(vList[lIndex], euclidianVertices[i]);
+        manager->vinculateTopologicalVertex(vList[i], euclidianVertices[i]);
     }
 
-    // if(line->getLineType() == LineType::Polyline) {
-    //     auto pLine = dynamic_cast<Polyline*>(line);
-    //     auto pLineList = pLine->get_lines();
-    //     auto iPoints = pLine->intermidiaryPoints();
-    //     int lIndex = 0;
-    //     int nGenElements = 0;
-    //     double lastXPos = 0.0;
-
-    //     for(auto p : iPoints) {
-    //         double pPosition = pLine->isPointInLine(*p);
-    //         int nElements = ceil(qtdElements * (pPosition - lastXPos));
-    //         auto pList = fillBoundary(pLineList[lIndex], nElements, x, y, yValue);
-    //         for(int i = 0; i < pList.size(); i++) {
-    //             auto v = pList[i];
-    //             v->*x = lastXPos + v->*x * (pPosition - lastXPos);
-    //             vList.push_back(v);
-    //         }
-    //         auto v = new Vertex();
-    //         v->*x = pPosition;
-    //         v->*y = yValue;
-    //         vList.push_back(v);
-    //         lIndex++;
-    //         nGenElements += nElements;
-    //         lastXPos = pPosition;
-    //     }
-
-    //     int nElements = qtdElements - nGenElements;
-    //     auto pList = fillBoundary(pLineList[lIndex], nElements, x, y, yValue);
-    //     for(int i = 0; i < pList.size(); i++) {
-    //         auto v = pList[i];
-    //         v->*x = lastXPos + v->*x * (1.0 - lastXPos);
-    //         vList.push_back(v);
-    //     }
-    // } else {
-    //     double step = 1.0 / qtdElements;
-    //     for (int i = 1; i < qtdElements; i++) {
-    //         double pos = i * step;
-    //         auto v = new Vertex();
-    //         v->*x = pos;
-    //         v->*y = yValue;
-    //         vList.push_back(v);
-    //     }
-    // }
+    if (!direct) {
+        std::reverse(vList.begin(), vList.end());
+    }
 
     return vList;
 }
