@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #include <vector>
+#include <set>
 #include <algorithm>
 
 #include "LineAnalysis.hpp"
@@ -108,7 +109,9 @@ void LineAnalysis::findSingularities()
 {
   auto lines = geomList->getListOf(GeometryType::Line);
   std::vector<Line*> lvector;
+  std::set<int> treated_lines;
   auto factory = GeometryFactory::getDefaultInstance();
+  // find partial or full sobreposition
   for (auto l : lines)
   {
     auto line = dynamic_cast<Line *>(l);
@@ -138,6 +141,7 @@ void LineAnalysis::findSingularities()
           vector<Line*> lines { l1, line, l2 };
           auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
           polyline->setAttachedAreas(innerLine->getAttachedAreas());
+          treated_lines.insert(innerLine->getID());
           polyline->setID(innerLine->getID());
           geomList->add(polyline);
         }
@@ -164,16 +168,41 @@ void LineAnalysis::findSingularities()
             vector<Line*> lines { line, l1 };
             auto polyline = factory->createPolyline(innerLine->init_point, innerLine->final_point, lines);
             polyline->setAttachedAreas(innerLine->getAttachedAreas());
+            treated_lines.insert(innerLine->getID());
             polyline->setID(innerLine->getID());
             geomList->add(polyline);
         }
-        else if (initInLine && processedLinePoint[innerLine->getID()] != line->init_point->getID())
+      }
+    }
+  }
+
+  // find point sobreposition
+  for (auto l : lines)
+  {
+    auto line = dynamic_cast<Line *>(l);
+    if (line->getLineType() != LineType::StraightLine) continue;
+    for (auto i : lines)
+    {
+      auto innerLine = dynamic_cast<Line *>(i);
+      const bool treated = treated_lines.find(innerLine->getID()) != treated_lines.end();
+      if(treated) continue;
+
+      if (innerLine->getID() != line->getID() && innerLine->getLineType() == LineType::StraightLine)
+      {
+        // Caso 1
+        double initPosition = innerLine->isPointInLine(*line->init_point);
+        double finalPosition = innerLine->isPointInLine(*line->final_point);
+
+        bool initInLine = initPosition > 0 && initPosition < 1;
+        bool finalInLine = finalPosition > 0 && finalPosition < 1;
+
+        if (initInLine && processedLinePoint[innerLine->getID()] != line->init_point->getID())
           brokeAndSubstitute(line, innerLine, line->init_point);
         else if (finalInLine && processedLinePoint[innerLine->getID()] != line->final_point->getID())
           brokeAndSubstitute(line, innerLine, line->final_point);
-        }
-     }
+      }
     }
+  }
 
     LineIntersection inters_service(lvector);
     auto intersections = inters_service.findIntersections();
